@@ -1,0 +1,68 @@
+/* ========================================================
+   Conversations with Ami — Design Tokens
+   Palette pulled directly from the brand logo files:
+   deep blue #21409a, red dot #ed2024, light blue #8bc6e7,
+   plus ink/paper neutrals to match the black & white logo marks.
+   ======================================================== */
+
+:root {
+  /* ---- Color ---- */
+  --ink:        #101013;   /* near-black, matches Logo_black bg */
+  --ink-soft:   #3a3a40;
+  --paper:      #fdfdfc;   /* near-white, matches Logo_white bg */
+  --paper-dim:  #f3f2ef;
+  --blue:       #21409a;   /* primary brand blue */
+  --blue-deep:  #162c6c;   /* pressed / hover state */
+  --sky:        #8bc6e7;   /* light blue, tints & secondary surfaces */
+  --sky-tint:   #eaf4fb;   /* very light wash of sky, for section backgrounds */
+  --red:        #ed2024;   /* the dot — used sparingly, as an accent only */
+
+  /* ---- Type ---- */
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-label:   "Archivo", "Arial Narrow", sans-serif;
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* ---- Scale ---- */
+  --step-1: clamp(2.6rem, 2rem + 3vw, 5.2rem);
+  --step-2: clamp(1.8rem, 1.5rem + 1.6vw, 2.8rem);
+  --step-3: clamp(1.3rem, 1.15rem + 0.8vw, 1.6rem);
+  --step-0: 1.05rem;
+
+  /* ---- Layout ---- */
+  --content-max: 1120px;
+  --radius: 2px;
+  --border: 1px solid rgba(16,16,19,0.12);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: inherit; }
+
+::selection { background: var(--sky); color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
+}

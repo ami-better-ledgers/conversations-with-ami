@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Be a guest — Conversations with Ami</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   BRAND — sampled from the Conversations with Ami logo
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --blue:   #20409a;   /* wordmark blue — banner, headings, text, buttons */
+  --sky:    #8bc7e9;   /* the light blue from the logo */
+  --red:    #ed1f24;   /* the dot in CONVERSATIONS — used sparingly */
+  --wash:   #f4f7fb;   /* page background, a cool off-white */
+  --white:  #ffffff;   /* form surface */
+
+  --blue-soft:  color-mix(in srgb, var(--blue) 68%, var(--wash));
+  --blue-faint: color-mix(in srgb, var(--blue) 38%, var(--wash));
+  --line:       color-mix(in srgb, var(--blue) 20%, var(--wash));
+  --line-strong:color-mix(in srgb, var(--blue) 42%, var(--wash));
+
+  --display: "Archivo", system-ui, sans-serif;
+  --serif: "Playfair Display", Georgia, serif;
+  --body: "Archivo", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--wash); color:var(--blue);
+  font-family:var(--body); font-size:16.5px; line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── Signature: the playhead ─────────────────────────────────
+   The red dot from the logo doubles as the progress marker.   */
+.scrubber{
+  position:sticky; top:0; z-index:20;
+  background:var(--wash); border-bottom:1px solid var(--line);
+  padding:16px 24px 12px;
+}
+.scrubber-inner{max-width:680px; margin:0 auto}
+.track{
+  position:relative; height:4px; border-radius:2px;
+  background:color-mix(in srgb, var(--blue) 14%, var(--wash));
+}
+.fill{
+  position:absolute; inset:0 auto 0 0; width:0; border-radius:2px;
+  background:var(--blue);
+  transition:width .45s cubic-bezier(.22,.8,.3,1);
+}
+.dot{
+  position:absolute; top:50%; left:0; width:13px; height:13px;
+  margin:-6.5px 0 0 -6.5px; border-radius:50%;
+  background:var(--red); box-shadow:0 0 0 3px var(--wash);
+  transition:left .45s cubic-bezier(.22,.8,.3,1);
+}
+.ticks{display:flex; margin-top:11px}
+.tick{
+  flex:1; font-family:var(--mono); font-size:10px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--blue-faint); transition:color .3s ease;
+}
+.tick + .tick{padding-left:10px}
+.tick[data-state="done"]{color:var(--blue-soft)}
+.tick[data-state="now"]{color:var(--blue)}
+
+/* ── Masthead ────────────────────────────────────────────────── */
+.band{background:var(--blue); color:var(--white); padding:52px 24px 46px}
+.band-inner{max-width:680px; margin:0 auto}
+.logo{display:block; width:min(340px, 78%); height:auto; margin:0 0 34px}
+h1{
+  font-family:var(--display); font-weight:700;
+  font-size:clamp(2.1rem, 6.2vw, 3.1rem); line-height:1.02;
+  letter-spacing:-.03em; margin:0 0 18px; max-width:16ch;
+}
+h1 em{font-family:var(--serif); font-weight:900; font-style:normal; color:var(--sky)}
+.standfirst{font-size:1.1rem; margin:0; max-width:50ch;
+  color:color-mix(in srgb, var(--sky) 76%, var(--white))}
+
+.wrap{max-width:680px; margin:0 auto; padding:0 24px 96px}
+
+.intro{padding:40px 0 34px}
+.eyebrow{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--blue-soft); margin:0 0 10px;
+}
+.pillars{border-left:3px solid var(--red); padding:2px 0 2px 20px; margin:0 0 28px}
+.pillars p{margin:0 0 11px; color:var(--blue-soft); font-size:1rem}
+.pillars p:last-child{margin:0}
+.pillars b{color:var(--blue); font-weight:600}
+.gate{
+  font-family:var(--mono); font-size:11.5px; line-height:1.65;
+  letter-spacing:.05em; text-transform:uppercase;
+  background:var(--blue); color:var(--white);
+  padding:15px 20px; border-radius:3px; margin:0;
+}
+
+/* ── Form surface ────────────────────────────────────────────── */
+.sheet{
+  background:var(--white); border:1px solid var(--line);
+  border-radius:4px; padding:38px 34px 30px;
+}
+.step{display:none}
+.step.active{display:block; animation:rise .35s cubic-bezier(.22,.8,.3,1)}
+@keyframes rise{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
+
+.step-head{margin:0 0 30px; padding-bottom:18px; border-bottom:1px solid var(--line)}
+.step-head .eyebrow{margin:0 0 7px}
+.step-head h2{
+  font-family:var(--display); font-weight:700; letter-spacing:-.025em;
+  font-size:1.6rem; margin:0;
+}
+.step-note{font-size:.94rem; color:var(--blue-soft); margin:9px 0 0}
+
+.field{margin:0 0 26px}
+label.q, span.q{display:block; font-weight:600; font-size:1rem; margin:0 0 4px; line-height:1.4}
+.req{
+  display:inline-block; width:6px; height:6px; border-radius:50%;
+  background:var(--red); vertical-align:middle; margin-left:5px;
+}
+.hint{display:block; font-size:.9rem; color:var(--blue-soft); margin:0 0 10px; font-weight:400}
+
+input[type=text], input[type=email], input[type=tel], input[type=url], textarea{
+  width:100%; font:inherit; font-size:1rem; color:var(--blue);
+  background:transparent; border:0; border-bottom:1.5px solid var(--line-strong);
+  padding:9px 2px; border-radius:0; transition:border-color .2s ease;
+}
+textarea{
+  border:1.5px solid var(--line-strong); padding:11px 12px; border-radius:3px;
+  min-height:92px; resize:vertical; line-height:1.5;
+}
+input::placeholder, textarea::placeholder{color:var(--blue-faint)}
+input:hover, textarea:hover{border-color:var(--blue-soft)}
+input:focus, textarea:focus{outline:none; border-color:var(--blue)}
+input:focus-visible, textarea:focus-visible{outline:2px solid var(--blue); outline-offset:3px}
+
+/* ── Choices ─────────────────────────────────────────────────── */
+.choices{display:flex; flex-direction:column; gap:1px; margin-top:6px}
+.choice{
+  display:flex; align-items:flex-start; gap:13px;
+  padding:11px 14px; margin-left:-14px; border-radius:3px;
+  cursor:pointer; font-size:.98rem; line-height:1.4;
+  transition:background .15s ease;
+}
+.choice:hover{background:color-mix(in srgb, var(--sky) 22%, var(--white))}
+.choice input{
+  appearance:none; -webkit-appearance:none; margin:2px 0 0; flex:none;
+  width:18px; height:18px; border:1.5px solid var(--line-strong);
+  background:var(--white); cursor:pointer; transition:all .15s ease;
+}
+.choice input[type=radio]{border-radius:50%}
+.choice input[type=checkbox]{border-radius:3px}
+.choice input:checked{border-color:var(--blue); background:var(--blue)}
+.choice input[type=checkbox]:checked::after{
+  content:""; display:block; width:100%; height:100%; background:var(--white);
+  clip-path:polygon(19% 48%, 8% 60%, 39% 88%, 92% 26%, 81% 16%, 38% 66%);
+}
+.choice input[type=radio]:checked::after{
+  content:""; display:block; width:100%; height:100%; border-radius:50%;
+  background:var(--white); transform:scale(.4);
+}
+.choice input:focus-visible{outline:2px solid var(--blue); outline-offset:2px}
+.other-write{margin:8px 0 0 31px; max-width:420px; display:none}
+.other-write.show{display:block}
+
+/* ── Errors ──────────────────────────────────────────────────── */
+.err{
+  display:none; font-family:var(--mono); font-size:10.5px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--red); margin-top:9px;
+}
+.field.invalid .err{display:block}
+.field.invalid input:not([type=radio]):not([type=checkbox]),
+.field.invalid textarea{border-color:var(--red)}
+
+/* ── Actions ─────────────────────────────────────────────────── */
+.actions{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px; margin-top:34px; padding-top:24px; border-top:1px solid var(--line);
+}
+button{font:inherit; cursor:pointer}
+.btn{
+  font-family:var(--display); font-weight:600; font-size:1rem;
+  letter-spacing:-.01em; padding:14px 30px; border-radius:3px;
+  border:0; background:var(--blue); color:var(--white);
+  transition:background .15s ease, transform .12s ease;
+}
+.btn:hover{background:color-mix(in srgb, var(--blue) 88%, #000); transform:translateY(-1px)}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.5; cursor:wait; transform:none}
+.btn-back{
+  background:none; border:0; color:var(--blue-soft); padding:14px 0;
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+}
+.btn-back:hover{color:var(--blue)}
+.btn-back[hidden]{display:none}
+button:focus-visible{outline:2px solid var(--blue); outline-offset:3px}
+
+/* ── Terminal screens ────────────────────────────────────────── */
+.terminal{display:none; padding:14px 0 6px}
+.terminal.active{display:block; animation:rise .4s cubic-bezier(.22,.8,.3,1)}
+.terminal h2{
+  font-family:var(--serif); font-weight:900; letter-spacing:-.02em;
+  font-size:2.1rem; line-height:1.06; margin:0 0 18px;
+}
+.terminal p{color:var(--blue-soft); margin:0 0 14px; max-width:50ch}
+.terminal p:last-child{margin:0}
+
+.legal{
+  display:none; font-family:var(--mono); font-size:10px; letter-spacing:.04em;
+  line-height:1.7; color:var(--blue-faint); margin:18px 0 0; text-transform:uppercase;
+}
+.legal.show{display:block}
+.legal a{color:var(--blue-soft)}
+.grecaptcha-badge{visibility:hidden}
+
+/* The pitch is for people deciding whether to apply. Once they've started,
+   it's just something to scroll past. */
+body:not([data-step="0"]) .band,
+body:not([data-step="0"]) .intro{display:none}
+body:not([data-step="0"]) .wrap{padding-top:22px}
+
+.hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+
+@media (max-width:560px){
+  body{font-size:16px}
+  .band{padding:32px 24px 30px}
+  .logo{width:min(280px, 88%); margin-bottom:26px}
+  .sheet{padding:26px 20px 22px; border-left:0; border-right:0; border-radius:0;
+         margin-left:-24px; margin-right:-24px}
+  .intro{padding:32px 0 28px}
+  .tick{font-size:9px}
+  .tick + .tick{padding-left:6px}
+  .actions{flex-direction:row-reverse; justify-content:flex-start}
+  .btn{flex:1}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important; transition:none !important}
+}
+</style>
+</head>
+<body>
+
+<div class="scrubber" aria-hidden="true">
+  <div class="scrubber-inner">
+    <div class="track">
+      <div class="fill" id="fill"></div>
+      <div class="dot" id="dot"></div>
+    </div>
+    <div class="ticks" id="ticks"></div>
+  </div>
+</div>
+
+<header class="band">
+  <div class="band-inner">
+    <img class="logo" src="data:image/png;base64,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" alt="Conversations with Ami">
+    <h1>Be a guest on the <em>show</em></h1>
+    <p class="standfirst">A podcast for early-stage entrepreneurs — the ones doing it without a team, without a budget, and without anyone to ask.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="intro">
+    <p class="eyebrow">Who we're looking for</p>
+    <div class="pillars">
+      <p>Our listener is early. Pre-revenue, maybe solo, no cushion. We look for guests who can give that person one of five things:</p>
+      <p><b>A peer story.</b> You're in it right now, and hearing you say it's hard makes someone else feel less crazy.</p>
+      <p><b>Literacy.</b> How a system or service actually works, so they aren't blindsided later.</p>
+      <p><b>Future planning.</b> How to think about a decision they'll face at a later stage.</p>
+      <p><b>What not to do.</b> The expensive mistake your field watches beginners make over and over.</p>
+      <p><b>A core skill.</b> Beginner-level sales, management, operations or finance. Something they can go do.</p>
+      <p>One, done well, is a great episode.</p>
+    </div>
+    <p class="gate">One requirement: at least one year in your current role or business.</p>
+  </section>
+
+  <div class="sheet">
+    <form id="form" novalidate>
+
+      <div class="hp" aria-hidden="true">
+        <label>Leave this blank<input type="text" name="website_url" tabindex="-1" autocomplete="off"></label>
+      </div>
+
+      <!-- ── STEP 1 ─────────────────────────────────────────── -->
+      <section class="step active" data-step="0" data-label="Who you are">
+        <div class="step-head">
+          <p class="eyebrow">Part 1 of 4</p>
+          <h2>Who you are</h2>
+          <p class="step-note">Five minutes, start to finish. Short answers are fine — we're not looking for essays.</p>
+        </div>
+
+        <div class="field"><label class="q" for="f-name">Full name <span class="req"></span></label>
+          <input type="text" id="f-name" name="name" autocomplete="name" data-required>
+          <p class="err">Add your name</p></div>
+
+        <div class="field"><label class="q" for="f-business">Business or organization <span class="req"></span></label>
+          <input type="text" id="f-business" name="business" autocomplete="organization" data-required>
+          <p class="err">Add your business name</p></div>
+
+        <div class="field"><label class="q" for="f-role">Your role <span class="req"></span></label>
+          <input type="text" id="f-role" name="role" autocomplete="organization-title" data-required>
+          <p class="err">Add your role</p></div>
+
+        <div class="field"><label class="q" for="f-email">Email <span class="req"></span></label>
+          <input type="email" id="f-email" name="email" autocomplete="email" data-required data-email>
+          <p class="err">Check this email address</p></div>
+
+        <div class="field"><label class="q" for="f-phone">Phone <span class="req"></span></label>
+          <input type="tel" id="f-phone" name="phone" autocomplete="tel" data-required>
+          <p class="err">Add a phone number</p></div>
+
+        <div class="field"><label class="q" for="f-website">Website</label>
+          <input type="url" id="f-website" name="website" placeholder="https://"></div>
+
+        <div class="field"><label class="q" for="f-linkedin">LinkedIn or main social profile</label>
+          <input type="url" id="f-linkedin" name="linkedin" placeholder="https://"></div>
+
+        <div class="field"><label class="q" for="f-heard">How did you hear about the show?</label>
+          <input type="text" id="f-heard" name="heardFrom"></div>
+
+        <div class="field"><label class="q" for="f-what">In two or three sentences, what does your business actually do? <span class="req"></span></label>
+          <span class="hint">Plain language — assume the listener has never heard of your industry.</span>
+          <textarea id="f-what" name="whatYouDo" data-required></textarea>
+          <p class="err">Tell us what you do</p></div>
+
+        <div class="field"><label class="q" for="f-client">Who is your typical client or customer? <span class="req"></span></label>
+          <span class="hint">Size, stage, situation. Honest answers only — this doesn't disqualify you.</span>
+          <textarea id="f-client" name="typicalClient" data-required></textarea>
+          <p class="err">Describe your typical client</p></div>
+
+        <div class="field" data-group="tenure"><span class="q">How long have you been in this role or business? <span class="req"></span></span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="tenure" value="Less than 1 year">Less than 1 year</label>
+            <label class="choice"><input type="radio" name="tenure" value="1–3 years">1–3 years</label>
+            <label class="choice"><input type="radio" name="tenure" value="3–5 years">3–5 years</label>
+            <label class="choice"><input type="radio" name="tenure" value="5–10 years">5–10 years</label>
+            <label class="choice"><input type="radio" name="tenure" value="10+ years">10+ years</label>
+          </div>
+          <p class="err">Pick one</p></div>
+      </section>
+
+      <!-- ── STEP 2 ─────────────────────────────────────────── -->
+      <section class="step" data-step="1" data-label="Fit">
+        <div class="step-head">
+          <p class="eyebrow">Part 2 of 4</p>
+          <h2>Fit</h2>
+        </div>
+
+        <div class="field" data-group="pillars"><span class="q">Which of these could you give our listener? <span class="req"></span></span>
+          <span class="hint">Select all that apply. You don't need to hit all of them.</span>
+          <div class="choices">
+            <label class="choice"><input type="checkbox" name="pillars" value="Peer story">A peer story — you're in the struggle right now</label>
+            <label class="choice"><input type="checkbox" name="pillars" value="Literacy">Literacy — how a system, service or product actually works</label>
+            <label class="choice"><input type="checkbox" name="pillars" value="Future planning">Future planning — how to think about a decision they'll face later</label>
+            <label class="choice"><input type="checkbox" name="pillars" value="What not to do">What not to do — the expensive mistakes people make in your field</label>
+            <label class="choice"><input type="checkbox" name="pillars" value="A core skill">A core skill — beginner-level sales, management, operations or finance</label>
+            <label class="choice"><input type="checkbox" name="pillars" value="Other" id="other-box">Something else</label>
+          </div>
+          <div class="other-write" id="other-write">
+            <input type="text" name="pillarsOther" placeholder="Tell us what else you'd bring" aria-label="What else you'd bring">
+          </div>
+          <p class="err">Pick at least one</p></div>
+
+        <div class="field"><label class="q" for="f-nobudget">Our listener has no budget, no team, and no ability to hire you. What part of your expertise is still useful to them? <span class="req"></span></label>
+          <span class="hint">If the honest answer is "not much," say so — we'd rather know, and we may still find an angle.</span>
+          <textarea id="f-nobudget" name="noBudget" data-required></textarea>
+          <p class="err">Have a go at this one</p></div>
+      </section>
+
+      <!-- ── STEP 3 ─────────────────────────────────────────── -->
+      <section class="step" data-step="2" data-label="The conversation">
+        <div class="step-head">
+          <p class="eyebrow">Part 3 of 4</p>
+          <h2>The conversation</h2>
+          <p class="step-note">We don't script episodes. These just point us in a direction.</p>
+        </div>
+
+        <div class="field"><label class="q" for="f-talk">What do you actually want to talk about? <span class="req"></span></label>
+          <span class="hint">Not what you think we want to hear. Guests often steer us somewhere better than our own outline, and we'll follow.</span>
+          <textarea id="f-talk" name="talkAbout" data-required></textarea>
+          <p class="err">Give us something to go on</p></div>
+
+        <div class="field"><label class="q" for="f-off">Anything you'd rather not discuss on air?</label>
+          <textarea id="f-off" name="offLimits"></textarea></div>
+
+        <div class="field"><label class="q" for="f-early">Are you early-stage yourself, or in a hard stretch you'd talk about honestly?</label>
+          <span class="hint">Optional. Real struggle told plainly is one of the most valuable things on this show — only if you're comfortable.</span>
+          <textarea id="f-early" name="earlyStage"></textarea></div>
+
+        <div class="field"><label class="q" for="f-listened">Have you listened to an episode? Which one, and what stood out — good or bad?</label>
+          <span class="hint">Optional, but a specific answer moves you up the list.</span>
+          <textarea id="f-listened" name="listened"></textarea></div>
+      </section>
+
+      <!-- ── STEP 4 ─────────────────────────────────────────── -->
+      <section class="step" data-step="3" data-label="Logistics">
+        <div class="step-head">
+          <p class="eyebrow">Part 4 of 4</p>
+          <h2>Logistics</h2>
+          <p class="step-note">We record remotely on Riverside. Roughly 40–50 minutes.</p>
+        </div>
+
+        <div class="field"><label class="q" for="f-past">Been a guest on a podcast before? Links, if any.</label>
+          <textarea id="f-past" name="pastPodcasts"></textarea></div>
+
+        <div class="field" data-group="micSetup"><span class="q">Do you have a decent mic and a quiet room? <span class="req"></span></span>
+          <span class="hint">Not a dealbreaker — we'll advise.</span>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="micSetup" value="Yes">Yes</label>
+            <label class="choice"><input type="radio" name="micSetup" value="No">No</label>
+            <label class="choice"><input type="radio" name="micSetup" value="Not sure">Not sure</label>
+          </div>
+          <p class="err">Pick one</p></div>
+
+        <div class="field"><label class="q" for="f-avail">General availability over the next 6–8 weeks <span class="req"></span></label>
+          <textarea id="f-avail" name="availability" data-required></textarea>
+          <p class="err">Give us a rough window</p></div>
+
+        <div class="field"><label class="q" for="f-else">Anything else we should know?</label>
+          <textarea id="f-else" name="anythingElse"></textarea></div>
+      </section>
+
+      <!-- ── Terminal screens ───────────────────────────────── -->
+      <section class="terminal" id="screen-sent">
+        <h2>Got it.</h2>
+        <p>Your application is in, and Ami reads every one.</p>
+        <p>If it looks like a fit, we'll email you a link to book a short qualifier call — ten or fifteen minutes, informal, no prep needed. It's not an audition. If we're both in after that, we schedule the recording.</p>
+        <p>Check your inbox for a confirmation in the next minute or two — and check your spam folder too. We're a new sender, so first emails from us often land there. Marking it "not spam" means you'll actually see the next one.</p>
+      </section>
+
+      <section class="terminal" id="screen-early">
+        <h2>Not yet — but it's a timing thing, not a no.</h2>
+        <p>We ask that guests have at least a year in their current role or business, so this isn't the right moment.</p>
+        <p>Come back once you've hit that mark. We'd genuinely like to hear from you then.</p>
+      </section>
+
+      <div class="actions" id="actions">
+        <button type="button" class="btn-back" id="back" hidden>← Back</button>
+        <button type="button" class="btn" id="next">Continue</button>
+      </div>
+
+      <p class="legal" id="legal">
+        Protected by reCAPTCHA. Google's
+        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">privacy policy</a> and
+        <a href="https://policies.google.com/terms" target="_blank" rel="noopener">terms</a> apply.
+      </p>
+
+    </form>
+  </div>
+</div>
+
+<script>
+/* ─────────────────────────────────────────────────────────────
+   1. Paste your Apps Script web app URL here (it ends in /exec)
+   ───────────────────────────────────────────────────────────── */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_smYavEkdvvxyZzG3mTLcYw2aj-EaeEA511mwe6WaBc3uCmk5Cu2r958lQNbcDOsU/exec";
+
+/* 2. Optional: reCAPTCHA v3 SITE key (the public one). The secret
+      key goes in the Apps Script config, never here. Leave this
+      untouched to run the form without spam checking.          */
+const RECAPTCHA_SITE_KEY = "6LeEnnItAAAAAGDKY8GMc974Vhz_OVMWPC9_IgeF";
+
+const recaptchaOn = !RECAPTCHA_SITE_KEY.startsWith("PASTE_");
+if (recaptchaOn) {
+  const rc = document.createElement('script');
+  rc.src = 'https://www.google.com/recaptcha/api.js?render=' + RECAPTCHA_SITE_KEY;
+  document.head.appendChild(rc);
+  document.getElementById('legal').classList.add('show');
+}
+
+/* v3 is invisible — no puzzle, no checkbox. It scores the visitor from how
+   they behaved on the page and hands back a token we verify server-side. */
+function recaptchaToken(){
+  return new Promise(resolve => {
+    if (!recaptchaOn || !window.grecaptcha) return resolve('');
+    grecaptcha.ready(() => {
+      grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'guest_application' })
+        .then(resolve).catch(() => resolve(''));
+    });
+  });
+}
+
+const form    = document.getElementById('form');
+const steps   = [...document.querySelectorAll('.step')];
+const fillEl  = document.getElementById('fill');
+const dotEl   = document.getElementById('dot');
+const ticksEl = document.getElementById('ticks');
+const nextBtn = document.getElementById('next');
+const backBtn = document.getElementById('back');
+const actions = document.getElementById('actions');
+let i = 0;
+
+steps.forEach((s, n) => {
+  const t = document.createElement('span');
+  t.className = 'tick';
+  t.textContent = String(n + 1).padStart(2, '0') + ' ' + s.dataset.label;
+  ticksEl.appendChild(t);
+});
+const tickEls = [...ticksEl.children];
+
+function paint(){
+  const pct = (i / steps.length) * 100;
+  fillEl.style.width = pct + '%';
+  dotEl.style.left = pct + '%';
+  tickEls.forEach((t, n) =>
+    t.dataset.state = n < i ? 'done' : n === i ? 'now' : 'todo');
+  backBtn.hidden = i === 0;
+  nextBtn.textContent = i === steps.length - 1 ? 'Send application' : 'Continue';
+}
+
+const sheetEl = document.querySelector('.sheet');
+const scrubberEl = document.querySelector('.scrubber');
+
+/* Land at the top of the form card, just under the sticky progress bar —
+   never back up at the banner. */
+function scrollToForm(){
+  const y = sheetEl.getBoundingClientRect().top + window.scrollY
+            - scrubberEl.offsetHeight - 14;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+}
+
+function show(n){
+  steps[i].classList.remove('active');
+  i = n;
+  steps[i].classList.add('active');
+  document.body.dataset.step = i;
+  paint();
+  scrollToForm();
+  const first = steps[i].querySelector('input, textarea');
+  if (first && window.innerWidth > 560) first.focus({ preventScroll: true });
+}
+
+/* "Something else" reveals its write-in */
+const otherBox = document.getElementById('other-box');
+const otherWrite = document.getElementById('other-write');
+otherBox.addEventListener('change', () => {
+  otherWrite.classList.toggle('show', otherBox.checked);
+  if (otherBox.checked) otherWrite.querySelector('input').focus();
+});
+
+/* ── Validation ──────────────────────────────────────────────── */
+function validate(step){
+  let ok = true, firstBad = null;
+
+  step.querySelectorAll('[data-required]').forEach(el => {
+    const field = el.closest('.field');
+    let bad = !el.value.trim();
+    if (!bad && el.hasAttribute('data-email')) bad = !/^\S+@\S+\.\S+$/.test(el.value.trim());
+    field.classList.toggle('invalid', bad);
+    if (bad){ ok = false; firstBad = firstBad || el; }
+  });
+
+  step.querySelectorAll('[data-group]').forEach(field => {
+    const bad = !field.querySelector('input:checked');
+    field.classList.toggle('invalid', bad);
+    if (bad){ ok = false; firstBad = firstBad || field.querySelector('input'); }
+  });
+
+  if (firstBad) firstBad.focus();
+  return ok;
+}
+
+form.addEventListener('input', e => {
+  const f = e.target.closest('.field');
+  if (f) f.classList.remove('invalid');
+});
+form.addEventListener('change', e => {
+  const f = e.target.closest('.field');
+  if (f) f.classList.remove('invalid');
+});
+
+/* ── Navigation ──────────────────────────────────────────────── */
+backBtn.addEventListener('click', () => { if (i > 0) show(i - 1); });
+
+nextBtn.addEventListener('click', () => {
+  if (!validate(steps[i])) return;
+
+  /* The one gate: under a year and we stop here. */
+  if (i === 0) {
+    const tenure = form.querySelector('input[name=tenure]:checked');
+    if (tenure && tenure.value === 'Less than 1 year') return finish('screen-early');
+  }
+
+  if (i < steps.length - 1) return show(i + 1);
+  submit();
+});
+
+function finish(screenId){
+  steps[i].classList.remove('active');
+  actions.style.display = 'none';
+  document.getElementById('legal').style.display = 'none';
+  fillEl.style.width = '100%';
+  dotEl.style.left = '100%';
+  tickEls.forEach(t => t.dataset.state = 'done');
+  document.getElementById(screenId).classList.add('active');
+  scrollToForm();
+}
+
+/* ── Submit ──────────────────────────────────────────────────── */
+function collect(){
+  const data = {};
+  new FormData(form).forEach((v, k) => {
+    if (k in data){
+      if (!Array.isArray(data[k])) data[k] = [data[k]];
+      data[k].push(v);
+    } else data[k] = v;
+  });
+  if (data.pillars && !Array.isArray(data.pillars)) data.pillars = [data.pillars];
+  return data;
+}
+
+async function submit(){
+  nextBtn.disabled = true;
+  nextBtn.textContent = 'Sending…';
+
+  const payload = collect();
+  payload.recaptchaToken = await recaptchaToken();
+  /* Same id on both attempts, so the backend can ignore the second one. */
+  payload.submissionId = 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  const body = JSON.stringify(payload);
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      /* text/plain keeps this a "simple" request, which sidesteps the CORS
+         preflight that Apps Script web apps don't answer. */
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: body
+    });
+    const out = await res.json();
+    if (!out.ok) {
+      const e = new Error(out.error || 'That did not send.');
+      e.fromServer = true;
+      throw e;
+    }
+    return finish('screen-sent');
+
+  } catch (err) {
+    /* The server answered and said no — show its reason, don't retry. */
+    if (err.fromServer) return sendError(err.message);
+
+    /* Otherwise the request never completed: a privacy extension, a flaky
+       network, or the page being opened from file:// instead of a real URL.
+       Last resort — fire it off opaquely. We can't read the reply, so we
+       can't confirm, but the application still lands in the sheet. */
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST', mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: body
+      });
+      return finish('screen-sent');
+    } catch (ignored) {}
+
+    console.error(err);
+    sendError("That didn't send. Check your connection and try again, or email us at conversationswithami@gmail.com.");
+  }
+}
+
+function sendError(text){
+  nextBtn.disabled = false;
+  nextBtn.textContent = 'Try again';
+  let msg = document.getElementById('send-error');
+  if (!msg){
+    msg = document.createElement('p');
+    msg.id = 'send-error';
+    msg.className = 'err';
+    msg.style.display = 'block';
+    msg.style.textAlign = 'right';
+    actions.after(msg);
+  }
+  msg.textContent = text;
+}
+
+document.body.dataset.step = 0;
+paint();
+</script>
+</body>
+</html>
