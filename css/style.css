@@ -487,31 +487,6 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   .about-portrait { display: none; }
 }
 
-/* ============ Mobile-only About hero (video background + text overlay) ============ */
-.mobile-hero-video { display: none; }
-@media (max-width: 640px) {
-  .mobile-hero-video {
-    display: block;
-    position: relative;
-    width: 100%;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    background: var(--blue);
-  }
-  .mobile-hero-video-el {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-  }
-  .mobile-hero-overlay {
-    position: absolute; inset: auto 0 0 0;
-    padding: 1.5rem 1.5rem 1.75rem;
-    background: linear-gradient(to top, rgba(8,20,52,0.85) 0%, rgba(8,20,52,0.35) 60%, transparent 100%);
-  }
-  .mobile-hero-overlay .eyebrow { color: var(--sky); }
-  .mobile-hero-overlay .eyebrow::before { background: var(--red); }
-  .mobile-hero-overlay h1 { color: var(--paper); margin-bottom: 0; }
-  .desktop-about-heading { display: none; }
-}
-
 .about-copy { max-width: 68ch; }
 .about-copy h3 { margin-top: 2rem; }
 .about-copy ul { margin: 0 0 1.5rem 1.25rem; padding: 0; }
