@@ -3,6 +3,18 @@
   const section = document.querySelector(".about-layout");
   if (!video || !section) return;
 
+  const PHONE_MAX_WIDTH = 640; // must match the breakpoint in css/style.css
+
+  if (window.innerWidth <= PHONE_MAX_WIDTH) {
+    // Don't even let the browser fetch the video on phones — it's hidden
+    // there anyway (see .about-portrait { display: none } in style.css),
+    // so there's no reason to spend the visitor's mobile data on it.
+    video.querySelectorAll("source").forEach(function (s) { s.removeAttribute("src"); });
+    video.removeAttribute("poster");
+    video.load();
+    return;
+  }
+
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (prefersReducedMotion) return; // leave it on the poster frame, no scroll-linked motion
 

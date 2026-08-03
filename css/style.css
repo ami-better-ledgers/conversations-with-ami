@@ -459,9 +459,13 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   width: 100%; height: 100%; object-fit: cover; display: block;
   background: var(--sky-tint);
 }
-@media (max-width: 860px) {
+@media (min-width: 641px) and (max-width: 860px) {
   .about-layout { grid-template-columns: 1fr; }
   .about-portrait { position: relative; top: 0; max-width: 220px; margin: 0 auto 1rem; }
+}
+@media (max-width: 640px) {
+  .about-layout { grid-template-columns: 1fr; }
+  .about-portrait { display: none; }
 }
 
 .about-copy { max-width: 68ch; }
