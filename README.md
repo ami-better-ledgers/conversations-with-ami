@@ -131,21 +131,20 @@ as long as it's uploaded to the same YouTube channel.
 
 ## File map (for reference — you don't need to touch these)
 ```
-index.html                  Home page (latest episode, shorts, newsletter, listen-everywhere, guest form placeholder)
+index.html                  Home page (latest episode, Instagram, newsletter, listen-everywhere, apply CTA)
 about.html                   Full About page
 podcast.html                 Episode list
-shorts.html                  All YouTube Shorts
 newsletter.html              Newsletter archive
 css/tokens.css                Colors, type, spacing
 css/style.css                 All layout & component styles
-js/config.js                  Kit.com sign-up form snippet lives here
+js/config.js                  Kit.com sign-up form snippet + Instagram post URLs live here
 js/newsletter-embed.js        Injects the Kit sign-up form into every page
 js/newsletter-archive.js      Fetches past issues from Kit and renders them
-js/home.js                    Homepage: latest episode, shorts row, latest issue
-js/shorts.js                  Renders the full Shorts page
+js/home.js                    Homepage: latest episode, Instagram embeds, latest issue
+js/apply-modal.js             Wires up the "Apply to be on the show" popup
 js/nav.js                     Mobile menu behavior
 js/episodes.js                Renders episodes from the RSS feed (with show notes toggle)
-js/youtube-map.js             Matches episodes/Shorts to YouTube videos by title
+js/youtube-map.js             Matches episodes to YouTube videos by title (for the Watch button)
 functions/api/episodes.js     Server-side code that fetches your RSS feed
 functions/api/newsletter.js   Server-side code that fetches your public Kit issues
 functions/api/youtube.js      Server-side code that fetches your YouTube channel's videos + durations
@@ -158,7 +157,11 @@ assets/platform-badges/       Listen-everywhere badges (Apple, Spotify, YouTube,
 - Nothing else pending — the guest application form is now live (see below).
 
 ## What's new in this update
+- **Shorts page removed** — replaced with an Instagram embed section on the Home page.
+- **Instagram embed** — add post/reel URLs to `INSTAGRAM_POST_URLS` in `js/config.js` (see the comment there for exactly how). Nothing shows until you add at least one URL.
+- **Cache-busting** — every CSS/JS file is now loaded with a `?v=2` version tag. When I send updates in the future, I'll bump this number, which forces browsers (and Cloudflare's cache) to grab the new version instead of an old cached copy. This should stop the "I uploaded it but nothing changed" issue we kept running into.
+
+## What's new in this update
 - **Guest application** — the "Apply to be on the show" button (top right, every page) opens your form in a popup. The form itself lives at `apply/index.html` and already has its own submission endpoint wired in from the file you sent — nothing else to configure.
-- **Shorts / extra clips** — now determined by title matching against your RSS feed (any channel video that isn't a full episode) rather than by video length, so it stays accurate regardless of how long a given clip is.
 - **Footer** — now shows both "Follow" (social platforms) and "Listen on" (podcast platforms), on every page.
-- **Browser tab icon (favicon)** — now just the profile silhouette in white, cropped from your logo.
+- **Browser tab icon (favicon)** — the profile silhouette, switching automatically between black and white based on the visitor's light/dark browser theme.

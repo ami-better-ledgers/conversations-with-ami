@@ -33,4 +33,11 @@ window.SITE_CONFIG = {
      Used only for the canonical link tags / share previews. e.g.
      "https://conversationswithami.com"                                    */
   SITE_URL: "",
+  /* 4. FACEBOOK PAGE (Home page embed)
+     ------------------------------------
+     Uses Facebook's official Page Plugin — no API key, no app review,
+     no manual post-URL updates. It just shows your Page's latest posts
+     automatically. Already pointed at your Page below; change this if
+     the Page URL ever changes.                                        */
+  FACEBOOK_PAGE_URL: "https://www.facebook.com/conversationswithami/",
 };

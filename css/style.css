@@ -260,46 +260,9 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   .episode-actions { flex-direction: row; grid-column: 2; justify-self: start; margin-top: 0.5rem; }
 }
 
-/* ============ Shorts grid ============ */
-.shorts-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 1.5rem;
-}
-.shorts-card {
-  display: flex; flex-direction: column; gap: 0.6rem;
-}
-.shorts-frame {
-  position: relative;
-  aspect-ratio: 9 / 16;
-  background: var(--ink);
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-}
-.shorts-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.shorts-frame iframe { width: 100%; height: 100%; border: 0; }
-.shorts-play-overlay {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(16,16,19,0.2);
-  transition: background 0.15s ease;
-}
-.shorts-frame:hover .shorts-play-overlay { background: rgba(16,16,19,0.4); }
-.shorts-play-overlay span {
-  width: 52px; height: 52px; border-radius: 50%;
-  background: rgba(253,253,252,0.92); color: var(--ink);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.1rem;
-}
-.shorts-title {
-  font-family: var(--font-label); font-size: 0.78rem;
-  color: var(--ink-soft); line-height: 1.4; margin: 0;
-}
-.shorts-row {
-  display: flex; gap: 1.25rem; overflow-x: auto; padding-bottom: 0.75rem;
-  scroll-snap-type: x proximity;
-}
-.shorts-row .shorts-card { flex: 0 0 150px; scroll-snap-align: start; }
+/* ============ Social feed embed (Home page) ============ */
+.social-feed-embed { display: flex; justify-content: flex-start; }
+.social-feed-embed iframe { max-width: 100%; }
 
 /* ============ Platform badges ============ */
 .platform-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; }

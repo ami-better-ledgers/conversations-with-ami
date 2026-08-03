@@ -84,53 +84,19 @@
       });
   }
 
-  /* ---------- Shorts carousel ---------- */
-  const shortsRow = document.getElementById("home-shorts-row");
-  if (shortsRow && typeof fetchYouTubeVideos === "function") {
-    const videosPromise = fetchYouTubeVideos();
-    const episodesPromise = fetch("/api/episodes")
-      .then(function (res) { return res.json(); })
-      .then(function (data) { return data.episodes || []; })
-      .catch(function () { return []; });
+  /* ---------- Facebook Page feed ---------- */
+  const fbEl = document.getElementById("home-facebook");
+  if (fbEl) {
+    const pageUrl = (window.SITE_CONFIG && window.SITE_CONFIG.FACEBOOK_PAGE_URL) || "";
 
-    Promise.all([videosPromise, episodesPromise])
-      .then(function (results) {
-        const videos = results[0];
-        const episodes = results[1];
-        const extras = typeof filterNonEpisodeVideos === "function"
-          ? filterNonEpisodeVideos(videos, episodes)
-          : videos;
-        const shorts = extras
-          .sort(function (a, b) { return new Date(b.publishedAt) - new Date(a.publishedAt); })
-          .slice(0, 8);
-
-        if (!shorts.length) {
-          shortsRow.innerHTML = `<p class="state-msg">No Shorts yet.</p>`;
-          return;
-        }
-
-        shortsRow.innerHTML = shorts
-          .map(function (v) {
-            return `
-              <div class="shorts-card">
-                <div class="shorts-frame" data-yt="${v.videoId}">
-                  <img src="https://img.youtube.com/vi/${v.videoId}/hqdefault.jpg" alt="" loading="lazy">
-                  <div class="shorts-play-overlay"><span>▶</span></div>
-                </div>
-              </div>`;
-          })
-          .join("");
-
-        shortsRow.querySelectorAll(".shorts-frame").forEach(function (frame) {
-          frame.addEventListener("click", function () {
-            const videoId = frame.dataset.yt;
-            frame.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" title="YouTube short" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-          }, { once: true });
-        });
-      })
-      .catch(function () {
-        shortsRow.innerHTML = `<p class="state-msg">Couldn't load Shorts right now.</p>`;
-      });
+    if (!pageUrl) {
+      fbEl.innerHTML = `<p class="state-msg">Add FACEBOOK_PAGE_URL in js/config.js to show the feed here.</p>`;
+    } else {
+      const src = "https://www.facebook.com/plugins/page.php?href="
+        + encodeURIComponent(pageUrl)
+        + "&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId";
+      fbEl.innerHTML = `<iframe src="${src}" width="500" height="600" style="border:none;overflow:hidden;max-width:100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="lazy"></iframe>`;
+    }
   }
 
   /* ---------- Latest newsletter issue ---------- */
