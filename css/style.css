@@ -228,6 +228,19 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   padding: 0.5rem 0; cursor: pointer;
 }
 .episode-notes-toggle:hover { color: var(--blue-deep); text-decoration: underline; }
+.episode-notes-full {
+  font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;
+}
+.episode-notes-full p { margin: 0 0 0.9em; }
+.episode-notes-full ul, .episode-notes-full ol { margin: 0 0 1em 1.25rem; padding: 0; }
+.episode-notes-full li { margin-bottom: 0.4em; }
+.episode-notes-full h1, .episode-notes-full h2, .episode-notes-full h3, .episode-notes-full h4 {
+  font-family: var(--font-body); font-size: 0.95rem; font-weight: 700;
+  color: var(--ink); margin: 1.1em 0 0.4em;
+}
+.episode-notes-full a { color: var(--blue); text-decoration: underline; }
+.episode-notes-full a:hover { color: var(--blue-deep); }
+.episode-notes-full strong { color: var(--ink); }
 .episode-play {
   display: inline-flex; align-items: center; justify-content: center;
   width: 46px; height: 46px; border-radius: 50%;
@@ -260,9 +273,11 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   .episode-actions { flex-direction: row; grid-column: 2; justify-self: start; margin-top: 0.5rem; }
 }
 
-/* ============ Social feed embed (Home page) ============ */
-.social-feed-embed { display: flex; justify-content: flex-start; }
-.social-feed-embed iframe { max-width: 100%; }
+/* ============ Follow-us CTA row (Home page) ============ */
+.follow-cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; margin-top: 1.5rem; }
+.follow-cta-row a { display: inline-flex; align-items: center; opacity: 0.85; transition: opacity 0.15s ease, transform 0.15s ease; }
+.follow-cta-row a:hover { opacity: 1; transform: translateY(-2px); }
+.follow-cta-row img { height: 34px; width: auto; display: block; }
 
 /* ============ Platform badges ============ */
 .platform-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; }

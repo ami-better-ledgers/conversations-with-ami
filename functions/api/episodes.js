@@ -56,11 +56,18 @@ function parseRssItems(xml) {
   const itemBlocks = xml.match(/<item\b[\s\S]*?<\/item>/gi) || [];
 
   for (const block of itemBlocks) {
+    // Order matters here: decode entities FIRST, since this feed embeds
+    // real HTML (lists, bold text) as HTML-encoded entities inside the
+    // XML. Stripping tags before decoding let encoded tags slip through
+    // un-stripped once decoded — this fixes that.
+    const rawNotes = decodeEntities(
+      stripCdata(matchTag(block, "itunes:summary") || matchTag(block, "description"))
+    );
+
     items.push({
       title: decodeEntities(stripCdata(matchTag(block, "title"))),
-      description: decodeEntities(
-        stripHtml(stripCdata(matchTag(block, "itunes:summary") || matchTag(block, "description")))
-      ),
+      description: truncatePlainText(stripAllTags(rawNotes), 220),
+      content: sanitizeHtml(rawNotes),
       pubDate: matchTag(block, "pubDate"),
       link: decodeEntities(matchTag(block, "link")),
       duration: matchTag(block, "itunes:duration"),
@@ -90,8 +97,30 @@ function stripCdata(str) {
   return m ? m[1] : str;
 }
 
-function stripHtml(str) {
+// Full plain-text strip, used only for the short teaser text.
+function stripAllTags(str) {
   return str.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function truncatePlainText(str, maxLen) {
+  if (str.length <= maxLen) return str;
+  return str.slice(0, maxLen).trim() + "…";
+}
+
+// Light allow-list sanitizer for the full show-notes HTML: strips
+// anything that could execute code, keeps normal formatting tags
+// (lists, bold, links, headings, line breaks) intact.
+function sanitizeHtml(html) {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<iframe[\s\S]*?<\/iframe>/gi, "")
+    .replace(/<object[\s\S]*?<\/object>/gi, "")
+    .replace(/<embed[^>]*>/gi, "")
+    .replace(/ on[a-z]+="[^"]*"/gi, "")
+    .replace(/ on[a-z]+='[^']*'/gi, "")
+    .replace(/href="javascript:[^"]*"/gi, 'href="#"')
+    .replace(/href='javascript:[^']*'/gi, "href='#'");
 }
 
 function decodeEntities(str) {

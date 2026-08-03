@@ -30,8 +30,11 @@
         const ep = result.data.episodes[0];
         const audio = ep.audioUrl || ep.link || "";
         const youtubeId = matchYouTube(ep);
-        const fullDesc = ep.description || "";
-        const shortDesc = fullDesc.slice(0, 200) + (fullDesc.length > 200 ? "…" : "");
+        const teaser = ep.description || "";
+        const fullNotes = ep.content || "";
+        const notesToggle = fullNotes && fullNotes.length > teaser.length
+          ? `<button type="button" class="episode-notes-toggle">See more</button>`
+          : "";
 
         epEl.innerHTML = `
           <article class="episode">
@@ -39,7 +42,9 @@
             <div class="episode-body">
               <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
               <h3>${ep.title || "Untitled episode"}</h3>
-              <p class="episode-desc">${shortDesc}</p>
+              <p class="episode-desc">${teaser}</p>
+              <div class="episode-notes-full">${fullNotes}</div>
+              ${notesToggle}
               <div class="episode-embed" hidden></div>
             </div>
             <div class="episode-actions">
@@ -47,6 +52,21 @@
               ${youtubeId ? `<button type="button" class="episode-watch" data-yt="${youtubeId}" aria-expanded="false">Watch</button>` : ""}
             </div>
           </article>`;
+
+        const notesFull = epEl.querySelector(".episode-notes-full");
+        const notesBtn = epEl.querySelector(".episode-notes-toggle");
+        const teaserEl = epEl.querySelector(".episode-desc");
+        if (notesFull) notesFull.style.display = "none";
+        if (notesBtn) {
+          notesBtn.addEventListener("click", function () {
+            const isOpen = notesFull.style.display !== "none";
+            if (isOpen) {
+              notesFull.style.display = "none"; teaserEl.style.display = ""; notesBtn.textContent = "See more";
+            } else {
+              notesFull.style.display = "block"; teaserEl.style.display = "none"; notesBtn.textContent = "See less";
+            }
+          });
+        }
 
         const playBtn = epEl.querySelector(".episode-play");
         const watchBtn = epEl.querySelector(".episode-watch");
@@ -82,21 +102,6 @@
       .catch(function () {
         epEl.innerHTML = `<p class="state-msg">Couldn't load the latest episode right now.</p>`;
       });
-  }
-
-  /* ---------- Facebook Page feed ---------- */
-  const fbEl = document.getElementById("home-facebook");
-  if (fbEl) {
-    const pageUrl = (window.SITE_CONFIG && window.SITE_CONFIG.FACEBOOK_PAGE_URL) || "";
-
-    if (!pageUrl) {
-      fbEl.innerHTML = `<p class="state-msg">Add FACEBOOK_PAGE_URL in js/config.js to show the feed here.</p>`;
-    } else {
-      const src = "https://www.facebook.com/plugins/page.php?href="
-        + encodeURIComponent(pageUrl)
-        + "&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true&appId";
-      fbEl.innerHTML = `<iframe src="${src}" width="500" height="600" style="border:none;overflow:hidden;max-width:100%;" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" loading="lazy"></iframe>`;
-    }
   }
 
   /* ---------- Latest newsletter issue ---------- */
