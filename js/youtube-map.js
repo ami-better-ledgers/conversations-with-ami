@@ -46,3 +46,23 @@ function buildYouTubeMatcher(videos) {
     return null;
   };
 }
+
+/* Filters the channel's videos down to whatever ISN'T a full podcast
+   episode — i.e. Shorts and other extra clips. Works by excluding any
+   video whose title matches (or closely matches) an episode's title,
+   the same logic buildYouTubeMatcher uses in reverse. This means it
+   doesn't rely on video length, so it keeps working correctly even if
+   YouTube changes what counts as a "Short." */
+function filterNonEpisodeVideos(videos, episodes) {
+  const episodeNorms = (episodes || []).map(function (ep) { return normalizeTitle(ep.title); });
+  const episodeGuestParts = (episodes || [])
+    .filter(function (ep) { return ep.title && ep.title.includes("|"); })
+    .map(function (ep) { return normalizeTitle(ep.title.split("|").pop()); });
+
+  return (videos || []).filter(function (v) {
+    const vNorm = normalizeTitle(v.title);
+    if (episodeNorms.includes(vNorm)) return false;
+    const guestMatch = episodeGuestParts.some(function (g) { return g && vNorm.includes(g); });
+    return !guestMatch;
+  });
+}

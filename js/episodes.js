@@ -35,13 +35,20 @@
           : "";
         const hasEmbedRow = youtubeId || audio;
         const embedRow = hasEmbedRow ? `<div class="episode-embed" hidden></div>` : "";
+        const fullDesc = ep.description || "";
+        const shortDesc = fullDesc.slice(0, 180) + (fullDesc.length > 180 ? "…" : "");
+        const notesToggle = fullDesc.length > 180
+          ? `<button type="button" class="episode-notes-toggle">Show full show notes</button>`
+          : "";
         return `
           <article class="episode">
             <div class="episode-num">${String(num).padStart(2, "0")}</div>
             <div class="episode-body">
               <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
               <h3>${ep.title || "Untitled episode"}</h3>
-              <p class="episode-desc">${(ep.description || "").slice(0, 180)}${ep.description && ep.description.length > 180 ? "…" : ""}</p>
+              <p class="episode-desc episode-desc-short">${shortDesc}</p>
+              <p class="episode-desc episode-desc-full" hidden>${fullDesc}</p>
+              ${notesToggle}
               ${embedRow}
             </div>
             <div class="episode-actions">
@@ -51,6 +58,18 @@
           </article>`;
       })
       .join("");
+
+    listEl.querySelectorAll(".episode-notes-toggle").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        const body = btn.closest(".episode-body");
+        const short = body.querySelector(".episode-desc-short");
+        const full = body.querySelector(".episode-desc-full");
+        const isFull = !full.hidden;
+        short.hidden = isFull;
+        full.hidden = !isFull;
+        btn.textContent = isFull ? "Show full show notes" : "Show less";
+      });
+    });
 
     listEl.querySelectorAll(".episode-play").forEach(function (btn) {
       btn.addEventListener("click", function () {

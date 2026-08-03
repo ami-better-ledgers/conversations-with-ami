@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Newsletter Archive — Still Building with Ami</title>
-<meta name="description" content="Read past issues of Still Building with Ami, the newsletter companion to Conversations with Ami, and sign up for future ones.">
+<title>Shorts — Conversations with Ami</title>
+<meta name="description" content="Quick clips from Conversations with Ami — all our YouTube Shorts in one place.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -23,8 +23,8 @@
     <li class="nav-item"><a href="index.html">Home</a></li>
     <li class="nav-item"><a href="about.html">About</a></li>
     <li class="nav-item"><a href="podcast.html">The Podcast</a></li>
-    <li class="nav-item"><a href="shorts.html">Shorts</a></li>
-    <li class="nav-item"><a href="newsletter.html" aria-current="page">Newsletter</a></li>
+    <li class="nav-item"><a href="shorts.html" aria-current="page">Shorts</a></li>
+    <li class="nav-item"><a href="newsletter.html">Newsletter</a></li>
     <li class="nav-cta-stack">
       <button type="button" class="nav-cta nav-cta-secondary" id="apply-modal-trigger">Apply to be on the show</button>
       <a class="nav-cta" href="#signup">Join the newsletter</a>
@@ -35,24 +35,23 @@
 <main id="main">
 
   <section class="wrap section-tight">
-    <p class="eyebrow">Still Building with Ami</p>
-    <h1>Read past issues.</h1>
-    <p class="lede">Every issue of the newsletter, archived here. Read a few, see if it's for you, then sign up below for the next one.</p>
+    <p class="eyebrow">Shorts</p>
+    <h1>Quick hits.</h1>
+    <p class="lede">Bite-sized clips from the show, pulled straight from YouTube — tap any one to play.</p>
   </section>
 
   <section class="wrap">
-    <div id="archive-grid" class="archive-grid" aria-live="polite">
-      <p class="state-msg">Loading past issues…</p>
+    <div id="shorts-grid" class="shorts-grid" aria-live="polite">
+      <p class="state-msg">Loading Shorts…</p>
     </div>
-    <div id="newsletter-reader" class="newsletter-reader about-copy" hidden></div>
   </section>
 
   <section class="wrap" id="signup">
     <div class="signup-block">
       <div>
-        <p class="eyebrow">Join in</p>
-        <h2>Get the next issue</h2>
-        <p class="lede">No spam, no filler — just the newsletter, whenever there's something worth sending.</p>
+        <p class="eyebrow">Still Building with Ami</p>
+        <h2>Want the full conversation?</h2>
+        <p class="lede">Shorts are just a taste — the newsletter goes deeper. Get it in your inbox.</p>
       </div>
       <div class="signup-form-slot"></div>
     </div>
@@ -107,7 +106,8 @@
 <script src="js/nav.js"></script>
 <script src="js/apply-modal.js"></script>
 <script src="js/newsletter-embed.js"></script>
-<script src="js/newsletter-archive.js"></script>
+<script src="js/youtube-map.js"></script>
+<script src="js/shorts.js"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 
 <div class="apply-modal-overlay" id="apply-modal-overlay" hidden>

@@ -1,8 +1,10 @@
 // Cloudflare Pages Function — served at /api/youtube
 //
 // Looks up every video on the Conversations with Ami YouTube channel and
-// returns {title, videoId} pairs, so the Podcast page can match each RSS
-// episode to its YouTube video by title and offer a "Watch" embed.
+// returns {title, videoId, publishedAt} for each. The client (js/youtube-map.js)
+// decides which ones are full episodes vs. Shorts/extra clips, by comparing
+// titles against the podcast RSS feed — not by video length, since YouTube
+// doesn't reliably expose "is this a Short" via the public API.
 //
 // SET THIS UP IN CLOUDFLARE:
 //   Pages project > Settings > Environment variables
@@ -48,6 +50,7 @@ export async function onRequestGet(context) {
         videos.push({
           title: item.snippet.title,
           videoId: item.snippet.resourceId.videoId,
+          publishedAt: item.snippet.publishedAt,
         });
       });
 
