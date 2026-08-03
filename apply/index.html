@@ -220,6 +220,12 @@ button:focus-visible{outline:2px solid var(--blue); outline-offset:3px}
 .legal a{color:var(--blue-soft)}
 .grecaptcha-badge{visibility:hidden}
 
+/* The pitch is for people deciding whether to apply. Once they've started,
+   it's just something to scroll past. */
+body:not([data-step="0"]) .band,
+body:not([data-step="0"]) .intro{display:none}
+body:not([data-step="0"]) .wrap{padding-top:22px}
+
 .hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
 
 @media (max-width:560px){
@@ -454,7 +460,7 @@ button:focus-visible{outline:2px solid var(--blue); outline-offset:3px}
 /* ─────────────────────────────────────────────────────────────
    1. Paste your Apps Script web app URL here (it ends in /exec)
    ───────────────────────────────────────────────────────────── */
-const SCRIPT_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz_smYavEkdvvxyZzG3mTLcYw2aj-EaeEA511mwe6WaBc3uCmk5Cu2r958lQNbcDOsU/exec";
 
 /* 2. Optional: reCAPTCHA v3 SITE key (the public one). The secret
       key goes in the Apps Script config, never here. Leave this
@@ -509,12 +515,24 @@ function paint(){
   nextBtn.textContent = i === steps.length - 1 ? 'Send application' : 'Continue';
 }
 
+const sheetEl = document.querySelector('.sheet');
+const scrubberEl = document.querySelector('.scrubber');
+
+/* Land at the top of the form card, just under the sticky progress bar —
+   never back up at the banner. */
+function scrollToForm(){
+  const y = sheetEl.getBoundingClientRect().top + window.scrollY
+            - scrubberEl.offsetHeight - 14;
+  window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+}
+
 function show(n){
   steps[i].classList.remove('active');
   i = n;
   steps[i].classList.add('active');
+  document.body.dataset.step = i;
   paint();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToForm();
   const first = steps[i].querySelector('input, textarea');
   if (first && window.innerWidth > 560) first.focus({ preventScroll: true });
 }
@@ -582,7 +600,7 @@ function finish(screenId){
   dotEl.style.left = '100%';
   tickEls.forEach(t => t.dataset.state = 'done');
   document.getElementById(screenId).classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  scrollToForm();
 }
 
 /* ── Submit ──────────────────────────────────────────────────── */
@@ -661,6 +679,7 @@ function sendError(text){
   msg.textContent = text;
 }
 
+document.body.dataset.step = 0;
 paint();
 </script>
 </body>
