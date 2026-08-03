@@ -19,6 +19,7 @@
   if (prefersReducedMotion) return; // leave it on the poster frame, no scroll-linked motion
 
   const STICKY_OFFSET = 110; // must match .about-portrait { top: ... } in css/style.css
+  const portraitEl = document.querySelector(".about-portrait");
   let duration = 0;
   let ticking = false;
 
@@ -26,12 +27,22 @@
     duration = video.duration || 0;
   });
 
+  function getScrollableDistance() {
+    // A sticky element stays pinned until the bottom of its container
+    // catches up to it — so the real scroll range it's active for is the
+    // section height minus the sticky element's OWN height (not the
+    // viewport height, which was the bug: it made the video reach its
+    // last frame before the sticky pin actually released).
+    const stickyHeight = portraitEl ? portraitEl.offsetHeight : 0;
+    return Math.max(section.offsetHeight - stickyHeight, 1);
+  }
+
   function updateFrame() {
     ticking = false;
     if (!duration) return;
 
     const rect = section.getBoundingClientRect();
-    const scrollableDistance = Math.max(section.offsetHeight - window.innerHeight, 1);
+    const scrollableDistance = getScrollableDistance();
     const scrolledIntoSection = STICKY_OFFSET - rect.top;
     const progress = Math.min(Math.max(scrolledIntoSection / scrollableDistance, 0), 1);
 

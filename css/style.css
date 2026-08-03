@@ -13,7 +13,7 @@
   position: sticky; top: 0; z-index: 50;
   display: flex; align-items: center; justify-content: space-between;
   gap: 1.5rem;
-  padding: 1.35rem clamp(1.25rem, 4vw, 3rem);
+  padding: 1.35rem clamp(1.5rem, 4vw, 3rem);
   background: rgba(253,253,252,0.9);
   backdrop-filter: blur(8px);
   border-bottom: var(--border);
@@ -97,6 +97,7 @@
   .nav-links .nav-item,
   .nav-links .nav-cta-stack { display: none; }
   .nav-toggle {
+    order: 3;
     display: inline-flex; align-items: center; justify-content: center;
     width: 40px; height: 40px; border: var(--border); background: none;
     font-family: var(--font-label); font-weight: 700; cursor: pointer;
@@ -104,7 +105,7 @@
   .site-nav.is-open .nav-links {
     position: absolute; top: 100%; left: 0; right: 0;
     background: var(--paper); border-bottom: var(--border);
-    flex-direction: column; align-items: stretch; padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+    flex-direction: column; align-items: stretch; padding: 1.25rem clamp(1.5rem, 4vw, 3rem);
     gap: 1rem;
   }
   .site-nav.is-open .nav-links .nav-item { display: block; }
@@ -112,7 +113,7 @@
 }
 
 /* ============ Layout shells ============ */
-.wrap { max-width: var(--content-max); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 3rem); }
+.wrap { max-width: var(--content-max); margin: 0 auto; padding: 0 clamp(1.5rem, 4vw, 3rem); }
 section { padding: clamp(3rem, 7vw, 6rem) 0; }
 .section-tight { padding: clamp(2rem, 4vw, 3.5rem) 0; }
 
