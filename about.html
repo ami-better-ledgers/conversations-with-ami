@@ -8,8 +8,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<link rel="stylesheet" href="css/tokens.css?v=12">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/tokens.css?v=13">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -33,7 +33,18 @@
 
 <main id="main">
 
-  <section class="wrap section-tight">
+  <section class="mobile-hero-video" aria-hidden="true">
+    <video class="mobile-hero-video-el" muted autoplay loop playsinline preload="auto" poster="assets/photos/ami-portrait-poster.jpg?v=13">
+      <source src="assets/photos/ami-portrait-scroll.webm?v=13" type="video/webm">
+      <source src="assets/photos/ami-portrait-scroll.mp4?v=13" type="video/mp4">
+    </video>
+    <div class="mobile-hero-overlay">
+      <p class="eyebrow">About the show</p>
+      <h1>About Conversations with Ami</h1>
+    </div>
+  </section>
+
+  <section class="wrap section-tight desktop-about-heading">
     <p class="eyebrow">About the show</p>
     <h1>About Conversations with Ami</h1>
   </section>
@@ -42,9 +53,9 @@
     <div class="about-portrait">
       <div class="portrait-blob" aria-hidden="true"></div>
       <div class="portrait-frame">
-        <video class="portrait-photo" id="about-portrait-video" muted playsinline preload="auto" poster="assets/photos/ami-portrait-poster.jpg?v=12">
-          <source src="assets/photos/ami-portrait-scroll.webm?v=12" type="video/webm">
-          <source src="assets/photos/ami-portrait-scroll.mp4?v=12" type="video/mp4">
+        <video class="portrait-photo" id="about-portrait-video" muted playsinline preload="auto" poster="assets/photos/ami-portrait-poster.jpg?v=13">
+          <source src="assets/photos/ami-portrait-scroll.webm?v=13" type="video/webm">
+          <source src="assets/photos/ami-portrait-scroll.mp4?v=13" type="video/mp4">
         </video>
       </div>
     </div>
@@ -151,11 +162,11 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=12"></script>
-<script src="js/nav.js?v=12"></script>
-<script src="js/apply-modal.js?v=12"></script>
-<script src="js/scroll-video.js?v=12"></script>
-<script src="js/newsletter-embed.js?v=12"></script>
+<script src="js/config.js?v=13"></script>
+<script src="js/nav.js?v=13"></script>
+<script src="js/apply-modal.js?v=13"></script>
+<script src="js/scroll-video.js?v=13"></script>
+<script src="js/newsletter-embed.js?v=13"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 
 <div class="apply-modal-overlay" id="apply-modal-overlay" hidden>
