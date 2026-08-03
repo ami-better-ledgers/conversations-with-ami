@@ -25,6 +25,7 @@
 
   video.addEventListener("loadedmetadata", function () {
     duration = video.duration || 0;
+    updateFrame(); // sync immediately — don't wait for the next scroll event
   });
 
   function getScrollableDistance() {
