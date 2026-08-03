@@ -8,8 +8,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
-<link rel="stylesheet" href="css/tokens.css?v=4">
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/tokens.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -38,7 +38,17 @@
     <h1>About Conversations with Ami</h1>
   </section>
 
-  <section class="wrap about-copy">
+  <section class="wrap about-layout">
+    <div class="about-portrait">
+      <div class="portrait-blob" aria-hidden="true"></div>
+      <div class="portrait-frame">
+        <video class="portrait-photo" id="about-portrait-video" muted playsinline preload="auto" poster="assets/photos/ami-portrait-poster.jpg">
+          <source src="assets/photos/ami-portrait-scroll.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div class="about-copy">
 
     <p>I'm Ami Morgenstern, and I've always had a knack for business.</p>
 
@@ -82,6 +92,7 @@
     <p>If an episode resonates, or you're building something and want to talk it through, I'm easy to find. Connect with me on <a href="https://www.linkedin.com/in/amrom-morgenstern/" target="_blank" rel="noopener">LinkedIn</a> — I read what comes in. Or, if you want to talk through your bookkeeping, back-office, or offshore staffing setup directly, <a href="https://betterledgersinc.pipedrive.com/scheduler/1erBPPF8/bookkeeping-consultation" target="_blank" rel="noopener">book a free consultation</a>.</p>
 
     <p>New episodes drop regularly. Come for the guest, stay for the one thing you didn't know you needed to know yet.</p>
+    </div>
   </section>
 
   <section class="wrap footer-signup-anchor" id="signup">
@@ -139,10 +150,11 @@
   </div>
 </footer>
 
-<script src="js/config.js?v=4"></script>
-<script src="js/nav.js?v=4"></script>
-<script src="js/apply-modal.js?v=4"></script>
-<script src="js/newsletter-embed.js?v=4"></script>
+<script src="js/config.js?v=6"></script>
+<script src="js/nav.js?v=6"></script>
+<script src="js/apply-modal.js?v=6"></script>
+<script src="js/scroll-video.js?v=6"></script>
+<script src="js/newsletter-embed.js?v=6"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 
 <div class="apply-modal-overlay" id="apply-modal-overlay" hidden>
