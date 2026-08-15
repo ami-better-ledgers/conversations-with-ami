@@ -129,6 +129,47 @@ as long as it's uploaded to the same YouTube channel.
 - [ ] The Kit API key (5-minute setup above) — this is the only remaining piece
 - [ ] Sending your first Public-marked newsletter issue, whenever ready
 
+## Featured companies carousel: how to add new ones (no redeploy needed)
+
+This is set up so that adding a new company logo never requires touching
+GitHub or Cloudflare again after the one-time setup below — you just add a
+row to a spreadsheet, and it shows up on the site within about 10 minutes.
+
+### One-time setup
+
+1. Create a new Google Sheet with exactly these three column headers in
+   row 1: `Company Name`, `Website URL`, `Logo URL`
+2. Add one row per company below that, e.g.:
+   | Company Name | Website URL | Logo URL |
+   |---|---|---|
+   | Acme Co | https://acme.com | https://acme.com/logo.png |
+3. **File → Share → Publish to web.** In the dialog, set the second
+   dropdown to **CSV**, then click **Publish**. Copy the URL it gives you.
+4. In Cloudflare Pages: your project → **Settings → Environment variables**
+   → **Add variable**:
+   - Name: `COMPANIES_SHEET_CSV_URL`
+   - Value: the CSV URL you just copied
+   - Type: **Text** (this one isn't a secret — it's already public once published)
+   - Apply to both **Production** and **Preview**
+5. Save, and redeploy once (Deployments tab → Retry deployment) so the
+   variable takes effect. This is the *only* deploy you'll ever need for this.
+
+### Every time after that — adding a new company
+
+1. Open the Google Sheet
+2. Add a new row: company name, their website URL, and a direct link to
+   their logo image (right-click their logo on their own site → "Copy
+   image address" is usually the fastest way to get this)
+3. That's it — no upload, no GitHub, no Cloudflare. It appears on the
+   Home page automatically the next time the page's cache refreshes
+   (about 10 minutes).
+
+If a logo ever looks the wrong size, it's because the source image itself
+is unusually large or oddly cropped — the carousel automatically scales
+every logo to the same height, but very wide or very tall source logos
+may look different from the others. A clean, tightly-cropped logo file
+looks best.
+
 ## File map (for reference — you don't need to touch these)
 ```
 index.html                  Home page (latest episode, Instagram, newsletter, listen-everywhere, apply CTA)
@@ -148,6 +189,8 @@ js/youtube-map.js             Matches episodes to YouTube videos by title (for t
 functions/api/episodes.js     Server-side code that fetches your RSS feed
 functions/api/newsletter.js   Server-side code that fetches your public Kit issues
 functions/api/youtube.js      Server-side code that fetches your YouTube channel's videos + durations
+functions/api/companies.js    Server-side code that fetches the featured-companies Google Sheet
+js/companies-carousel.js      Renders the featured-companies logo carousel
 assets/logos/                 Your brand logo files
 assets/social-icons/          Follow-us icons (YouTube, Instagram, Facebook, LinkedIn, TikTok, Threads, X)
 assets/platform-badges/       Listen-everywhere badges (Apple, Spotify, YouTube, YouTube Music, Amazon, iHeart, Deezer)

@@ -283,6 +283,33 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 .follow-cta-row a:hover { opacity: 1; transform: translateY(-2px); }
 .follow-cta-row img { height: 34px; width: auto; display: block; }
 
+/* ============ Featured companies carousel (Home page) ============ */
+.companies-carousel {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+.companies-track {
+  display: flex; align-items: center; gap: clamp(2rem, 5vw, 3.5rem);
+  width: max-content;
+  animation: companies-scroll 32s linear infinite;
+}
+.companies-carousel:hover .companies-track { animation-play-state: paused; }
+.company-logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 46px;
+  opacity: 0.75; transition: opacity 0.15s ease;
+  flex: none;
+}
+.company-logo:hover { opacity: 1; }
+.company-logo img { height: 100%; width: auto; max-width: 160px; object-fit: contain; display: block; }
+@keyframes companies-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .companies-track { animation: none; overflow-x: auto; }
+}
 /* ============ Platform badges ============ */
 .platform-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 1.25rem; }
 .platform-badges a {
