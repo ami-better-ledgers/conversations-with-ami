@@ -5,17 +5,21 @@
 // instead of only seeing the JS-rendered list on /podcast.
 //
 // Episodes are matched to curated write-ups in content/episodes.json by
-// itunes:episode number. An episode with no curated entry still gets a
-// page — built from the RSS feed alone — so every episode is indexable
-// from day one; add a content/episodes.json entry whenever you want the
-// richer guest bio / summary / cross-links for a given episode.
+// itunes:episode number — that file is for hand-written entries only
+// (see the two Bernard Reisz episodes for an example), and is entirely
+// optional. Any episode without one is instead sent to the Claude API
+// (see functions/_lib/ai-summary.js) to generate the same fields
+// automatically, cached so it only runs once per episode. If neither is
+// available (no ANTHROPIC_API_KEY configured yet), the page falls back
+// to the plain RSS feed content — so every episode is indexable from
+// day one no matter what.
 
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
+import { getOrGenerateSummary } from "../_lib/ai-summary.js";
 import episodesData from "../../content/episodes.json";
 
 const SITE_URL = "https://www.conversationswithami.com";
 const curatedBySlug = new Map(episodesData.episodes.map((e) => [e.slug, e]));
-const curatedByEpisodeNumber = new Map(episodesData.episodes.map((e) => [String(e.episodeNumber), e]));
 
 export async function onRequestGet(context) {
   const { slug } = context.params;
@@ -27,7 +31,7 @@ export async function onRequestGet(context) {
     return new Response("Could not load episode data. Please try again shortly.", { status: 502 });
   }
 
-  const curated = curatedBySlug.get(slug);
+  let curated = curatedBySlug.get(slug);
   let feedItem;
 
   if (curated) {
@@ -38,6 +42,13 @@ export async function onRequestGet(context) {
 
   if (!feedItem) {
     return new Response("Episode not found.", { status: 404 });
+  }
+
+  if (!curated) {
+    const aiGenerated = await getOrGenerateSummary(context.env, feedItem);
+    if (aiGenerated) {
+      curated = { ...aiGenerated, slug, episodeNumber: Number(feedItem.episode) };
+    }
   }
 
   const html = renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes: feedEpisodes });

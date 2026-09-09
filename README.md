@@ -125,9 +125,44 @@ one-time setup:
 That's it — no changes needed here whenever you publish a new episode,
 as long as it's uploaded to the same YouTube channel.
 
+---
+
+## Individual episode pages + AI-written summaries: two setup steps
+
+Every episode now gets its own real page at `/episodes/<episode-name>` —
+this is what lets Google index episode content directly (a JS-rendered
+list alone isn't enough). Without any setup, these pages already work,
+built from your RSS feed alone (title, guest name/company, show notes,
+audio player).
+
+To have Claude automatically write the richer version of each page —
+a proper written summary, guest bio, and the specific problem the
+episode solves — for every new episode with zero manual work, do this
+one-time setup:
+
+1. Go to https://console.anthropic.com, create an API key.
+2. In Cloudflare Pages: your project → **Settings → Environment variables**
+   → add one named exactly `ANTHROPIC_API_KEY`, value = the key you copied.
+   Add it for both **Production** and **Preview**, then redeploy.
+3. In Cloudflare Pages: your project → **Settings → Functions → KV namespace
+   bindings** → create a new KV namespace (any name, e.g. "episode-ai-cache")
+   → bind it to this project with the variable name exactly `EPISODE_AI_CACHE`.
+   This makes the write-up get generated once per episode (cached), not
+   regenerated on every single page view.
+
+Without step 3, the site still works, but skips the cache — so only do
+step 1+2 without step 3 if you're just testing.
+
+If you'd rather write a specific episode's page by hand instead of
+letting Claude write it, add an entry to `content/episodes.json` — see
+the two Bernard Reisz episodes already in there as an example. A
+hand-written entry always takes priority over the AI-generated one.
+
 ## What's still needed from you
 - [ ] The Kit API key (5-minute setup above) — this is the only remaining piece
 - [ ] Sending your first Public-marked newsletter issue, whenever ready
+- [ ] The Anthropic API key + KV namespace above, if you want episode pages
+      to get the AI-written summary instead of the plain RSS version
 
 ## Featured companies carousel: how to add new ones (no redeploy needed)
 
@@ -190,6 +225,10 @@ functions/api/episodes.js     Server-side code that fetches your RSS feed
 functions/api/newsletter.js   Server-side code that fetches your public Kit issues
 functions/api/youtube.js      Server-side code that fetches your YouTube channel's videos + durations
 functions/api/companies.js    Server-side code that fetches the featured-companies Google Sheet
+functions/episodes/[slug].js  Server-side code that renders each individual episode page
+functions/_lib/rss.js         Shared RSS parsing, used by functions/api/episodes.js and the episode pages
+functions/_lib/ai-summary.js  Calls Claude to write the episode summary/bio, caches it in KV
+content/episodes.json         Hand-written episode content (optional — overrides the AI-generated version)
 js/companies-carousel.js      Renders the featured-companies logo carousel
 assets/logos/                 Your brand logo files
 assets/social-icons/          Follow-us icons (YouTube, Instagram, Facebook, LinkedIn, TikTok, Threads, X)
