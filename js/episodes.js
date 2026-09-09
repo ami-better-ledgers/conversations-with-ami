@@ -2,6 +2,21 @@
   const listEl = document.getElementById("episode-list");
   if (!listEl) return;
 
+  // Same slug rule as functions/episodes/[slug].js — keep both in sync.
+  // Curated episodes (content/episodes.json) override this with a
+  // hand-picked, SEO-friendly slug.
+  function slugifyTitle(title) {
+    const hook = (title || "").split("|")[0];
+    return hook
+      .toLowerCase()
+      .replace(/['’"]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80);
+  }
+
+  let curatedByEpisodeNumber = {};
+
   function formatDate(pubDate) {
     if (!pubDate) return "";
     const d = new Date(pubDate);
@@ -40,12 +55,15 @@
         const notesToggle = fullNotes && fullNotes.length > teaser.length
           ? `<button type="button" class="episode-notes-toggle">See more</button>`
           : "";
+        const curated = curatedByEpisodeNumber[ep.episode];
+        const slug = curated ? curated.slug : slugifyTitle(ep.title);
+        const episodeUrl = "/episodes/" + slug;
         return `
           <article class="episode">
             <div class="episode-num">${String(num).padStart(2, "0")}</div>
             <div class="episode-body">
               <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
-              <h3>${ep.title || "Untitled episode"}</h3>
+              <h3><a href="${episodeUrl}">${ep.title || "Untitled episode"}</a></h3>
               <p class="episode-desc">${teaser}</p>
               <div class="episode-notes-full">${fullNotes}</div>
               ${notesToggle}
@@ -140,11 +158,18 @@
     return res.json().then(function (data) { return { ok: res.ok, data: data }; });
   });
   const youtubePromise = typeof fetchYouTubeVideos === "function" ? fetchYouTubeVideos() : Promise.resolve([]);
+  const curatedPromise = fetch("/content/episodes.json")
+    .then(function (res) { return res.ok ? res.json() : { episodes: [] }; })
+    .catch(function () { return { episodes: [] }; });
 
-  Promise.all([episodesPromise, youtubePromise])
+  Promise.all([episodesPromise, youtubePromise, curatedPromise])
     .then(function (results) {
       const result = results[0];
       const videos = results[1];
+      const curatedData = results[2];
+      (curatedData.episodes || []).forEach(function (e) {
+        curatedByEpisodeNumber[String(e.episodeNumber)] = e;
+      });
       if (typeof buildYouTubeMatcher === "function") {
         matchYouTube = buildYouTubeMatcher(videos);
       }
