@@ -231,7 +231,8 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
 
   fetchYouTubeVideos().then(function (videos) {
     var matcher = buildYouTubeMatcher(videos);
-    var videoId = matcher({ title: btn.dataset.title });
+    var match = matcher({ title: btn.dataset.title });
+    var videoId = match && match.videoId;
     if (!videoId) return;
 
     btn.hidden = false;

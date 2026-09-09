@@ -47,10 +47,12 @@ export async function onRequestGet(context) {
       }
 
       (playlistData.items || []).forEach((item) => {
+        const thumbs = item.snippet.thumbnails || {};
         videos.push({
           title: item.snippet.title,
           videoId: item.snippet.resourceId.videoId,
           publishedAt: item.snippet.publishedAt,
+          thumbnail: (thumbs.medium || thumbs.high || thumbs.default || {}).url || "",
         });
       });
 

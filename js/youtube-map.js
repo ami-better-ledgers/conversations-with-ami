@@ -23,9 +23,10 @@ async function fetchYouTubeVideos() {
   }
 }
 
+// Returns { videoId, thumbnail } for the best-matching video, or null.
 function buildYouTubeMatcher(videos) {
   const normalized = videos.map(function (v) {
-    return { videoId: v.videoId, norm: normalizeTitle(v.title) };
+    return { videoId: v.videoId, thumbnail: v.thumbnail || "", norm: normalizeTitle(v.title) };
   });
 
   return function (ep) {
@@ -33,14 +34,14 @@ function buildYouTubeMatcher(videos) {
     if (!epNorm) return null;
 
     const exact = normalized.find(function (v) { return v.norm === epNorm; });
-    if (exact) return exact.videoId;
+    if (exact) return { videoId: exact.videoId, thumbnail: exact.thumbnail };
 
     const guestPart = ep.title && ep.title.includes("|")
       ? normalizeTitle(ep.title.split("|").pop())
       : null;
     if (guestPart) {
       const partial = normalized.find(function (v) { return v.norm.includes(guestPart); });
-      if (partial) return partial.videoId;
+      if (partial) return { videoId: partial.videoId, thumbnail: partial.thumbnail };
     }
 
     return null;

@@ -30,6 +30,88 @@
 
   let matchYouTube = function () { return null; };
 
+  // Splits "Hook | Guest Name, Company" into its two halves.
+  function splitTitle(title) {
+    const parts = (title || "").split("|");
+    return { hook: parts[0].trim(), guestLine: parts.length > 1 ? parts.slice(1).join("|").trim() : "" };
+  }
+
+  function episodeUrl(ep) {
+    const curated = curatedByEpisodeNumber[ep.episode];
+    return "/episodes/" + (curated ? curated.slug : slugifyTitle(ep.title));
+  }
+
+  function thumbFor(ep) {
+    const ytMatch = matchYouTube(ep);
+    return (ytMatch && ytMatch.thumbnail) || ep.image || "";
+  }
+
+  function actionButtons(ep) {
+    const audio = ep.audioUrl || ep.link || "";
+    const ytMatch = matchYouTube(ep);
+    const watchBtn = ytMatch
+      ? `<button type="button" class="episode-watch" data-yt="${ytMatch.videoId}" aria-expanded="false">Watch</button>`
+      : "";
+    const playBtn = audio
+      ? `<button type="button" class="episode-play" data-audio="${audio}" aria-expanded="false" aria-label="Listen to ${ep.title || "this episode"}">▶</button>`
+      : "";
+    const embedRow = (ytMatch || audio) ? `<div class="episode-embed" hidden></div>` : "";
+    return { playBtn, watchBtn, embedRow };
+  }
+
+  function renderHero(ep, num) {
+    const { hook, guestLine } = splitTitle(ep.title);
+    const { playBtn, watchBtn, embedRow } = actionButtons(ep);
+    const thumb = thumbFor(ep);
+    const url = episodeUrl(ep);
+    return `
+      <article class="episode-hero">
+        <a class="episode-hero-media" href="${url}">
+          ${thumb ? `<img src="${thumb}" alt="" loading="lazy">` : ""}
+          <span class="episode-badge">EP ${String(num).padStart(2, "0")}</span>
+        </a>
+        <div class="episode-hero-body">
+          <p class="eyebrow">Latest episode</p>
+          <h2><a href="${url}">${hook || "Untitled episode"}</a></h2>
+          ${guestLine ? `<p class="guest-line">${guestLine}</p>` : ""}
+          <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
+          <p class="episode-desc">${ep.description || ""}</p>
+          <div class="episode-actions">
+            ${playBtn}
+            ${watchBtn}
+            <a class="read-link" href="${url}">Read the full write-up &rarr;</a>
+          </div>
+          ${embedRow}
+        </div>
+      </article>`;
+  }
+
+  function renderCard(ep, num) {
+    const { hook, guestLine } = splitTitle(ep.title);
+    const { playBtn, watchBtn, embedRow } = actionButtons(ep);
+    const thumb = thumbFor(ep);
+    const url = episodeUrl(ep);
+    return `
+      <article class="episode-card">
+        <a class="episode-card-media" href="${url}">
+          ${thumb ? `<img src="${thumb}" alt="" loading="lazy">` : ""}
+          <span class="episode-badge">EP ${String(num).padStart(2, "0")}</span>
+        </a>
+        <div class="episode-card-body">
+          <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
+          <h3><a href="${url}">${hook || "Untitled episode"}</a></h3>
+          ${guestLine ? `<p class="guest-line">${guestLine}</p>` : ""}
+          <p class="episode-desc">${ep.description || ""}</p>
+          <div class="episode-actions">
+            ${playBtn}
+            ${watchBtn}
+          </div>
+          ${embedRow}
+          <a class="read-link" href="${url}">Read the full write-up &rarr;</a>
+        </div>
+      </article>`;
+  }
+
   function render(episodes) {
     if (!episodes.length) {
       renderEmpty("No episodes found yet — check back soon.");
@@ -37,74 +119,19 @@
     }
 
     const total = episodes.length;
-    listEl.innerHTML = episodes
-      .map(function (ep, i) {
-        const num = ep.episode || total - i;
-        const audio = ep.audioUrl || ep.link || "";
-        const youtubeId = matchYouTube(ep);
-        const watchBtn = youtubeId
-          ? `<button type="button" class="episode-watch" data-yt="${youtubeId}" aria-expanded="false">Watch</button>`
-          : "";
-        const playBtn = audio
-          ? `<button type="button" class="episode-play" data-audio="${audio}" aria-expanded="false" aria-label="Listen to ${ep.title || "this episode"}">▶</button>`
-          : "";
-        const hasEmbedRow = youtubeId || audio;
-        const embedRow = hasEmbedRow ? `<div class="episode-embed" hidden></div>` : "";
-        const teaser = ep.description || "";
-        const fullNotes = ep.content || "";
-        const notesToggle = fullNotes && fullNotes.length > teaser.length
-          ? `<button type="button" class="episode-notes-toggle">See more</button>`
-          : "";
-        const curated = curatedByEpisodeNumber[ep.episode];
-        const slug = curated ? curated.slug : slugifyTitle(ep.title);
-        const episodeUrl = "/episodes/" + slug;
-        return `
-          <article class="episode">
-            <div class="episode-num">${String(num).padStart(2, "0")}</div>
-            <div class="episode-body">
-              <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
-              <h3><a href="${episodeUrl}">${ep.title || "Untitled episode"}</a></h3>
-              <p class="episode-desc">${teaser}</p>
-              <div class="episode-notes-full">${fullNotes}</div>
-              ${notesToggle}
-              ${embedRow}
-            </div>
-            <div class="episode-actions">
-              ${playBtn}
-              ${watchBtn}
-            </div>
-          </article>`;
-      })
-      .join("");
+    const [latest, ...rest] = episodes;
 
-    // Explicitly set the collapsed state in JS (rather than relying only
-    // on markup) so this can't end up stuck open regardless of CSS.
-    listEl.querySelectorAll(".episode-notes-full").forEach(function (el) {
-      el.style.display = "none";
-    });
+    const heroHtml = renderHero(latest, latest.episode || total);
+    const gridHtml = rest.length
+      ? `<div class="episode-grid">${rest.map(function (ep, i) { return renderCard(ep, ep.episode || total - i - 1); }).join("")}</div>`
+      : "";
 
-    listEl.querySelectorAll(".episode-notes-toggle").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        const body = btn.closest(".episode-body");
-        const full = body.querySelector(".episode-notes-full");
-        const teaserEl = body.querySelector(".episode-desc");
-        const isOpen = full.style.display !== "none";
-        if (isOpen) {
-          full.style.display = "none";
-          teaserEl.style.display = "";
-          btn.textContent = "See more";
-        } else {
-          full.style.display = "block";
-          teaserEl.style.display = "none";
-          btn.textContent = "See less";
-        }
-      });
-    });
+    listEl.innerHTML = heroHtml + gridHtml;
 
     listEl.querySelectorAll(".episode-play").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        const embed = btn.closest(".episode").querySelector(".episode-embed");
-        const otherBtn = btn.closest(".episode").querySelector(".episode-watch");
+        const embed = btn.closest("article").querySelector(".episode-embed");
+        const otherBtn = btn.closest("article").querySelector(".episode-watch");
         const isOpen = !embed.hidden && embed.dataset.kind === "audio";
         if (isOpen) {
           embed.hidden = true;
@@ -128,8 +155,8 @@
 
     listEl.querySelectorAll(".episode-watch").forEach(function (btn) {
       btn.addEventListener("click", function () {
-        const embed = btn.closest(".episode").querySelector(".episode-embed");
-        const otherBtn = btn.closest(".episode").querySelector(".episode-play");
+        const embed = btn.closest("article").querySelector(".episode-embed");
+        const otherBtn = btn.closest("article").querySelector(".episode-play");
         const isOpen = !embed.hidden && embed.dataset.kind === "video";
         if (isOpen) {
           embed.hidden = true;

@@ -29,7 +29,8 @@
         }
         const ep = result.data.episodes[0];
         const audio = ep.audioUrl || ep.link || "";
-        const youtubeId = matchYouTube(ep);
+        const ytMatch = matchYouTube(ep);
+        const youtubeId = ytMatch && ytMatch.videoId;
         const teaser = ep.description || "";
         const fullNotes = ep.content || "";
         const notesToggle = fullNotes && fullNotes.length > teaser.length
