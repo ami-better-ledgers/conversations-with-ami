@@ -17,7 +17,7 @@
 //      request with no cache would call the API again.
 
 const MODEL = "claude-sonnet-5";
-const PILLARS = ["Sales", "Hiring & Leadership", "Tax & Legal", "Marketing", "AI/Tech", "Finance", "Operations"];
+const PILLARS = ["Sales", "Hiring & Leadership", "Tax & Legal", "Marketing", "AI/Tech"];
 
 export async function getOrGenerateSummary(env, feedItem) {
   if (!env.ANTHROPIC_API_KEY) return null;
@@ -94,7 +94,8 @@ Return ONLY a single valid JSON object (no markdown fences, no commentary) with 
   "guestCompany": "The guest's company name, or empty string if unclear.",
   "guestRole": "The guest's role/title (e.g. 'CPA & Founder'), or empty string if unclear.",
   "guestBio": "One sentence, third person, describing who the guest is and what they help people with.",
-  "pillar": "Exactly one of: ${PILLARS.join(", ")} — whichever best fits this episode's topic.",
+  "pillars": "An array of one or two values from exactly this list: ${PILLARS.join(", ")} — whichever best fit this episode's topic. Most episodes only need one.",
+  "subjects": "An array of 1 to 3 short, specific subject tags for what this episode is actually about (e.g. 'Real Estate', 'Cost Segregation', 'Cold Outreach', 'Hiring', 'AI Tools') — more specific than the broad pillar above.",
   "problemSolved": "The specific problem this episode solves, phrased the way a business owner would actually type it into Google.",
   "summary": "150 to 300 words, plain text (no markdown), written in third person, summarizing the episode's core lesson for someone deciding whether to listen.",
   "guestLinks": [{"label": "LinkedIn", "url": "https://..."}]
@@ -109,6 +110,9 @@ function parseJsonSafely(text) {
   try {
     const parsed = JSON.parse(match[0]);
     if (!parsed.summary || !parsed.pageTitle) return null;
+    parsed.pillars = Array.isArray(parsed.pillars) ? parsed.pillars.filter((p) => PILLARS.includes(p)) : [];
+    parsed.subjects = Array.isArray(parsed.subjects) ? parsed.subjects.slice(0, 3) : [];
+    parsed.guestLinks = Array.isArray(parsed.guestLinks) ? parsed.guestLinks : [];
     return parsed;
   } catch (err) {
     return null;

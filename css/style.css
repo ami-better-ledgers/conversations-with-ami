@@ -277,7 +277,17 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   .episode-actions { flex-direction: row; grid-column: 2; justify-self: start; margin-top: 0.5rem; }
 }
 
-/* ============ Podcast page: hero + grid ============ */
+/* ============ Podcast page: search + hero + grid ============ */
+.episode-search-row { margin-bottom: 1.75rem; }
+.episode-search {
+  width: 100%; max-width: 420px;
+  font: inherit; font-size: 0.95rem;
+  padding: 0.65rem 1rem;
+  border: var(--border); border-radius: var(--radius);
+  background: var(--paper);
+}
+.episode-search:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
 .episode-badge {
   position: absolute; top: 0.75rem; left: 0.75rem;
   background: var(--ink); color: var(--paper);
@@ -616,6 +626,15 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 }
 .breadcrumbs a { color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; }
 .breadcrumbs a:hover { color: var(--blue); }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.9rem 0; }
+.tag-pillar, .tag-subject {
+  font-family: var(--font-label); font-weight: 700;
+  font-size: 0.66rem; letter-spacing: 0.05em; text-transform: uppercase;
+  padding: 0.3rem 0.6rem; border-radius: var(--radius);
+}
+.tag-pillar { background: var(--blue); color: var(--paper); }
+.tag-subject { border: 1px solid var(--ink-soft); color: var(--ink-soft); }
 
 .guest-card {
   display: flex;

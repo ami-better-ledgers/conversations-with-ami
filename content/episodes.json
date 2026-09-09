@@ -1,5 +1,5 @@
 {
-  "_readme": "Curated per-episode content for the individual episode pages at /episodes/<slug>. Match episodes to the RSS feed by 'episodeNumber' (itunes:episode). Any episode NOT listed here still gets a page automatically, built from the RSS feed alone (title, show notes, audio) — add an entry here whenever you want the richer written summary, guest bio, and cross-links. 'pageTitle' overrides the on-page H1 and <title> with SEO-friendly phrasing; leave it out to fall back to the RSS episode title.",
+  "_readme": "Curated per-episode content for the individual episode pages at /episodes/<slug>, and for the tags/subjects shown on the podcast list page. Match episodes to the RSS feed by 'episodeNumber' (itunes:episode). Any episode NOT listed here still gets a page automatically — either AI-generated (see functions/_lib/ai-summary.js) or, with no API key configured, built from the RSS feed alone. 'pageTitle' overrides the on-page H1 and <title> with SEO-friendly phrasing. 'pillars' is an array of one or two values from the fixed list: Sales, Hiring & Leadership, Tax & Legal, Marketing, AI/Tech. 'subjects' is an array of short, specific topic tags (e.g. 'Real Estate', 'Cold Outreach') — more specific than pillars.",
 
   "episodes": [
     {
@@ -10,7 +10,8 @@
       "guestCompany": "ReSure Financial",
       "guestRole": "CPA & Founder",
       "guestBio": "Bernard Reisz is a CPA and the founder of ReSure Financial, where he helps real estate investors structure 1031 exchanges and cost segregation studies so they don't lose money to tax mistakes they didn't know they were making.",
-      "pillar": "Tax & Legal",
+      "pillars": ["Tax & Legal"],
+      "subjects": ["Real Estate", "1031 Exchanges"],
       "problemSolved": "What happens if I sell a rental property and buy a cheaper one — do I still owe taxes on a 1031 exchange?",
       "summary": "Real estate investors use a 1031 exchange to defer capital gains tax when they sell one investment property and buy another — but Bernard Reisz, CPA and founder of ReSure Financial, has watched investors accidentally trigger the very tax bill they were trying to avoid. In this episode, he breaks down exactly how that happens: pulling a little cash out at closing, buying a slightly cheaper replacement property, or misreading what counts as \"like-kind\" can all create what's called boot — the portion of the deal that's taxable — even when the investor believes they followed every rule. Bernard walks through the exchange's actual mechanics and timeline, the small decisions that quietly generate boot, and why he treats a 1031 exchange as an investment decision first and a tax strategy second, since chasing the deferral alone can lead investors into a worse property. If you've ever wondered what happens when you sell a rental property and buy a cheaper one, or whether taking cash out along the way is really \"safe,\" this is the plain-English explanation of where investors get it wrong.",
       "relatedSlugs": ["tax-turkey-viral-tax-strategies"],
@@ -28,7 +29,8 @@
       "guestCompany": "ReSure Financial",
       "guestRole": "CPA & Founder",
       "guestBio": "Bernard Reisz is a CPA and the founder of ReSure Financial, where he helps real estate investors structure 1031 exchanges and cost segregation studies so they don't lose money to tax mistakes they didn't know they were making.",
-      "pillar": "Tax & Legal",
+      "pillars": ["Tax & Legal"],
+      "subjects": ["Real Estate", "Cost Segregation"],
       "problemSolved": "Is this viral tax strategy I saw online actually legitimate, or will it get me audited?",
       "summary": "Every year a new tax strategy goes viral on social media — and Bernard Reisz, CPA and founder of ReSure Financial, has a warning for business owners tempted to try one: the more a strategy spreads online, the more audit risk it tends to carry, not less. In this episode, Bernard introduces what he calls the \"tax turkey\" — a strategy dressed up to look like an easy win while hiding risk the average business owner has no way of spotting. He uses that lens to walk through cost segregation, a legitimate and often misunderstood real estate tax strategy: what it actually does, which situations it's genuinely good for, and where it gets oversold. Bernard is candid that he'd rather talk a prospective client out of a strategy that doesn't fit than sell it to them anyway, and this conversation is a practical guide to telling the difference between a real opportunity and a viral tax turkey before it costs you an audit.",
       "relatedSlugs": ["1031-exchange-boot-explained"],

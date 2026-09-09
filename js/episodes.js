@@ -16,6 +16,7 @@
   }
 
   let curatedByEpisodeNumber = {};
+  let allEpisodes = [];
 
   function formatDate(pubDate) {
     if (!pubDate) return "";
@@ -59,6 +60,16 @@
     return { playBtn, watchBtn, embedRow };
   }
 
+  function tagRow(ep) {
+    const pillars = ep.pillars || [];
+    const subjects = ep.subjects || [];
+    if (!pillars.length && !subjects.length) return "";
+    return `<div class="tag-row">
+      ${pillars.map(function (p) { return `<span class="tag-pillar">${p}</span>`; }).join("")}
+      ${subjects.map(function (s) { return `<span class="tag-subject">${s}</span>`; }).join("")}
+    </div>`;
+  }
+
   function renderHero(ep, num) {
     const { hook, guestLine } = splitTitle(ep.title);
     const { playBtn, watchBtn, embedRow } = actionButtons(ep);
@@ -75,11 +86,12 @@
           <h2><a href="${url}">${hook || "Untitled episode"}</a></h2>
           ${guestLine ? `<p class="guest-line">${guestLine}</p>` : ""}
           <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
+          ${tagRow(ep)}
           <p class="episode-desc">${ep.description || ""}</p>
           <div class="episode-actions">
             ${playBtn}
             ${watchBtn}
-            <a class="read-link" href="${url}">Read the full write-up &rarr;</a>
+            <a class="read-link" href="${url}">See what you'll learn &rarr;</a>
           </div>
           ${embedRow}
         </div>
@@ -101,13 +113,14 @@
           <p class="episode-meta">${formatDate(ep.pubDate)}${ep.duration ? " · " + ep.duration : ""}</p>
           <h3><a href="${url}">${hook || "Untitled episode"}</a></h3>
           ${guestLine ? `<p class="guest-line">${guestLine}</p>` : ""}
+          ${tagRow(ep)}
           <p class="episode-desc">${ep.description || ""}</p>
           <div class="episode-actions">
             ${playBtn}
             ${watchBtn}
           </div>
           ${embedRow}
-          <a class="read-link" href="${url}">Read the full write-up &rarr;</a>
+          <a class="read-link" href="${url}">See what you'll learn &rarr;</a>
         </div>
       </article>`;
   }
@@ -127,7 +140,19 @@
       : "";
 
     listEl.innerHTML = heroHtml + gridHtml;
+    wireInteractions();
+  }
 
+  function renderSearchResults(matches) {
+    if (!matches.length) {
+      listEl.innerHTML = `<p class="state-msg">No episodes match that search.</p>`;
+      return;
+    }
+    listEl.innerHTML = `<div class="episode-grid">${matches.map(function (ep) { return renderCard(ep, ep.episode); }).join("")}</div>`;
+    wireInteractions();
+  }
+
+  function wireInteractions() {
     listEl.querySelectorAll(".episode-play").forEach(function (btn) {
       btn.addEventListener("click", function () {
         const embed = btn.closest("article").querySelector(".episode-embed");
@@ -206,9 +231,27 @@
         );
         return;
       }
-      render(result.data.episodes || []);
+      allEpisodes = result.data.episodes || [];
+      render(allEpisodes);
+      setupSearch();
     })
     .catch(function () {
       renderEmpty("Couldn't load episodes right now — please check back later.");
     });
+
+  function setupSearch() {
+    const input = document.getElementById("episode-search");
+    if (!input) return;
+    input.addEventListener("input", function () {
+      const query = input.value.trim().toLowerCase();
+      if (!query) {
+        render(allEpisodes);
+        return;
+      }
+      const matches = allEpisodes.filter(function (ep) {
+        return splitTitle(ep.title).guestLine.toLowerCase().includes(query);
+      });
+      renderSearchResults(matches);
+    });
+  }
 })();

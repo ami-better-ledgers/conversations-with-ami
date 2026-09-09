@@ -16,10 +16,9 @@
 
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
-import episodesData from "../../content/episodes.json";
+import { curatedBySlug } from "../_lib/curated.js";
 
 const SITE_URL = "https://www.conversationswithami.com";
-const curatedBySlug = new Map(episodesData.episodes.map((e) => [e.slug, e]));
 
 export async function onRequestGet(context) {
   const { slug } = context.params;
@@ -124,9 +123,14 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
 
   <section class="wrap section-tight">
     <p class="breadcrumbs"><a href="/index.html">Home</a> / <a href="/podcast.html">The Podcast</a> / ${esc(pageTitle)}</p>
-    <p class="eyebrow">${episodeNum ? `Episode ${episodeNum}` : "The Podcast"}${curated?.pillar ? " · " + esc(curated.pillar) : ""}</p>
+    <p class="eyebrow">${episodeNum ? `Episode ${episodeNum}` : "The Podcast"}</p>
     <h1>${esc(pageTitle)}</h1>
     <p class="lede">${dateLabel}${feedItem.duration ? " · " + esc(feedItem.duration) : ""}</p>
+
+    ${(curated?.pillars?.length || curated?.subjects?.length) ? `<div class="tag-row">
+      ${(curated?.pillars || []).map((p) => `<span class="tag-pillar">${esc(p)}</span>`).join("")}
+      ${(curated?.subjects || []).map((s) => `<span class="tag-subject">${esc(s)}</span>`).join("")}
+    </div>` : ""}
 
     ${guestName ? `<div class="guest-card">
       <strong>${esc(guestName)}</strong>
