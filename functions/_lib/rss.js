@@ -39,6 +39,7 @@ export function parseRssItems(xml) {
       episode: matchTag(block, "itunes:episode"),
       audioUrl: matchAttr(block, "enclosure", "url"),
       image: matchAttr(block, "itunes:image", "href"),
+      transcriptUrl: matchAttr(block, "podcast:transcript", "url"),
     });
   }
 

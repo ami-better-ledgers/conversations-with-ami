@@ -636,6 +636,21 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 .tag-pillar { background: var(--blue); color: var(--paper); }
 .tag-subject { border: 1px solid var(--ink-soft); color: var(--ink-soft); }
 
+.share-row { display: flex; align-items: center; gap: 0.6rem; margin: 1.25rem 0; }
+.share-label {
+  font-family: var(--font-label); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-soft); margin-right: 0.25rem;
+}
+.share-row a {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--ink-soft);
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.share-row a:hover { border-color: var(--blue); background: var(--sky-tint); }
+.share-row img { width: 16px; height: 16px; display: block; }
+
 .guest-card {
   display: flex;
   flex-wrap: wrap;
@@ -674,6 +689,28 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 
 .episode-summary { max-width: 68ch; }
 .episode-summary p { margin: 0 0 1.1em; }
+
+.takeaways-block, .faq-block {
+  border-top: var(--border);
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  max-width: 68ch;
+}
+.takeaways-block h2, .faq-block h2 { font-size: 1.15rem; margin-bottom: 0.9rem; }
+.takeaways-list { margin: 0; padding-left: 1.25rem; }
+.takeaways-list li { margin-bottom: 0.6rem; }
+
+.faq-item {
+  border-bottom: var(--border);
+  padding: 0.9rem 0;
+}
+.faq-item summary {
+  cursor: pointer;
+  font-family: var(--font-body); font-weight: 700;
+  color: var(--ink);
+}
+.faq-item summary:hover { color: var(--blue); }
+.faq-item p { margin: 0.75rem 0 0; color: var(--ink-soft); }
 
 .related-episodes {
   border-top: var(--border);

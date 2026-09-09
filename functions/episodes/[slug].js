@@ -16,7 +16,7 @@
 
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
-import { curatedBySlug } from "../_lib/curated.js";
+import { curatedBySlug, extrasByEpisodeNumber } from "../_lib/curated.js";
 
 const SITE_URL = "https://www.conversationswithami.com";
 
@@ -50,6 +50,15 @@ export async function onRequestGet(context) {
     }
   }
 
+  // FAQs/takeaways are hand-written and uploaded separately (never
+  // AI-generated) — layer them on top of whatever else this episode
+  // already has, rather than requiring a full content/episodes.json
+  // entry just to add these two sections.
+  const extras = extrasByEpisodeNumber.get(String(feedItem.episode));
+  if (extras && (extras.faqs?.length || extras.takeaways?.length)) {
+    curated = { ...(curated || {}), faqs: extras.faqs, takeaways: extras.takeaways };
+  }
+
   const html = renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes: feedEpisodes });
   return new Response(html, {
     headers: { "Content-Type": "text/html; charset=utf-8" },
@@ -72,6 +81,9 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
     .filter(Boolean);
 
   const jsonLd = buildJsonLd({ canonicalUrl, pageTitle, feedItem, guestName, dateLabel: feedItem.pubDate });
+
+  const shareText = `${pageTitle}${guestName ? " — a conversation with " + guestName + (guestCompany ? " (" + guestCompany + ")" : "") : ""} on Conversations with Ami.`;
+  const shareLinks = buildShareLinks(canonicalUrl, shareText);
 
   return `<!doctype html>
 <html lang="en">
@@ -139,6 +151,16 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       ${(curated?.guestLinks || []).map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join(" · ")}
     </div>` : ""}
 
+    <div class="share-row" aria-label="Share this episode">
+      <span class="share-label">Share</span>
+      <a href="${shareLinks.linkedin}" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><img src="/assets/social-icons/linkedin.png" alt=""></a>
+      <a href="${shareLinks.facebook}" target="_blank" rel="noopener" aria-label="Share on Facebook"><img src="/assets/social-icons/facebook.png" alt=""></a>
+      <a href="${shareLinks.threads}" target="_blank" rel="noopener" aria-label="Share on Threads"><img src="/assets/social-icons/threads.svg" alt=""></a>
+      <a href="${shareLinks.x}" target="_blank" rel="noopener" aria-label="Share on X"><img src="/assets/social-icons/x.png" alt=""></a>
+    </div>
+
+    ${feedItem.transcriptUrl ? `<p><a class="read-link" href="${esc(feedItem.transcriptUrl)}" target="_blank" rel="noopener">Read the transcript &rarr;</a></p>` : ""}
+
     <div class="episode-actions" style="margin: 1.25rem 0;">
       ${feedItem.audioUrl ? `<audio controls preload="none" src="${esc(feedItem.audioUrl)}" style="width:100%;"></audio>` : ""}
       <button type="button" class="episode-watch" id="episode-watch-btn" data-title="${esc(feedItem.title)}" hidden aria-expanded="false" style="margin-top:0.75rem;">Watch on YouTube</button>
@@ -155,6 +177,21 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       <summary style="cursor:pointer; font-family: var(--font-label); font-size:0.85rem; color: var(--blue);">Full show notes</summary>
       <div class="episode-notes-full" style="display:block; margin-top:1rem;">${feedItem.content}</div>
     </details>` : ""}
+
+    ${curated?.takeaways?.length ? `<div class="takeaways-block">
+      <h2>Key takeaways</h2>
+      <ul class="takeaways-list">
+        ${curated.takeaways.map((t) => `<li>${esc(t)}</li>`).join("")}
+      </ul>
+    </div>` : ""}
+
+    ${curated?.faqs?.length ? `<div class="faq-block">
+      <h2>FAQs</h2>
+      ${curated.faqs.map((f) => `<details class="faq-item">
+        <summary>${esc(f.question)}</summary>
+        <p>${esc(f.answer)}</p>
+      </details>`).join("")}
+    </div>` : ""}
 
     ${relatedList.length ? `<div class="related-episodes">
       <h2>Related episodes</h2>
@@ -291,6 +328,17 @@ function buildJsonLd({ canonicalUrl, pageTitle, feedItem, guestName, dateLabel }
     jsonLd.actor = { "@type": "Person", name: guestName };
   }
   return jsonLd;
+}
+
+function buildShareLinks(url, text) {
+  const u = encodeURIComponent(url);
+  const t = encodeURIComponent(text);
+  return {
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${u}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${u}&quote=${t}`,
+    x: `https://twitter.com/intent/tweet?url=${u}&text=${t}`,
+    threads: `https://www.threads.net/intent/post?text=${encodeURIComponent(text + " " + url)}`,
+  };
 }
 
 function splitTitle(title) {

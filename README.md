@@ -158,6 +158,16 @@ letting Claude write it, add an entry to `content/episodes.json` — see
 the two Bernard Reisz episodes already in there as an example. A
 hand-written entry always takes priority over the AI-generated one.
 
+### FAQs and key takeaways — always written by hand
+
+These two sections are never AI-generated — add them yourself in
+`content/episode-extras.json`, matched to an episode by its episode
+number. You don't need a full `content/episodes.json` entry to use
+this — it layers on top of whatever the episode page already has
+(AI-generated or hand-written), so you can add just FAQs/takeaways to
+any episode. Leave an episode out of that file and its page simply
+skips those two sections.
+
 ## What's still needed from you
 - [ ] The Kit API key (5-minute setup above) — this is the only remaining piece
 - [ ] Sending your first Public-marked newsletter issue, whenever ready
@@ -229,6 +239,8 @@ functions/episodes/[slug].js  Server-side code that renders each individual epis
 functions/_lib/rss.js         Shared RSS parsing, used by functions/api/episodes.js and the episode pages
 functions/_lib/ai-summary.js  Calls Claude to write the episode summary/bio, caches it in KV
 content/episodes.json         Hand-written episode content (optional — overrides the AI-generated version)
+content/episode-extras.json   FAQs and key takeaways per episode — always hand-written, never AI-generated
+functions/_lib/curated.js     Shared lookup maps for both content/ files above
 js/companies-carousel.js      Renders the featured-companies logo carousel
 assets/logos/                 Your brand logo files
 assets/social-icons/          Follow-us icons (YouTube, Instagram, Facebook, LinkedIn, TikTok, Threads, X)
