@@ -1,5 +1,0 @@
-{
-  "_readme": "Manually written FAQs and key takeaways per episode — these are NOT AI-generated, write and upload them yourselves. Match to an episode by 'episodeNumber' (itunes:episode). This layers on top of whatever else the episode page already has (AI-generated or hand-written in content/episodes.json) — you don't need a full content/episodes.json entry to add just FAQs/takeaways to an episode. 'takeaways' is an array of short strings (one per bullet point). 'faqs' is an array of {question, answer} pairs. Leave the 'extras' array empty until you have real content to add — an episode with no entry here just skips these two sections.",
-
-  "extras": []
-}

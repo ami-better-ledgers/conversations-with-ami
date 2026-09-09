@@ -14,6 +14,8 @@
 // EXPECTED SHEET COLUMNS (in this exact order, with a header row):
 //   Company Name | Website URL | Logo URL
 
+import { fetchCsvRows } from "../_lib/csv.js";
+
 export async function onRequestGet(context) {
   const csvUrl = context.env.COMPANIES_SHEET_CSV_URL;
 
@@ -25,16 +27,14 @@ export async function onRequestGet(context) {
   }
 
   try {
-    const res = await fetch(csvUrl, {
-      cf: { cacheTtl: 600, cacheEverything: true }, // cache 10 min at the edge
-    });
-
-    if (!res.ok) {
-      return jsonResponse({ error: `Sheet responded with ${res.status}` }, 502);
-    }
-
-    const csvText = await res.text();
-    const companies = parseCompaniesCsv(csvText);
+    const rows = await fetchCsvRows(csvUrl, 600);
+    const companies = rows
+      .map((row) => ({
+        name: (row[0] || "").trim(),
+        websiteUrl: (row[1] || "").trim(),
+        logoUrl: (row[2] || "").trim(),
+      }))
+      .filter((c) => c.name && c.websiteUrl && c.logoUrl);
 
     return jsonResponse({ companies }, 200, 600);
   } catch (err) {
@@ -46,48 +46,4 @@ function jsonResponse(data, status, cacheSeconds) {
   const headers = { "Content-Type": "application/json; charset=utf-8" };
   if (cacheSeconds) headers["Cache-Control"] = `public, max-age=${cacheSeconds}`;
   return new Response(JSON.stringify(data), { status, headers });
-}
-
-/* ---------- minimal CSV parsing (handles quoted commas) ---------- */
-
-function parseCompaniesCsv(csvText) {
-  const rows = parseCsvRows(csvText).filter((r) => r.some((cell) => cell.trim() !== ""));
-  if (!rows.length) return [];
-
-  // Skip the header row (assume first row is "Company Name, Website URL, Logo URL")
-  const dataRows = rows.slice(1);
-
-  return dataRows
-    .map((row) => ({
-      name: (row[0] || "").trim(),
-      websiteUrl: (row[1] || "").trim(),
-      logoUrl: (row[2] || "").trim(),
-    }))
-    .filter((c) => c.name && c.websiteUrl && c.logoUrl);
-}
-
-function parseCsvRows(text) {
-  const rows = [];
-  let row = [];
-  let field = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < text.length; i++) {
-    const char = text[i];
-    const next = text[i + 1];
-
-    if (inQuotes) {
-      if (char === '"' && next === '"') { field += '"'; i++; }
-      else if (char === '"') { inQuotes = false; }
-      else { field += char; }
-    } else {
-      if (char === '"') inQuotes = true;
-      else if (char === ",") { row.push(field); field = ""; }
-      else if (char === "\n") { row.push(field); rows.push(row); row = []; field = ""; }
-      else if (char === "\r") { /* skip */ }
-      else { field += char; }
-    }
-  }
-  if (field.length || row.length) { row.push(field); rows.push(row); }
-  return rows;
 }

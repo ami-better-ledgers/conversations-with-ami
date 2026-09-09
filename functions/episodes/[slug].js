@@ -16,7 +16,8 @@
 
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
-import { curatedBySlug, extrasByEpisodeNumber } from "../_lib/curated.js";
+import { curatedBySlug } from "../_lib/curated.js";
+import { fetchFaqsForEpisode, fetchTakeawaysForEpisode } from "../_lib/episode-extras.js";
 
 const SITE_URL = "https://www.conversationswithami.com";
 
@@ -50,13 +51,17 @@ export async function onRequestGet(context) {
     }
   }
 
-  // FAQs/takeaways are hand-written and uploaded separately (never
+  // FAQs/takeaways are hand-written in a Google Sheet (never
   // AI-generated) — layer them on top of whatever else this episode
-  // already has, rather than requiring a full content/episodes.json
-  // entry just to add these two sections.
-  const extras = extrasByEpisodeNumber.get(String(feedItem.episode));
-  if (extras && (extras.faqs?.length || extras.takeaways?.length)) {
-    curated = { ...(curated || {}), faqs: extras.faqs, takeaways: extras.takeaways };
+  // already has, so they don't require a full content/episodes.json
+  // entry of their own. A row whose Episode number doesn't match a
+  // published episode is simply absent here, not an error.
+  const [faqs, takeaways] = await Promise.all([
+    fetchFaqsForEpisode(context.env, feedItem.episode),
+    fetchTakeawaysForEpisode(context.env, feedItem.episode),
+  ]);
+  if (faqs.length || takeaways.length) {
+    curated = { ...(curated || {}), faqs, takeaways };
   }
 
   const html = renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes: feedEpisodes });
@@ -181,7 +186,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
     ${curated?.takeaways?.length ? `<div class="takeaways-block">
       <h2>Key takeaways</h2>
       <ul class="takeaways-list">
-        ${curated.takeaways.map((t) => `<li>${esc(t)}</li>`).join("")}
+        ${curated.takeaways.map((t) => `<li><strong>${esc(t.title)}:</strong> ${esc(t.takeaway)}</li>`).join("")}
       </ul>
     </div>` : ""}
 
