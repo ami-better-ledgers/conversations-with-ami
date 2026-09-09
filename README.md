@@ -170,8 +170,10 @@ up — no error, it appears automatically once that episode goes live.
 
 **One-time setup:**
 
-1. Create a Google Sheet with two tabs (rename the default "Sheet1"
-   tabs, or add new ones):
+1. Add two new tabs to a Google Sheet — this can be the same spreadsheet
+   you already use for the featured-companies carousel, or a brand new
+   one, it doesn't matter which. Each tab publishes to its own separate
+   CSV link regardless of what else is in the spreadsheet:
    - A tab named **FAQs** with headers in row 1: `Question`, `Answer`, `Episode`
    - A tab named **Takeaways** with headers in row 1: `Title`, `Takeaway`, `Episode`
    - The `Episode` column is the episode number (1, 2, 3…) — the same
