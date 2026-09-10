@@ -698,7 +698,13 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 .tag-subject { border: 1px solid var(--ink-soft); color: var(--ink-soft); }
 
 .share-row { margin: 1.25rem 0; }
-.share-icons { display: flex; align-items: center; gap: 0.4rem; }
+.share-label {
+  display: block;
+  font-family: var(--font-label); font-weight: 700;
+  font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-soft); margin: 0 0 0.5rem;
+}
+.share-icons { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
 .share-row a, .share-row button {
   display: inline-flex; align-items: center; justify-content: center;
   flex: none;
