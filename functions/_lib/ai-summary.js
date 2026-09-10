@@ -49,11 +49,18 @@ export async function getOrGenerateSummary(env, feedItem) {
   return generated;
 }
 
+// Bump this whenever the schema/validation changes in a way that
+// should force every episode to regenerate — e.g. when a previously
+// "successful" cached response (passed validation, but with a field
+// like pillars silently empty) needs to be thrown out and retried
+// under stricter rules. Cheaper than hunting down individual KV keys.
+const CACHE_VERSION = "v2";
+
 async function buildCacheKey(feedItem) {
   const raw = `${feedItem.episode}::${feedItem.title}::${feedItem.content || feedItem.description || ""}`;
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
   const hash = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("").slice(0, 16);
-  return `ep-${feedItem.episode || "x"}-${hash}`;
+  return `${CACHE_VERSION}-ep-${feedItem.episode || "x"}-${hash}`;
 }
 
 async function callClaude(apiKey, feedItem) {
@@ -181,6 +188,14 @@ function parseJsonSafely(text) {
     parsed.pillars = Array.isArray(parsed.pillars) ? parsed.pillars.filter((p) => PILLARS.includes(p)) : [];
     parsed.subjects = Array.isArray(parsed.subjects) ? parsed.subjects.slice(0, 3) : [];
     parsed.guestLinks = Array.isArray(parsed.guestLinks) ? parsed.guestLinks : [];
+    // Treat a response with no pillars as incomplete rather than
+    // "successful with an empty field" — every real episode fits at
+    // least one pillar, so an empty array here means Claude dropped
+    // the field, not that it genuinely doesn't apply. Returning null
+    // means getOrGenerateSummary won't cache it, so it retries on the
+    // next request instead of permanently freezing an incomplete
+    // result in KV.
+    if (!parsed.pillars.length) return null;
     return parsed;
   } catch (err) {
     return null;

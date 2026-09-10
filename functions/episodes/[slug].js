@@ -173,23 +173,23 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
       ${curated?.topAdvice?.length ? `<div class="top-advice-block">
         <h2>Top advice from this episode</h2>
         <ul class="top-advice-list">
-          ${curated.topAdvice.map((t) => `<li>
-            <div class="advice-meta">
-              ${t.pillar ? `<span class="advice-tag">${esc(t.pillar)}</span>` : ""}
-              ${timestampLink(t.timestamp, feedItem.audioUrl)}
-            </div>
-            <p>${esc(t.advice)}</p>
-          </li>`).join("")}
+          ${curated.topAdvice.slice(0, 4).map((t) => renderAdviceItem(t, feedItem.audioUrl)).join("")}
         </ul>
+        ${curated.topAdvice.length > 4 ? `<details class="show-more">
+          <summary>Show ${curated.topAdvice.length - 4} more</summary>
+          <ul class="top-advice-list">
+            ${curated.topAdvice.slice(4).map((t) => renderAdviceItem(t, feedItem.audioUrl)).join("")}
+          </ul>
+        </details>` : ""}
       </div>` : ""}
 
       ${curated?.faqs?.length ? `<div class="faq-block">
         <h2>FAQs</h2>
-        ${curated.faqs.map((f) => `<details class="faq-item">
-          <summary>${esc(f.question)}</summary>
-          <p>${esc(f.answer)}</p>
-          ${timestampLink(f.timestamp, feedItem.audioUrl)}
-        </details>`).join("")}
+        ${curated.faqs.slice(0, 4).map((f) => renderFaqItem(f, feedItem.audioUrl)).join("")}
+        ${curated.faqs.length > 4 ? `<details class="show-more">
+          <summary>Show ${curated.faqs.length - 4} more</summary>
+          ${curated.faqs.slice(4).map((f) => renderFaqItem(f, feedItem.audioUrl)).join("")}
+        </details>` : ""}
       </div>` : ""}
 
       ${relatedList.length ? `<div class="related-episodes">
@@ -551,6 +551,24 @@ function timestampLink(timestamp, audioUrl) {
     return `<button type="button" class="jump-link" data-seek="${seconds}">&#9654; ${esc(timestamp)}</button>`;
   }
   return `<span class="advice-timestamp">${esc(timestamp)}</span>`;
+}
+
+function renderAdviceItem(t, audioUrl) {
+  return `<li>
+    <div class="advice-meta">
+      ${t.pillar ? `<span class="advice-tag">${esc(t.pillar)}</span>` : ""}
+      ${timestampLink(t.timestamp, audioUrl)}
+    </div>
+    <p>${esc(t.advice)}</p>
+  </li>`;
+}
+
+function renderFaqItem(f, audioUrl) {
+  return `<details class="faq-item">
+    <summary>${esc(f.question)}</summary>
+    <p>${esc(f.answer)}</p>
+    ${timestampLink(f.timestamp, audioUrl)}
+  </details>`;
 }
 
 function splitTitle(title) {
