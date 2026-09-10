@@ -736,8 +736,28 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   max-width: 68ch;
 }
 .top-advice-block h2, .faq-block h2 { font-size: 1.15rem; margin-bottom: 0.9rem; }
-.top-advice-list { margin: 0; padding-left: 1.25rem; }
-.top-advice-list li { margin-bottom: 0.6rem; }
+.top-advice-list { margin: 0; padding-left: 0; list-style: none; }
+.top-advice-list li { margin-bottom: 1.1rem; padding-bottom: 1.1rem; border-bottom: var(--border); }
+.top-advice-list li:last-child { border-bottom: none; }
+.top-advice-list p { margin: 0.3rem 0 0; }
+.advice-meta { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+
+.advice-tag {
+  font-family: var(--font-label); font-weight: 700;
+  font-size: 0.62rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-soft); background: var(--paper-dim);
+  padding: 0.2rem 0.5rem; border-radius: var(--radius);
+}
+.jump-link, .advice-timestamp {
+  font-family: var(--font-label); font-weight: 700; font-size: 0.72rem;
+}
+.advice-timestamp { color: var(--ink-soft); }
+.jump-link {
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: var(--blue);
+}
+.jump-link:hover { color: var(--blue-deep); text-decoration: underline; }
+.faq-item .jump-link { display: block; margin-top: 0.6rem; }
 
 .faq-item {
   border-bottom: var(--border);

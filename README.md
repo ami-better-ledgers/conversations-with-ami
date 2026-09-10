@@ -174,10 +174,21 @@ no error, it appears automatically once that episode goes live.
    you already use for the featured-companies carousel, or a brand new
    one, it doesn't matter which. Each tab publishes to its own separate
    CSV link regardless of what else is in the spreadsheet:
-   - A tab named **FAQs** with headers in row 1: `Question`, `Answer`, `Episode`
-   - A tab named **Top Advice by Episode** with headers in row 1: `Title`, `Advice`, `Episode`
+   - A tab named **FAQs** with headers in row 1, in this order:
+     `Question`, `Answer`, `Episode`, `Timestamp`
+   - A tab named **Top Advice by Episode** with headers in row 1, in this order:
+     `Advice`, `Pillar`, `Timestamp`, `Episode`
    - The `Episode` column is the episode number (1, 2, 3…) — the same
      number iTunes/Spotify show for that episode.
+   - `Timestamp` (optional, both tabs) is where in the episode this is
+     discussed, as `M:SS` or `H:MM:SS` (e.g. `12:23`) — it renders as a
+     clickable link that jumps the audio player to that moment.
+   - `Pillar` (Top Advice tab only, optional) is your own label for
+     that specific piece of advice (e.g. "Core Skills", "Peer Story")
+     — this is separate from the broader topic pillars shown at the
+     top of the page, and can be anything you want, there's no fixed list.
+   - Column order matters — the code reads each column by its position,
+     not by the header text above it, so keep them in the order listed.
 2. **File → Share → Publish to web.** In the dialog, set the *first*
    dropdown to the **FAQs** tab specifically (not "Entire Document"),
    the second dropdown to **CSV**, then click **Publish**. Copy the URL.

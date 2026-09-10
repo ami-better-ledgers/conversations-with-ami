@@ -168,7 +168,13 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       ${curated?.topAdvice?.length ? `<div class="top-advice-block">
         <h2>Top advice from this episode</h2>
         <ul class="top-advice-list">
-          ${curated.topAdvice.map((t) => `<li><strong>${esc(t.title)}:</strong> ${esc(t.advice)}</li>`).join("")}
+          ${curated.topAdvice.map((t) => `<li>
+            <div class="advice-meta">
+              ${t.pillar ? `<span class="advice-tag">${esc(t.pillar)}</span>` : ""}
+              ${timestampLink(t.timestamp, feedItem.audioUrl)}
+            </div>
+            <p>${esc(t.advice)}</p>
+          </li>`).join("")}
         </ul>
       </div>` : ""}
 
@@ -177,6 +183,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
         ${curated.faqs.map((f) => `<details class="faq-item">
           <summary>${esc(f.question)}</summary>
           <p>${esc(f.answer)}</p>
+          ${timestampLink(f.timestamp, feedItem.audioUrl)}
         </details>`).join("")}
       </div>` : ""}
 
@@ -194,7 +201,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       ${feedItem.image ? `<img class="sidebar-thumb" src="${esc(feedItem.image)}" alt="">` : ""}
 
       <div class="sidebar-card">
-        ${feedItem.audioUrl ? `<audio controls preload="none" src="${esc(feedItem.audioUrl)}" style="width:100%;"></audio>` : ""}
+        ${feedItem.audioUrl ? `<audio id="episode-audio" controls preload="none" src="${esc(feedItem.audioUrl)}" style="width:100%;"></audio>` : ""}
         <button type="button" class="episode-watch" id="episode-watch-btn" data-title="${esc(feedItem.title)}" hidden aria-expanded="false" style="margin-top:0.75rem;">Watch on YouTube</button>
         <div class="episode-embed" id="episode-watch-embed" hidden></div>
         ${feedItem.transcriptUrl ? `<a class="read-link" href="${esc(feedItem.transcriptUrl)}" target="_blank" rel="noopener">Read the transcript &rarr;</a>` : ""}
@@ -310,6 +317,19 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
   });
 })();
 </script>
+<script>
+(function () {
+  var audio = document.getElementById("episode-audio");
+  if (!audio) return;
+  document.querySelectorAll(".jump-link").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      audio.currentTime = Number(btn.dataset.seek);
+      audio.play();
+      audio.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  });
+})();
+</script>
 
 <div class="apply-modal-overlay" id="apply-modal-overlay" hidden>
   <div class="apply-modal-panel">
@@ -355,6 +375,23 @@ function buildShareLinks(url, text) {
     x: `https://twitter.com/intent/tweet?url=${u}&text=${t}`,
     threads: `https://www.threads.net/intent/post?text=${encodeURIComponent(text + " " + url)}`,
   };
+}
+
+function timestampToSeconds(ts) {
+  const parts = (ts || "").trim().split(":").map(Number);
+  if (!parts.length || parts.some((p) => isNaN(p))) return null;
+  return parts.reduce((acc, p) => acc * 60 + p, 0);
+}
+
+// Renders a timestamp as a clickable "jump to this moment" button when
+// the episode has audio to seek in, or as plain text otherwise.
+function timestampLink(timestamp, audioUrl) {
+  if (!timestamp) return "";
+  const seconds = timestampToSeconds(timestamp);
+  if (audioUrl && seconds !== null) {
+    return `<button type="button" class="jump-link" data-seek="${seconds}">&#9654; ${esc(timestamp)}</button>`;
+  }
+  return `<span class="advice-timestamp">${esc(timestamp)}</span>`;
 }
 
 function splitTitle(title) {
