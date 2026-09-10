@@ -99,7 +99,14 @@ async function callClaude(apiKey, feedItem) {
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 1200,
+        // 1200 was too tight for some episodes — a longer set of
+        // guest/company bios or guestLinks could push the response
+        // past the cap mid-way through the JSON, cutting it off before
+        // the closing brace. Since the cache key is a hash of the
+        // episode's own content, a truncated episode fails the exact
+        // same way every single retry, forever — not something a
+        // retry can ever fix. 2400 leaves real headroom.
+        max_tokens: 2400,
         messages: [{ role: "user", content: prompt }],
       }),
     });
@@ -117,7 +124,9 @@ async function callClaude(apiKey, feedItem) {
   const data = await res.json();
   const text = (data.content || []).map((block) => block.text || "").join("");
   const parsed = parseJsonSafely(text);
-  if (!parsed) console.error(`[ai-summary] episode ${feedItem.episode}: response failed validation — raw text: ${text.slice(0, 800)}`);
+  if (!parsed) {
+    console.error(`[ai-summary] episode ${feedItem.episode}: response failed validation — stop_reason=${data.stop_reason}, length=${text.length}, raw text: ${text.slice(0, 1500)}`);
+  }
   return parsed;
 }
 
