@@ -227,12 +227,16 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
       </div>` : ""}
 
       <div class="sidebar-card share-row" aria-label="Share this episode">
-        <span class="share-label">Share</span>
-        <a href="${shareLinks.linkedin}" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><img src="/assets/social-icons/linkedin.png" alt=""></a>
-        <a href="${shareLinks.facebook}" target="_blank" rel="noopener" aria-label="Share on Facebook"><img src="/assets/social-icons/facebook.png" alt=""></a>
-        <a href="${shareLinks.threads}" target="_blank" rel="noopener" aria-label="Share on Threads"><img src="/assets/social-icons/threads.svg" alt=""></a>
-        <a href="${shareLinks.x}" target="_blank" rel="noopener" aria-label="Share on X"><img src="/assets/social-icons/x.png" alt=""></a>
-        <a href="${shareLinks.whatsapp}" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><img src="/assets/social-icons/whatsapp.svg" alt=""></a>
+        <p class="sidebar-label">Share</p>
+        <div class="share-icons">
+          <a href="${shareLinks.linkedin}" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><img src="/assets/social-icons/linkedin.png" alt=""></a>
+          <a href="${shareLinks.facebook}" target="_blank" rel="noopener" aria-label="Share on Facebook"><img src="/assets/social-icons/facebook.png" alt=""></a>
+          <a href="${shareLinks.threads}" target="_blank" rel="noopener" aria-label="Share on Threads"><img src="/assets/social-icons/threads.svg" alt=""></a>
+          <a href="${shareLinks.x}" target="_blank" rel="noopener" aria-label="Share on X"><img src="/assets/social-icons/x.png" alt=""></a>
+          <a href="${shareLinks.whatsapp}" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><img src="/assets/social-icons/whatsapp.svg" alt=""></a>
+          <a href="${shareLinks.sms}" aria-label="Share via text message"><img src="/assets/social-icons/imessage.svg" alt=""></a>
+          <button type="button" id="share-more-btn" aria-label="More sharing options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.6" y1="10.6" x2="15.4" y2="6.4"></line><line x1="8.6" y1="13.4" x2="15.4" y2="17.6"></line></svg></button>
+        </div>
       </div>
     </aside>
   </section>
@@ -338,6 +342,28 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
       audio.play();
       audio.scrollIntoView({ behavior: "smooth", block: "center" });
     });
+  });
+})();
+</script>
+<script>
+(function () {
+  var btn = document.getElementById("share-more-btn");
+  if (!btn) return;
+  var pageTitle = document.title;
+  var pageUrl = window.location.href;
+
+  btn.addEventListener("click", function () {
+    if (navigator.share) {
+      navigator.share({ title: pageTitle, url: pageUrl }).catch(function () {});
+      return;
+    }
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(pageUrl).then(function () {
+        var original = btn.getAttribute("aria-label");
+        btn.setAttribute("aria-label", "Link copied");
+        setTimeout(function () { btn.setAttribute("aria-label", original); }, 2000);
+      }).catch(function () {});
+    }
   });
 })();
 </script>
@@ -535,6 +561,7 @@ function buildShareLinks(url, text) {
     x: `https://twitter.com/intent/tweet?url=${u}&text=${t}`,
     threads: `https://www.threads.net/intent/post?text=${encodeURIComponent(text + " " + url)}`,
     whatsapp: `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
+    sms: `sms:?&body=${encodeURIComponent(text + " " + url)}`,
   };
 }
 

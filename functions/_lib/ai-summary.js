@@ -24,7 +24,13 @@
 //      request with no cache would call the API again.
 
 const MODEL = "claude-sonnet-5";
-const PILLARS = ["Sales", "Hiring & Leadership", "Tax & Legal", "Marketing", "AI/Tech"];
+// The show's own 5 pillars (from the About page's "What you'll
+// actually get from an episode" section) — what KIND of value an
+// episode provides, not what business topic it's about. Business
+// topic is what "subjects" is for (freeform, unrestricted).
+const PILLARS = ["Peer Story", "Nuanced Literacy", "Future Planning", "What Not to Do", "Core Skills"];
+
+const FAILURE_MARKER = "__failed";
 
 export async function getOrGenerateSummary(env, feedItem) {
   if (!env.ANTHROPIC_API_KEY) return null;
@@ -33,17 +39,27 @@ export async function getOrGenerateSummary(env, feedItem) {
 
   if (env.EPISODE_AI_CACHE) {
     const cached = await env.EPISODE_AI_CACHE.get(cacheKey, "json");
-    if (cached) return cached;
+    if (cached) return cached[FAILURE_MARKER] ? null : cached;
   }
 
   const generated = await callClaude(env.ANTHROPIC_API_KEY, feedItem);
-  if (!generated) return null;
 
   if (env.EPISODE_AI_CACHE) {
-    // No expirationTtl: this is keyed off a hash of the episode's own
-    // content (see buildCacheKey), so it naturally invalidates itself
-    // if the show notes ever change — no need to expire it on a timer.
-    await env.EPISODE_AI_CACHE.put(cacheKey, JSON.stringify(generated));
+    if (generated) {
+      // No expirationTtl: this is keyed off a hash of the episode's own
+      // content (see buildCacheKey), so it naturally invalidates itself
+      // if the show notes ever change — no need to expire it on a timer.
+      await env.EPISODE_AI_CACHE.put(cacheKey, JSON.stringify(generated));
+    } else {
+      // Cache a genuine failure too, but briefly — without this, a
+      // response that keeps failing validation calls the live API on
+      // EVERY single page view of /api/episodes (this is exactly what
+      // made the podcast list page slow once, for two episodes whose
+      // topic didn't fit any fixed pillar). An hour is enough to stop
+      // that, while still retrying periodically rather than freezing
+      // the failure forever.
+      await env.EPISODE_AI_CACHE.put(cacheKey, JSON.stringify({ [FAILURE_MARKER]: true }), { expirationTtl: 3600 });
+    }
   }
 
   return generated;
@@ -54,7 +70,7 @@ export async function getOrGenerateSummary(env, feedItem) {
 // "successful" cached response (passed validation, but with a field
 // like pillars silently empty) needs to be thrown out and retried
 // under stricter rules. Cheaper than hunting down individual KV keys.
-const CACHE_VERSION = "v2";
+const CACHE_VERSION = "v4";
 
 async function buildCacheKey(feedItem) {
   const raw = `${feedItem.episode}::${feedItem.title}::${feedItem.content || feedItem.description || ""}`;
@@ -117,8 +133,8 @@ Return ONLY a single valid JSON object (no markdown fences, no commentary) with 
   "guestRole": "The guest's role/title (e.g. 'CPA & Founder'), or empty string if unclear.",
   "guestBio": "One sentence, third person, describing who the guest is and what they help people with. Ground this in the LinkedIn text above when it's provided, rather than only the show notes.",
   "companyBio": "One sentence, third person, describing what the guest's company does. Ground this in the company website text above when it's provided. Empty string if unclear.",
-  "pillars": "An array of one or two values from exactly this list: ${PILLARS.join(", ")} — whichever best fit this episode's topic. Most episodes only need one.",
-  "subjects": "An array of 1 to 3 short, specific subject tags for what this episode is actually about (e.g. 'Real Estate', 'Cost Segregation', 'Cold Outreach', 'Hiring', 'AI Tools') — more specific than the broad pillar above.",
+  "pillars": "An array of one or two values from exactly this list: ${PILLARS.join(", ")} — whichever kind(s) of value this episode provides. Meanings: 'Peer Story' = proof you're not crazy for finding this hard, from someone who's actually in it. 'Nuanced Literacy' = understanding a service or system before you're in a position to misuse it or get burned by it. 'Future Planning' = not what to do today, but how to think about a decision once you actually reach that stage. 'What Not to Do' = a specific, expensive mistake people make, straight from someone who watches others make it. 'Core Skills' = beginner-level competency in something every entrepreneur eventually has to do themselves (sell, manage, hire, read their own numbers). Most episodes fit one or two of these.",
+  "subjects": "An array of 1 to 3 short, specific tags for what business TOPIC this episode is actually about (e.g. 'Real Estate', 'Cost Segregation', 'Cold Outreach', 'Hiring', 'Banking', 'Insurance', 'AI Tools') — there is no fixed list for this field, use whatever specific topic words fit best.",
   "problemSolved": "The specific problem this episode solves, phrased the way a business owner would actually type it into Google.",
   "summary": "150 to 300 words total, written as exactly 2 short paragraphs separated by a blank line (\\n\\n) so it's easy to scan — not one dense block. Plain text, no markdown. Third person, summarizing the episode's core lesson for someone deciding whether to listen.",
   "guestLinks": [{"label": "LinkedIn", "url": "https://..."}]
@@ -185,17 +201,20 @@ function parseJsonSafely(text) {
   try {
     const parsed = JSON.parse(match[0]);
     if (!parsed.summary || !parsed.pageTitle) return null;
+    // Completeness is judged by subjects, not pillars: subjects are
+    // freeform, so a real episode should always produce at least one
+    // regardless of topic. Pillars are a small FIXED taxonomy (5
+    // categories) — a genuine episode can legitimately match none of
+    // them (e.g. a banking or insurance episode), and that's fine, not
+    // a sign the response is incomplete. Treating an empty pillars
+    // array as "incomplete" was the bug: it made those episodes retry
+    // the live API on every single page view forever, since their
+    // topic will never match the fixed list no matter how many times
+    // we ask.
+    if (!Array.isArray(parsed.subjects) || !parsed.subjects.length) return null;
     parsed.pillars = Array.isArray(parsed.pillars) ? parsed.pillars.filter((p) => PILLARS.includes(p)) : [];
-    parsed.subjects = Array.isArray(parsed.subjects) ? parsed.subjects.slice(0, 3) : [];
+    parsed.subjects = parsed.subjects.slice(0, 3);
     parsed.guestLinks = Array.isArray(parsed.guestLinks) ? parsed.guestLinks : [];
-    // Treat a response with no pillars as incomplete rather than
-    // "successful with an empty field" — every real episode fits at
-    // least one pillar, so an empty array here means Claude dropped
-    // the field, not that it genuinely doesn't apply. Returning null
-    // means getOrGenerateSummary won't cache it, so it retries on the
-    // next request instead of permanently freezing an incomplete
-    // result in KV.
-    if (!parsed.pillars.length) return null;
     return parsed;
   } catch (err) {
     return null;
