@@ -232,6 +232,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
         <a href="${shareLinks.facebook}" target="_blank" rel="noopener" aria-label="Share on Facebook"><img src="/assets/social-icons/facebook.png" alt=""></a>
         <a href="${shareLinks.threads}" target="_blank" rel="noopener" aria-label="Share on Threads"><img src="/assets/social-icons/threads.svg" alt=""></a>
         <a href="${shareLinks.x}" target="_blank" rel="noopener" aria-label="Share on X"><img src="/assets/social-icons/x.png" alt=""></a>
+        <a href="${shareLinks.whatsapp}" target="_blank" rel="noopener" aria-label="Share on WhatsApp"><img src="/assets/social-icons/whatsapp.svg" alt=""></a>
       </div>
     </aside>
   </section>
@@ -533,6 +534,7 @@ function buildShareLinks(url, text) {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${u}&quote=${t}`,
     x: `https://twitter.com/intent/tweet?url=${u}&text=${t}`,
     threads: `https://www.threads.net/intent/post?text=${encodeURIComponent(text + " " + url)}`,
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(text + " " + url)}`,
   };
 }
 
