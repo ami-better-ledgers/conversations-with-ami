@@ -87,7 +87,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
 
   const jsonLd = buildJsonLd({ canonicalUrl, pageTitle, feedItem, guestName, dateLabel: feedItem.pubDate });
 
-  const shareText = `${pageTitle}${guestName ? " — a conversation with " + guestName + (guestCompany ? " (" + guestCompany + ")" : "") : ""} on Conversations with Ami.`;
+  const shareText = `I really enjoyed listening to "${pageTitle}" on Conversations with Ami and thought others in my network would enjoy it too.`;
   const shareLinks = buildShareLinks(canonicalUrl, shareText);
 
   return `<!doctype html>
@@ -152,6 +152,8 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
 
   <section class="wrap episode-layout">
     <div class="episode-main">
+      <div class="episode-embed" id="episode-watch-embed" hidden></div>
+
       ${curated?.problemSolved ? `<div class="problem-callout"><span>The problem this episode solves</span>${esc(curated.problemSolved)}</div>` : ""}
 
       <div class="episode-summary">
@@ -189,9 +191,15 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
 
       ${relatedList.length ? `<div class="related-episodes">
         <h2>Related episodes</h2>
-        <ul>
-          ${relatedList.map((r) => `<li><a href="/episodes/${esc(r.slug)}">${esc(r.pageTitle || r.slug)}</a></li>`).join("")}
-        </ul>
+        <div class="related-grid">
+          ${relatedList.map((r) => `<a class="related-card" href="/episodes/${esc(r.slug)}">
+            <span class="related-card-text">
+              <span class="related-eyebrow">Listen next</span>
+              <span class="related-title">${esc(r.pageTitle || r.slug)}</span>
+            </span>
+            <span class="related-arrow">&rarr;</span>
+          </a>`).join("")}
+        </div>
       </div>` : ""}
 
       <p style="margin-top:2rem;"><a href="/podcast.html">&larr; Back to all episodes</a></p>
@@ -203,8 +211,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       <div class="sidebar-card">
         ${feedItem.audioUrl ? `<audio id="episode-audio" controls preload="none" src="${esc(feedItem.audioUrl)}" style="width:100%;"></audio>` : ""}
         <button type="button" class="episode-watch" id="episode-watch-btn" data-title="${esc(feedItem.title)}" hidden aria-expanded="false" style="margin-top:0.75rem;">Watch on YouTube</button>
-        <div class="episode-embed" id="episode-watch-embed" hidden></div>
-        ${feedItem.transcriptUrl ? `<a class="read-link" href="${esc(feedItem.transcriptUrl)}" target="_blank" rel="noopener">Read the transcript &rarr;</a>` : ""}
+        ${feedItem.transcriptUrl ? `<button type="button" class="read-link" id="transcript-open-btn" data-episode="${esc(feedItem.episode)}" style="background:none;border:none;padding:0;cursor:pointer;">Read the transcript &rarr;</button>` : ""}
       </div>
 
       ${guestName ? `<div class="sidebar-card">
@@ -212,7 +219,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
         <p class="guest-name">${esc(guestName)}</p>
         <p class="guest-meta">${[guestCompany, curated?.guestRole].filter(Boolean).map(esc).join(" · ")}</p>
         ${curated?.guestBio ? `<p class="bio-line">${esc(curated.guestBio)}</p>` : ""}
-        ${curated?.companyBio ? `<p class="bio-line">${esc(curated.companyBio)}</p>` : ""}
+        ${curated?.companyBio ? `<p class="bio-line">${boldFirstMention(curated.companyBio, guestCompany)}</p>` : ""}
         ${(curated?.guestLinks || []).length ? `<p class="guest-links">${(curated?.guestLinks || []).map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join(" · ")}</p>` : ""}
       </div>` : ""}
 
@@ -337,6 +344,98 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
     <iframe id="apply-modal-iframe" title="Apply to be on the show"></iframe>
   </div>
 </div>
+
+<div class="transcript-modal-overlay" id="transcript-modal-overlay" hidden>
+  <div class="transcript-modal-panel">
+    <button type="button" class="transcript-modal-close" id="transcript-modal-close" aria-label="Close">✕</button>
+    <h2>Transcript</h2>
+    <div class="transcript-modal-toolbar">
+      <input type="search" id="transcript-search" placeholder="Search the transcript…" aria-label="Search the transcript">
+      <a href="#" id="transcript-download" class="btn-small" hidden>Download .txt</a>
+    </div>
+    <div class="transcript-modal-body" id="transcript-modal-body">Loading transcript…</div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var openBtn = document.getElementById("transcript-open-btn");
+  if (!openBtn) return;
+
+  var overlay = document.getElementById("transcript-modal-overlay");
+  var closeBtn = document.getElementById("transcript-modal-close");
+  var body = document.getElementById("transcript-modal-body");
+  var searchInput = document.getElementById("transcript-search");
+  var downloadLink = document.getElementById("transcript-download");
+  var paragraphs = null; // fetched once, reused for search
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // Plain substring search (no RegExp) — highlights the first match per
+  // paragraph. Avoids constructing a regex from user input entirely.
+  function renderParagraphs(query) {
+    var q = (query || "").trim();
+    var qLower = q.toLowerCase();
+    body.innerHTML = paragraphs
+      .map(function (p) {
+        if (!q) return "<p>" + escapeHtml(p) + "</p>";
+        var idx = p.toLowerCase().indexOf(qLower);
+        if (idx === -1) return "<p>" + escapeHtml(p) + "</p>";
+        var before = p.slice(0, idx);
+        var match = p.slice(idx, idx + q.length);
+        var after = p.slice(idx + q.length);
+        return "<p>" + escapeHtml(before) + "<mark>" + escapeHtml(match) + "</mark>" + escapeHtml(after) + "</p>";
+      })
+      .join("");
+    if (q) {
+      var firstMark = body.querySelector("mark");
+      if (firstMark) firstMark.scrollIntoView({ block: "center" });
+    }
+  }
+
+  function openModal() {
+    overlay.hidden = false;
+    if (paragraphs) return;
+
+    fetch("/api/transcript?episode=" + encodeURIComponent(openBtn.dataset.episode))
+      .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
+      .then(function (result) {
+        if (!result.ok || result.data.error || !result.data.transcript) {
+          body.innerHTML = '<p class="state-msg">Could not load the transcript right now.</p>';
+          return;
+        }
+        var lines = result.data.transcript.split(String.fromCharCode(10));
+        paragraphs = [];
+        for (var i = 0; i < lines.length; i++) {
+          if (lines[i].trim()) paragraphs.push(lines[i]);
+        }
+        renderParagraphs("");
+
+        var blob = new Blob([result.data.transcript], { type: "text/plain" });
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = "episode-" + openBtn.dataset.episode + "-transcript.txt";
+        downloadLink.hidden = false;
+      })
+      .catch(function () {
+        body.innerHTML = '<p class="state-msg">Could not load the transcript right now.</p>';
+      });
+  }
+
+  function closeModal() {
+    overlay.hidden = true;
+  }
+
+  openBtn.addEventListener("click", openModal);
+  closeBtn.addEventListener("click", closeModal);
+  overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
+  searchInput.addEventListener("input", function () {
+    if (paragraphs) renderParagraphs(searchInput.value);
+  });
+})();
+</script>
 </body>
 </html>
 `;
@@ -422,4 +521,14 @@ function esc(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+// Bolds the first mention of the company name within its own bio
+// sentence (e.g. "**ReSure Financial** helps real estate investors...").
+// Falls back to plain escaped text if the name isn't found verbatim.
+function boldFirstMention(text, name) {
+  if (!name) return esc(text);
+  const idx = text.indexOf(name);
+  if (idx === -1) return esc(text);
+  return `${esc(text.slice(0, idx))}<strong>${esc(name)}</strong>${esc(text.slice(idx + name.length))}`;
 }
