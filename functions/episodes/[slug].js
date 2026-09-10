@@ -17,7 +17,7 @@
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
 import { curatedBySlug } from "../_lib/curated.js";
-import { fetchFaqsForEpisode, fetchTopAdviceForEpisode } from "../_lib/episode-extras.js";
+import { fetchFaqsForEpisode, fetchTopAdviceForEpisode, hasTranscriptSheetRow } from "../_lib/episode-extras.js";
 
 const SITE_URL = "https://www.conversationswithami.com";
 
@@ -56,21 +56,24 @@ export async function onRequestGet(context) {
   // already has, so they don't require a full content/episodes.json
   // entry of their own. A row whose Episode number doesn't match a
   // published episode is simply absent here, not an error.
-  const [faqs, topAdvice] = await Promise.all([
+  const [faqs, topAdvice, hasSheetTranscript] = await Promise.all([
     fetchFaqsForEpisode(context.env, feedItem.episode),
     fetchTopAdviceForEpisode(context.env, feedItem.episode),
+    hasTranscriptSheetRow(context.env, feedItem.episode),
   ]);
   if (faqs.length || topAdvice.length) {
     curated = { ...(curated || {}), faqs, topAdvice };
   }
 
-  const html = renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes: feedEpisodes });
+  const hasTranscript = hasSheetTranscript || !!feedItem.transcriptUrl;
+
+  const html = renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpisodes: feedEpisodes });
   return new Response(html, {
     headers: { "Content-Type": "text/html; charset=utf-8" },
   });
 }
 
-function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
+function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpisodes }) {
   const canonicalUrl = `${SITE_URL}/episodes/${slug}`;
   const [hook, guestCredit] = splitTitle(feedItem.title);
   const pageTitle = curated?.pageTitle || hook;
@@ -211,7 +214,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       <div class="sidebar-card">
         ${feedItem.audioUrl ? `<audio id="episode-audio" controls preload="none" src="${esc(feedItem.audioUrl)}" style="width:100%;"></audio>` : ""}
         <button type="button" class="episode-watch" id="episode-watch-btn" data-title="${esc(feedItem.title)}" hidden aria-expanded="false" style="margin-top:0.75rem;">Watch on YouTube</button>
-        ${feedItem.transcriptUrl ? `<button type="button" class="read-link" id="transcript-open-btn" data-episode="${esc(feedItem.episode)}" style="background:none;border:none;padding:0;cursor:pointer;">Read the transcript &rarr;</button>` : ""}
+        ${hasTranscript ? `<button type="button" class="read-link" id="transcript-open-btn" data-episode="${esc(feedItem.episode)}" style="background:none;border:none;padding:0;cursor:pointer;">Read the transcript &rarr;</button>` : ""}
       </div>
 
       ${guestName ? `<div class="sidebar-card">
@@ -367,54 +370,111 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
   var body = document.getElementById("transcript-modal-body");
   var searchInput = document.getElementById("transcript-search");
   var downloadLink = document.getElementById("transcript-download");
-  var paragraphs = null; // fetched once, reused for search
+  var NEWLINE = String.fromCharCode(10);
+  var entries = null; // normalized {text, speaker, seconds} — fetched once, reused for search
+  var hasAudio = !!document.getElementById("episode-audio");
 
   function escapeHtml(str) {
     return String(str || "")
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
+  // Turns "H:MM:SS" or "M:SS" into whole seconds. No regex — written as
+  // literal <script> text, which sits outside this page's normal JS
+  // (see the giant HTML template literal that builds this page): any
+  // backslash-escape sequence written here gets silently mangled by
+  // that template's own escaping before the browser ever sees it, so
+  // this file avoids RegExp and newline-escape sequences entirely
+  // rather than fighting it.
+  function toSeconds(ts) {
+    var parts = (ts || "").split(":");
+    var total = 0;
+    for (var i = 0; i < parts.length; i++) {
+      var n = Number(parts[i]);
+      if (isNaN(n)) return null;
+      total = total * 60 + n;
+    }
+    return parts.length ? total : null;
+  }
+
   // Plain substring search (no RegExp) — highlights the first match per
-  // paragraph. Avoids constructing a regex from user input entirely.
-  function renderParagraphs(query) {
+  // line. Avoids constructing a regex from user input entirely.
+  function renderEntries(query) {
     var q = (query || "").trim();
     var qLower = q.toLowerCase();
-    body.innerHTML = paragraphs
-      .map(function (p) {
-        if (!q) return "<p>" + escapeHtml(p) + "</p>";
-        var idx = p.toLowerCase().indexOf(qLower);
-        if (idx === -1) return "<p>" + escapeHtml(p) + "</p>";
-        var before = p.slice(0, idx);
-        var match = p.slice(idx, idx + q.length);
-        var after = p.slice(idx + q.length);
-        return "<p>" + escapeHtml(before) + "<mark>" + escapeHtml(match) + "</mark>" + escapeHtml(after) + "</p>";
+    body.innerHTML = entries
+      .map(function (e) {
+        var text = e.text;
+        var textHtml;
+        if (!q) {
+          textHtml = escapeHtml(text);
+        } else {
+          var idx = text.toLowerCase().indexOf(qLower);
+          textHtml = idx === -1
+            ? escapeHtml(text)
+            : escapeHtml(text.slice(0, idx)) + "<mark>" + escapeHtml(text.slice(idx, idx + q.length)) + "</mark>" + escapeHtml(text.slice(idx + q.length));
+        }
+        var speakerHtml = e.speaker ? "<strong>" + escapeHtml(e.speaker) + ":</strong> " : "";
+        var seekable = e.seconds !== null && hasAudio;
+        var tsHtml = seekable ? '<span class="transcript-ts">' + escapeHtml(e.timestamp) + "</span> " : "";
+        var cls = seekable ? "transcript-line seekable" : "transcript-line";
+        var seekAttr = seekable ? ' data-seek="' + e.seconds + '"' : "";
+        return '<p class="' + cls + '"' + seekAttr + ">" + tsHtml + speakerHtml + textHtml + "</p>";
       })
       .join("");
     if (q) {
       var firstMark = body.querySelector("mark");
       if (firstMark) firstMark.scrollIntoView({ block: "center" });
     }
+    body.querySelectorAll(".seekable").forEach(function (p) {
+      p.addEventListener("click", function () {
+        var audio = document.getElementById("episode-audio");
+        if (!audio) return;
+        audio.currentTime = Number(p.dataset.seek);
+        audio.play();
+      });
+    });
   }
 
   function openModal() {
     overlay.hidden = false;
-    if (paragraphs) return;
+    if (entries) return;
 
     fetch("/api/transcript?episode=" + encodeURIComponent(openBtn.dataset.episode))
       .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
       .then(function (result) {
-        if (!result.ok || result.data.error || !result.data.transcript) {
+        if (!result.ok || result.data.error || (!result.data.lines && !result.data.transcript)) {
           body.innerHTML = '<p class="state-msg">Could not load the transcript right now.</p>';
           return;
         }
-        var lines = result.data.transcript.split(String.fromCharCode(10));
-        paragraphs = [];
-        for (var i = 0; i < lines.length; i++) {
-          if (lines[i].trim()) paragraphs.push(lines[i]);
-        }
-        renderParagraphs("");
 
-        var blob = new Blob([result.data.transcript], { type: "text/plain" });
+        var downloadText;
+        if (result.data.lines) {
+          // Drive-hosted transcript: real per-speaker-turn timestamps,
+          // speakers, and clickable jump-to-audio. Timestamps are
+          // intentionally left out of the download — shown on screen
+          // (next to the speaker) only to orient the reader, not
+          // cluttering the plain-text copy.
+          entries = result.data.lines.map(function (l) {
+            return { text: l.text, speaker: l.speaker, timestamp: l.timestamp, seconds: toSeconds(l.timestamp) };
+          });
+          downloadText = entries.map(function (e) {
+            return (e.speaker ? e.speaker + ": " : "") + e.text;
+          }).join(NEWLINE);
+        } else {
+          // Riverside's plain transcript file: no timestamps, no
+          // speaker column, so no per-line seeking is possible here.
+          var rawLines = result.data.transcript.split(NEWLINE);
+          entries = [];
+          for (var i = 0; i < rawLines.length; i++) {
+            if (rawLines[i].trim()) entries.push({ text: rawLines[i], speaker: null, seconds: null });
+          }
+          downloadText = result.data.transcript;
+        }
+
+        renderEntries("");
+
+        var blob = new Blob([downloadText], { type: "text/plain" });
         downloadLink.href = URL.createObjectURL(blob);
         downloadLink.download = "episode-" + openBtn.dataset.episode + "-transcript.txt";
         downloadLink.hidden = false;
@@ -432,7 +492,7 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
   closeBtn.addEventListener("click", closeModal);
   overlay.addEventListener("click", function (e) { if (e.target === overlay) closeModal(); });
   searchInput.addEventListener("input", function () {
-    if (paragraphs) renderParagraphs(searchInput.value);
+    if (entries) renderEntries(searchInput.value);
   });
 })();
 </script>

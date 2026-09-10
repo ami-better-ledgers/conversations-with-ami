@@ -140,8 +140,18 @@
   flex: 1; overflow-y: auto;
   font-size: 0.92rem; line-height: 1.65; color: var(--ink-soft);
 }
-.transcript-modal-body p { margin: 0 0 1em; }
+.transcript-modal-body p { margin: 0 0 1em; white-space: pre-wrap; }
 .transcript-modal-body mark { background: var(--sky); color: var(--ink); border-radius: 2px; }
+.transcript-ts {
+  font-family: var(--font-label); font-weight: 700;
+  font-size: 0.72rem; color: var(--blue);
+}
+.transcript-line.seekable {
+  cursor: pointer; border-radius: var(--radius);
+  margin: 0 -0.5rem 1em; padding: 0.3em 0.5rem;
+  transition: background 0.15s ease;
+}
+.transcript-line.seekable:hover { background: var(--sky-tint); }
 
 @media (max-width: 800px) {
   .nav-links .nav-item,

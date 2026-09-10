@@ -211,6 +211,48 @@ published CSV to the tab's internal ID, not its display name.
 episode number it belongs to. Multiple rows can share the same episode
 number (e.g. 5 FAQ rows all with `12` in the Episode column).
 
+### Transcripts — Google Drive + a Sheet tab, with real clickable timestamps
+
+Riverside's own transcript export has no timestamps at all, so it can't
+support "jump to this moment" — this is a separate source you control
+that can. A full transcript is also way too long for a single Sheets
+cell (the ~50,000-character limit), so the file itself lives in Google
+Drive; the Sheet just points to it.
+
+**One-time setup:**
+
+1. Add one more tab, named **Transcripts**, with headers in row 1:
+   `Episode`, `Transcript`.
+2. For each episode, upload its transcript `.txt` file to Google Drive.
+   The file needs to look like a normal speaker-labeled transcript, one
+   blank line between turns:
+   ```
+   Speaker Name (00:52)
+   Whatever they said, across as many paragraphs as needed.
+
+   Other Speaker (01:50)
+   Their reply...
+   ```
+   Timestamps can be `M:SS` or `H:MM:SS`.
+3. **Right-click the file in Drive → Share → General access → "Anyone
+   with the link."** This step is required — without it, the site gets
+   Google's sign-in page instead of your file, and the transcript
+   button just won't have anything to show.
+4. Copy that file's share link, paste it into the **Transcript** column
+   next to that episode's number. Any Drive share-link format works —
+   the code pulls the file id out of it.
+5. **File → Share → Publish to web**, first dropdown set to
+   **Transcripts**, second to **CSV**, **Publish**. Copy the URL.
+6. In Cloudflare Pages: **Settings → Environment variables** → add
+   `TRANSCRIPT_SHEET_CSV_URL` with that URL, applied to **Production**
+   and **Preview**, then redeploy once.
+
+**Every time after that:** upload the new file to Drive, share it the
+same way, and add a row. If an episode has no row here (or the row's
+file isn't shared correctly), the transcript button falls back to
+Riverside's plain version automatically — it only disappears entirely
+if neither exists.
+
 ## What's still needed from you
 - [ ] The Kit API key (5-minute setup above) — this is the only remaining piece
 - [ ] Sending your first Public-marked newsletter issue, whenever ready
@@ -218,6 +260,8 @@ number (e.g. 5 FAQ rows all with `12` in the Episode column).
       to get the AI-written summary instead of the plain RSS version
 - [ ] The FAQs/Top Advice Google Sheet setup above, whenever you're ready
       to start adding those to episode pages
+- [ ] The Transcripts Sheet + Drive setup above, for real clickable-
+      timestamp transcripts instead of Riverside's plain version
 
 ## Featured companies carousel: how to add new ones (no redeploy needed)
 
@@ -285,7 +329,7 @@ functions/_lib/rss.js         Shared RSS parsing, used by functions/api/episodes
 functions/_lib/ai-summary.js  Calls Claude to write the episode summary/bio, caches it in KV
 content/episodes.json         Hand-written episode content (optional — overrides the AI-generated version)
 functions/_lib/curated.js     Shared lookup map for content/episodes.json
-functions/_lib/episode-extras.js  Reads FAQs/Top Advice for an episode from the Google Sheet
+functions/_lib/episode-extras.js  Reads FAQs/Top Advice/Transcripts for an episode from the Google Sheet(s)
 functions/_lib/csv.js         Shared CSV fetch/parse, used by companies.js and episode-extras.js
 js/companies-carousel.js      Renders the featured-companies logo carousel
 assets/logos/                 Your brand logo files
