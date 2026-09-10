@@ -100,7 +100,7 @@
     <p>If something in an episode makes you think "I need this handled for my business" — that's exactly the gap these two companies exist to fill.</p>
 
     <h3>Let's connect</h3>
-    <p>If an episode resonates, or you're building something and want to talk it through, I'm easy to find. Connect with me on <a href="https://www.linkedin.com/in/amrom-morgenstern/" target="_blank" rel="noopener">LinkedIn</a> — I read what comes in. Or, if you want to talk through your bookkeeping, back-office, or offshore staffing setup directly, <a href="https://betterledgersinc.pipedrive.com/scheduler/1erBPPF8/bookkeeping-consultation" target="_blank" rel="noopener">book a free consultation</a>.</p>
+    <p>If an episode resonates, or you're building something and want to talk it through, I'm easy to find. Connect with me on <a href="https://www.linkedin.com/in/amrom-morgenstern/" target="_blank" rel="noopener">LinkedIn</a> — I read what comes in. Or, if you want to talk through your bookkeeping, back-office, or offshore staffing setup directly, <button type="button" class="inline-link-btn" id="consultation-modal-trigger">book a free consultation</button>.</p>
 
     <p>New episodes drop regularly. Come for the guest, stay for the one thing you didn't know you needed to know yet.</p>
     </div>
@@ -164,6 +164,7 @@
 <script src="js/config.js?v=21"></script>
 <script src="js/nav.js?v=21"></script>
 <script src="js/apply-modal.js?v=21"></script>
+<script src="js/consultation-modal.js?v=21"></script>
 <script src="js/scroll-video.js?v=21"></script>
 <script src="js/newsletter-embed.js?v=21"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
@@ -172,6 +173,13 @@
   <div class="apply-modal-panel">
     <button type="button" class="apply-modal-close" id="apply-modal-close" aria-label="Close">✕</button>
     <iframe id="apply-modal-iframe" title="Apply to be on the show"></iframe>
+  </div>
+</div>
+
+<div class="apply-modal-overlay" id="consultation-modal-overlay" hidden>
+  <div class="apply-modal-panel">
+    <button type="button" class="apply-modal-close" id="consultation-modal-close" aria-label="Close">✕</button>
+    <iframe id="consultation-modal-iframe" title="Book a free consultation"></iframe>
   </div>
 </div>
 </body>

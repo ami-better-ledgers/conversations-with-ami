@@ -658,6 +658,13 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 .about-copy li { margin-bottom: 0.6rem; max-width: 60ch; }
 .about-copy a { color: var(--blue); text-decoration: underline; text-underline-offset: 3px; }
 .about-copy a:hover { color: var(--blue-deep); }
+
+.inline-link-btn {
+  background: none; border: none; padding: 0; margin: 0;
+  font: inherit; color: var(--blue); text-decoration: underline; text-underline-offset: 3px;
+  cursor: pointer;
+}
+.inline-link-btn:hover { color: var(--blue-deep); }
 .about-copy em { font-family: var(--font-display); font-style: italic; }
 .pull-note {
   border-left: 3px solid var(--red);
