@@ -145,7 +145,7 @@
 
   function renderSearchResults(matches) {
     if (!matches.length) {
-      listEl.innerHTML = `<p class="state-msg">No episodes match that search.</p>`;
+      listEl.innerHTML = `<p class="state-msg">No episodes match that filter.</p>`;
       return;
     }
     listEl.innerHTML = `<div class="episode-grid">${matches.map(function (ep) { return renderCard(ep, ep.episode); }).join("")}</div>`;
@@ -234,24 +234,48 @@
       allEpisodes = result.data.episodes || [];
       render(allEpisodes);
       setupSearch();
+      setupPillarFilters();
     })
     .catch(function () {
       renderEmpty("Couldn't load episodes right now — please check back later.");
     });
 
+  let selectedPillar = "";
+
+  function applyFilters() {
+    const input = document.getElementById("episode-search");
+    const query = input ? input.value.trim().toLowerCase() : "";
+
+    let matches = allEpisodes;
+    if (selectedPillar) {
+      matches = matches.filter(function (ep) { return (ep.pillars || []).indexOf(selectedPillar) !== -1; });
+    }
+    if (query) {
+      matches = matches.filter(function (ep) { return splitTitle(ep.title).guestLine.toLowerCase().includes(query); });
+    }
+
+    if (!selectedPillar && !query) {
+      render(allEpisodes);
+    } else {
+      renderSearchResults(matches);
+    }
+  }
+
   function setupSearch() {
     const input = document.getElementById("episode-search");
     if (!input) return;
-    input.addEventListener("input", function () {
-      const query = input.value.trim().toLowerCase();
-      if (!query) {
-        render(allEpisodes);
-        return;
-      }
-      const matches = allEpisodes.filter(function (ep) {
-        return splitTitle(ep.title).guestLine.toLowerCase().includes(query);
+    input.addEventListener("input", applyFilters);
+  }
+
+  function setupPillarFilters() {
+    const buttons = document.querySelectorAll(".pillar-filter-btn");
+    if (!buttons.length) return;
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        selectedPillar = btn.dataset.pillar || "";
+        buttons.forEach(function (b) { b.classList.toggle("is-active", b === btn); });
+        applyFilters();
       });
-      renderSearchResults(matches);
     });
   }
 })();
