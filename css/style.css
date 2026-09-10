@@ -667,6 +667,9 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 .guest-card a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
 .guest-card a:hover { color: var(--blue-deep); }
 
+.bio-line { max-width: 68ch; color: var(--ink-soft); margin: 0.75rem 0; }
+.bio-line strong { color: var(--ink); }
+
 .problem-callout {
   border-left: 3px solid var(--red);
   padding-left: 1.25rem;
@@ -690,15 +693,15 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 .episode-summary { max-width: 68ch; }
 .episode-summary p { margin: 0 0 1.1em; }
 
-.takeaways-block, .faq-block {
+.top-advice-block, .faq-block {
   border-top: var(--border);
   margin-top: 2.5rem;
   padding-top: 1.5rem;
   max-width: 68ch;
 }
-.takeaways-block h2, .faq-block h2 { font-size: 1.15rem; margin-bottom: 0.9rem; }
-.takeaways-list { margin: 0; padding-left: 1.25rem; }
-.takeaways-list li { margin-bottom: 0.6rem; }
+.top-advice-block h2, .faq-block h2 { font-size: 1.15rem; margin-bottom: 0.9rem; }
+.top-advice-list { margin: 0; padding-left: 1.25rem; }
+.top-advice-list li { margin-bottom: 0.6rem; }
 
 .faq-item {
   border-bottom: var(--border);

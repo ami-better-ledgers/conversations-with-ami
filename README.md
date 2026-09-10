@@ -158,15 +158,15 @@ letting Claude write it, add an entry to `content/episodes.json` — see
 the two Bernard Reisz episodes already in there as an example. A
 hand-written entry always takes priority over the AI-generated one.
 
-### FAQs and key takeaways — a Google Sheet, no redeploy needed
+### FAQs and Top Advice by Episode — a Google Sheet, no redeploy needed
 
 These two sections are never AI-generated — you write and publish them
 yourself in a Google Sheet, same live-editing pattern as the featured
 companies carousel below. It layers on top of whatever the episode
-page already has (AI-generated or hand-written), so adding FAQs or
-takeaways doesn't require a `content/episodes.json` entry at all. A
-row for an episode number that hasn't published yet just doesn't show
-up — no error, it appears automatically once that episode goes live.
+page already has (AI-generated or hand-written), so adding FAQs or top
+advice doesn't require a `content/episodes.json` entry at all. A row
+for an episode number that hasn't published yet just doesn't show up —
+no error, it appears automatically once that episode goes live.
 
 **One-time setup:**
 
@@ -175,22 +175,26 @@ up — no error, it appears automatically once that episode goes live.
    one, it doesn't matter which. Each tab publishes to its own separate
    CSV link regardless of what else is in the spreadsheet:
    - A tab named **FAQs** with headers in row 1: `Question`, `Answer`, `Episode`
-   - A tab named **Takeaways** with headers in row 1: `Title`, `Takeaway`, `Episode`
+   - A tab named **Top Advice by Episode** with headers in row 1: `Title`, `Advice`, `Episode`
    - The `Episode` column is the episode number (1, 2, 3…) — the same
      number iTunes/Spotify show for that episode.
 2. **File → Share → Publish to web.** In the dialog, set the *first*
    dropdown to the **FAQs** tab specifically (not "Entire Document"),
    the second dropdown to **CSV**, then click **Publish**. Copy the URL.
-3. Repeat step 2, this time selecting the **Takeaways** tab, to get a
-   second CSV URL.
+3. Repeat step 2, this time selecting the **Top Advice by Episode**
+   tab, to get a second CSV URL.
 4. In Cloudflare Pages: your project → **Settings → Environment variables**:
    - Name: `FAQS_SHEET_CSV_URL` → Value: the FAQs CSV URL
-   - Name: `TAKEAWAYS_SHEET_CSV_URL` → Value: the Takeaways CSV URL
+   - Name: `TOP_ADVICE_SHEET_CSV_URL` → Value: the Top Advice CSV URL
    - Both as **Text** (not secret — already public once published),
      applied to both **Production** and **Preview**
 5. Save, and redeploy once so the variables take effect. After that,
    editing either tab needs no further deploys — changes show up on
    the site within about 10 minutes.
+
+Renaming a tab (or the little "table" name Sheets shows above the
+header row) later never breaks the published link — Google ties the
+published CSV to the tab's internal ID, not its display name.
 
 **Every time after that:** just add a row to the relevant tab with the
 episode number it belongs to. Multiple rows can share the same episode
@@ -201,7 +205,7 @@ number (e.g. 5 FAQ rows all with `12` in the Episode column).
 - [ ] Sending your first Public-marked newsletter issue, whenever ready
 - [ ] The Anthropic API key + KV namespace above, if you want episode pages
       to get the AI-written summary instead of the plain RSS version
-- [ ] The FAQs/Takeaways Google Sheet setup above, whenever you're ready
+- [ ] The FAQs/Top Advice Google Sheet setup above, whenever you're ready
       to start adding those to episode pages
 
 ## Featured companies carousel: how to add new ones (no redeploy needed)
@@ -270,7 +274,7 @@ functions/_lib/rss.js         Shared RSS parsing, used by functions/api/episodes
 functions/_lib/ai-summary.js  Calls Claude to write the episode summary/bio, caches it in KV
 content/episodes.json         Hand-written episode content (optional — overrides the AI-generated version)
 functions/_lib/curated.js     Shared lookup map for content/episodes.json
-functions/_lib/episode-extras.js  Reads FAQs/takeaways for an episode from the Google Sheet
+functions/_lib/episode-extras.js  Reads FAQs/Top Advice for an episode from the Google Sheet
 functions/_lib/csv.js         Shared CSV fetch/parse, used by companies.js and episode-extras.js
 js/companies-carousel.js      Renders the featured-companies logo carousel
 assets/logos/                 Your brand logo files

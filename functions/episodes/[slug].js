@@ -17,7 +17,7 @@
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
 import { curatedBySlug } from "../_lib/curated.js";
-import { fetchFaqsForEpisode, fetchTakeawaysForEpisode } from "../_lib/episode-extras.js";
+import { fetchFaqsForEpisode, fetchTopAdviceForEpisode } from "../_lib/episode-extras.js";
 
 const SITE_URL = "https://www.conversationswithami.com";
 
@@ -51,17 +51,17 @@ export async function onRequestGet(context) {
     }
   }
 
-  // FAQs/takeaways are hand-written in a Google Sheet (never
+  // FAQs/Top Advice are hand-written in a Google Sheet (never
   // AI-generated) — layer them on top of whatever else this episode
   // already has, so they don't require a full content/episodes.json
   // entry of their own. A row whose Episode number doesn't match a
   // published episode is simply absent here, not an error.
-  const [faqs, takeaways] = await Promise.all([
+  const [faqs, topAdvice] = await Promise.all([
     fetchFaqsForEpisode(context.env, feedItem.episode),
-    fetchTakeawaysForEpisode(context.env, feedItem.episode),
+    fetchTopAdviceForEpisode(context.env, feedItem.episode),
   ]);
-  if (faqs.length || takeaways.length) {
-    curated = { ...(curated || {}), faqs, takeaways };
+  if (faqs.length || topAdvice.length) {
+    curated = { ...(curated || {}), faqs, topAdvice };
   }
 
   const html = renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes: feedEpisodes });
@@ -156,6 +156,9 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       ${(curated?.guestLinks || []).map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join(" · ")}
     </div>` : ""}
 
+    ${curated?.guestBio ? `<p class="bio-line"><strong>About ${esc(guestName)}:</strong> ${esc(curated.guestBio)}</p>` : ""}
+    ${curated?.companyBio ? `<p class="bio-line"><strong>About ${esc(guestCompany || "the company")}:</strong> ${esc(curated.companyBio)}</p>` : ""}
+
     <div class="share-row" aria-label="Share this episode">
       <span class="share-label">Share</span>
       <a href="${shareLinks.linkedin}" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><img src="/assets/social-icons/linkedin.png" alt=""></a>
@@ -183,10 +186,10 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       <div class="episode-notes-full" style="display:block; margin-top:1rem;">${feedItem.content}</div>
     </details>` : ""}
 
-    ${curated?.takeaways?.length ? `<div class="takeaways-block">
-      <h2>Key takeaways</h2>
-      <ul class="takeaways-list">
-        ${curated.takeaways.map((t) => `<li><strong>${esc(t.title)}:</strong> ${esc(t.takeaway)}</li>`).join("")}
+    ${curated?.topAdvice?.length ? `<div class="top-advice-block">
+      <h2>Top advice from this episode</h2>
+      <ul class="top-advice-list">
+        ${curated.topAdvice.map((t) => `<li><strong>${esc(t.title)}:</strong> ${esc(t.advice)}</li>`).join("")}
       </ul>
     </div>` : ""}
 

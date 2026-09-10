@@ -94,6 +94,7 @@ Return ONLY a single valid JSON object (no markdown fences, no commentary) with 
   "guestCompany": "The guest's company name, or empty string if unclear.",
   "guestRole": "The guest's role/title (e.g. 'CPA & Founder'), or empty string if unclear.",
   "guestBio": "One sentence, third person, describing who the guest is and what they help people with.",
+  "companyBio": "One sentence, third person, describing what the guest's company does. Empty string if unclear.",
   "pillars": "An array of one or two values from exactly this list: ${PILLARS.join(", ")} — whichever best fit this episode's topic. Most episodes only need one.",
   "subjects": "An array of 1 to 3 short, specific subject tags for what this episode is actually about (e.g. 'Real Estate', 'Cost Segregation', 'Cold Outreach', 'Hiring', 'AI Tools') — more specific than the broad pillar above.",
   "problemSolved": "The specific problem this episode solves, phrased the way a business owner would actually type it into Google.",
