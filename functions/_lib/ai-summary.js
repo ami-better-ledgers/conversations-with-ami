@@ -104,14 +104,21 @@ async function callClaude(apiKey, feedItem) {
       }),
     });
   } catch (err) {
+    console.error(`[ai-summary] episode ${feedItem.episode}: fetch to Anthropic threw — ${err}`);
     return null;
   }
 
-  if (!res.ok) return null;
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    console.error(`[ai-summary] episode ${feedItem.episode}: Anthropic returned ${res.status} — ${body.slice(0, 500)}`);
+    return null;
+  }
 
   const data = await res.json();
   const text = (data.content || []).map((block) => block.text || "").join("");
-  return parseJsonSafely(text);
+  const parsed = parseJsonSafely(text);
+  if (!parsed) console.error(`[ai-summary] episode ${feedItem.episode}: response failed validation — raw text: ${text.slice(0, 800)}`);
+  return parsed;
 }
 
 function buildPrompt(feedItem, { linkedInSnippet, websiteSnippet }) {

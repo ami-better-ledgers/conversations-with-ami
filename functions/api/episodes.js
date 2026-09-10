@@ -18,23 +18,44 @@ import { fetchEpisodes } from "../_lib/rss.js";
 import { curatedByEpisodeNumber } from "../_lib/curated.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
 
+// How many episodes can be generating via the live Claude API at once.
+// Without this cap, a cache-wide invalidation (e.g. bumping
+// CACHE_VERSION in ai-summary.js) makes every uncached episode call the
+// API in the same instant on the first page load afterward, which is
+// enough concurrent requests to trip Anthropic's rate limit — most
+// come back as failures (cached for an hour) instead of real content,
+// even though nothing is actually wrong with any of them. Generating a
+// few at a time avoids that burst.
+const MAX_CONCURRENT_GENERATIONS = 3;
+
 export async function onRequestGet(context) {
   try {
     const episodes = await fetchEpisodes(context.env);
-    const enriched = await Promise.all(
-      episodes.map(async (ep) => {
-        const curated = curatedByEpisodeNumber.get(String(ep.episode)) || (await getOrGenerateSummary(context.env, ep));
-        return {
-          ...ep,
-          pillars: (curated && curated.pillars) || [],
-          subjects: (curated && curated.subjects) || [],
-        };
-      })
-    );
+    const enriched = await mapWithConcurrency(episodes, MAX_CONCURRENT_GENERATIONS, async (ep) => {
+      const curated = curatedByEpisodeNumber.get(String(ep.episode)) || (await getOrGenerateSummary(context.env, ep));
+      return {
+        ...ep,
+        pillars: (curated && curated.pillars) || [],
+        subjects: (curated && curated.subjects) || [],
+      };
+    });
     return jsonResponse({ episodes: enriched }, 200, 900);
   } catch (err) {
     return jsonResponse({ error: "Could not fetch or parse the feed.", detail: String(err) }, 502);
   }
+}
+
+async function mapWithConcurrency(items, limit, fn) {
+  const results = new Array(items.length);
+  let next = 0;
+  async function worker() {
+    while (next < items.length) {
+      const i = next++;
+      results[i] = await fn(items[i]);
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
 }
 
 function jsonResponse(data, status, cacheSeconds) {
