@@ -2,6 +2,13 @@
 // "problem this solves" framing) using the Claude API, so new episodes
 // get a rich /episodes/<slug> page with zero manual work.
 //
+// Before writing the guest/company bios, this also does a best-effort
+// fetch of the guest's LinkedIn profile and company website (pulled
+// from the show notes' own links) so the bios are grounded in real
+// text rather than guessed from the show notes alone. This can fail
+// silently for a private profile or a site that blocks bots — the
+// bios just fall back to show-notes-only in that case.
+//
 // SET THIS UP IN CLOUDFLARE (both are optional — without them, episode
 // pages just fall back to the plain RSS-only version, same as before):
 //
@@ -50,7 +57,13 @@ async function buildCacheKey(feedItem) {
 }
 
 async function callClaude(apiKey, feedItem) {
-  const prompt = buildPrompt(feedItem);
+  const links = extractCandidateLinks(feedItem.content || "");
+  const [linkedInSnippet, websiteSnippet] = await Promise.all([
+    links.linkedin ? fetchPageSnippet(links.linkedin) : Promise.resolve(""),
+    links.website ? fetchPageSnippet(links.website) : Promise.resolve(""),
+  ]);
+
+  const prompt = buildPrompt(feedItem, { linkedInSnippet, websiteSnippet });
 
   let res;
   try {
@@ -78,13 +91,15 @@ async function callClaude(apiKey, feedItem) {
   return parseJsonSafely(text);
 }
 
-function buildPrompt(feedItem) {
+function buildPrompt(feedItem, { linkedInSnippet, websiteSnippet }) {
   return `You are writing the content for a podcast episode landing page. The show is "Conversations with Ami" — interviews with small-business owners and experts about the expensive mistakes entrepreneurs make and how to avoid them.
 
 Episode title (as published): ${feedItem.title}
 
 Full show notes (HTML, may include guest links):
 ${feedItem.content || feedItem.description || "(no show notes provided)"}
+${linkedInSnippet ? `\nText pulled from the guest's public LinkedIn profile (use this to make guestBio more accurate — it's a real headline/summary, not a guess):\n${linkedInSnippet}\n` : ""}
+${websiteSnippet ? `\nText pulled from the guest's company website (use this to make companyBio more accurate):\n${websiteSnippet}\n` : ""}
 
 Return ONLY a single valid JSON object (no markdown fences, no commentary) with exactly these fields:
 
@@ -93,16 +108,68 @@ Return ONLY a single valid JSON object (no markdown fences, no commentary) with 
   "guestName": "The guest's full name, extracted from the title or show notes.",
   "guestCompany": "The guest's company name, or empty string if unclear.",
   "guestRole": "The guest's role/title (e.g. 'CPA & Founder'), or empty string if unclear.",
-  "guestBio": "One sentence, third person, describing who the guest is and what they help people with.",
-  "companyBio": "One sentence, third person, describing what the guest's company does. Empty string if unclear.",
+  "guestBio": "One sentence, third person, describing who the guest is and what they help people with. Ground this in the LinkedIn text above when it's provided, rather than only the show notes.",
+  "companyBio": "One sentence, third person, describing what the guest's company does. Ground this in the company website text above when it's provided. Empty string if unclear.",
   "pillars": "An array of one or two values from exactly this list: ${PILLARS.join(", ")} — whichever best fit this episode's topic. Most episodes only need one.",
   "subjects": "An array of 1 to 3 short, specific subject tags for what this episode is actually about (e.g. 'Real Estate', 'Cost Segregation', 'Cold Outreach', 'Hiring', 'AI Tools') — more specific than the broad pillar above.",
   "problemSolved": "The specific problem this episode solves, phrased the way a business owner would actually type it into Google.",
-  "summary": "150 to 300 words, plain text (no markdown), written in third person, summarizing the episode's core lesson for someone deciding whether to listen.",
+  "summary": "150 to 300 words total, written as exactly 2 short paragraphs separated by a blank line (\\n\\n) so it's easy to scan — not one dense block. Plain text, no markdown. Third person, summarizing the episode's core lesson for someone deciding whether to listen.",
   "guestLinks": [{"label": "LinkedIn", "url": "https://..."}]
 }
 
 For guestLinks, extract only real links found in the show notes above (LinkedIn, website, etc. — skip email addresses and blog post links). If none are found, use an empty array. If any field can't be determined, use an empty string (or empty array for guestLinks) rather than guessing.`;
+}
+
+// Pulls out a likely LinkedIn URL and a likely company-website URL from
+// the show notes HTML, so we can fetch a little real context about the
+// guest/company before asking Claude to write their bios — rather than
+// having Claude guess from the show notes text alone.
+function extractCandidateLinks(html) {
+  const urls = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]).filter((u) => u.startsWith("http"));
+  const linkedin = urls.find((u) => u.includes("linkedin.com"));
+  const website = urls.find((u) => {
+    if (u.includes("linkedin.com")) return false;
+    try {
+      return new URL(u).pathname.replace(/\/$/, "") === "";
+    } catch (err) {
+      return false;
+    }
+  });
+  return { linkedin, website };
+}
+
+// Best-effort fetch of a public page's title/description, used only as
+// extra grounding for the bios above — never required. LinkedIn profile
+// pages expose a real headline/summary via og:description for logged-out
+// visitors (the same text used for link previews); this can fail for a
+// private profile or a site that blocks bots, in which case the bio
+// falls back to the show notes alone, same as before this feature.
+async function fetchPageSnippet(url) {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; ConversationsWithAmiBot/1.0; +https://www.conversationswithami.com)" },
+      cf: { cacheTtl: 86400, cacheEverything: true },
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+    const ogDesc = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i);
+    const metaDesc = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i);
+    const title = html.match(/<title>([^<]+)<\/title>/i);
+    const snippet = (ogDesc && ogDesc[1]) || (metaDesc && metaDesc[1]) || (title && title[1]) || "";
+    return decodeHtmlEntities(snippet).slice(0, 500);
+  } catch (err) {
+    return "";
+  }
+}
+
+function decodeHtmlEntities(str) {
+  return str
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&hellip;/g, "…");
 }
 
 function parseJsonSafely(text) {

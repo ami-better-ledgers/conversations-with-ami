@@ -651,21 +651,57 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
 .share-row a:hover { border-color: var(--blue); background: var(--sky-tint); }
 .share-row img { width: 16px; height: 16px; display: block; }
 
-.guest-card {
+/* ============ Episode page: main + sidebar layout ============
+   Splits what used to be one long stacked column into a reading
+   column (summary, advice, FAQs) and a compact "at a glance" sidebar
+   (art, listen/watch, guest info, share) — so the page reads as
+   distinct chunks instead of one wall of text. */
+.episode-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 2.5rem;
+  align-items: start;
+}
+.episode-main { min-width: 0; }
+.episode-sidebar {
+  position: sticky;
+  top: 1.5rem;
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.4rem 0.6rem;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.sidebar-thumb {
+  width: 100%; aspect-ratio: 1 / 1; object-fit: cover;
+  border-radius: var(--radius); border: var(--border);
+}
+.sidebar-card {
   background: var(--sky-tint);
   border: var(--border);
-  padding: 1rem 1.25rem;
-  margin: 1.5rem 0;
-  font-family: var(--font-label);
-  font-size: 0.85rem;
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
 }
-.guest-card strong { font-family: var(--font-body); font-size: 1rem; }
-.guest-card a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
-.guest-card a:hover { color: var(--blue-deep); }
+.sidebar-card.share-row { margin: 0; flex-wrap: wrap; }
+.sidebar-label {
+  font-family: var(--font-label); font-weight: 700;
+  font-size: 0.66rem; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-soft); margin: 0 0 0.5rem;
+}
+.guest-name { font-family: var(--font-body); font-weight: 700; font-size: 1.05rem; margin: 0 0 0.15rem; }
+.guest-meta {
+  font-family: var(--font-label); font-size: 0.78rem;
+  color: var(--ink-soft); margin: 0 0 0.6rem;
+}
+.guest-links { font-size: 0.85rem; margin: 0.6rem 0 0; }
+.guest-links a { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+.guest-links a:hover { color: var(--blue-deep); }
+
+.sidebar-card .bio-line { font-size: 0.85rem; max-width: none; margin: 0.6rem 0 0; }
+
+@media (max-width: 900px) {
+  .episode-layout { grid-template-columns: 1fr; }
+  .episode-sidebar { position: static; order: -1; }
+  .sidebar-thumb { max-width: 220px; }
+}
 
 .bio-line { max-width: 68ch; color: var(--ink-soft); margin: 0.75rem 0; }
 .bio-line strong { color: var(--ink); }

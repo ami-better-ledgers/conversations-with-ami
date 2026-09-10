@@ -148,67 +148,75 @@ function renderEpisodePage({ slug, curated, feedItem, allFeedEpisodes }) {
       ${(curated?.pillars || []).map((p) => `<span class="tag-pillar">${esc(p)}</span>`).join("")}
       ${(curated?.subjects || []).map((s) => `<span class="tag-subject">${esc(s)}</span>`).join("")}
     </div>` : ""}
+  </section>
 
-    ${guestName ? `<div class="guest-card">
-      <strong>${esc(guestName)}</strong>
-      ${guestCompany ? `<span>· ${esc(guestCompany)}</span>` : ""}
-      ${curated?.guestRole ? `<span>· ${esc(curated.guestRole)}</span>` : ""}
-      ${(curated?.guestLinks || []).map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join(" · ")}
-    </div>` : ""}
+  <section class="wrap episode-layout">
+    <div class="episode-main">
+      ${curated?.problemSolved ? `<div class="problem-callout"><span>The problem this episode solves</span>${esc(curated.problemSolved)}</div>` : ""}
 
-    ${curated?.guestBio ? `<p class="bio-line"><strong>About ${esc(guestName)}:</strong> ${esc(curated.guestBio)}</p>` : ""}
-    ${curated?.companyBio ? `<p class="bio-line"><strong>About ${esc(guestCompany || "the company")}:</strong> ${esc(curated.companyBio)}</p>` : ""}
+      <div class="episode-summary">
+        ${curated?.summary
+          ? curated.summary.split(/\n\s*\n/).map((p) => `<p>${esc(p.trim())}</p>`).join("")
+          : `<div>${feedItem.content || `<p>${esc(feedItem.description)}</p>`}</div>`}
+      </div>
 
-    <div class="share-row" aria-label="Share this episode">
-      <span class="share-label">Share</span>
-      <a href="${shareLinks.linkedin}" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><img src="/assets/social-icons/linkedin.png" alt=""></a>
-      <a href="${shareLinks.facebook}" target="_blank" rel="noopener" aria-label="Share on Facebook"><img src="/assets/social-icons/facebook.png" alt=""></a>
-      <a href="${shareLinks.threads}" target="_blank" rel="noopener" aria-label="Share on Threads"><img src="/assets/social-icons/threads.svg" alt=""></a>
-      <a href="${shareLinks.x}" target="_blank" rel="noopener" aria-label="Share on X"><img src="/assets/social-icons/x.png" alt=""></a>
+      ${curated?.summary && feedItem.content ? `<details style="margin-top:1.5rem;">
+        <summary style="cursor:pointer; font-family: var(--font-label); font-size:0.85rem; color: var(--blue);">Full show notes</summary>
+        <div class="episode-notes-full" style="display:block; margin-top:1rem;">${feedItem.content}</div>
+      </details>` : ""}
+
+      ${curated?.topAdvice?.length ? `<div class="top-advice-block">
+        <h2>Top advice from this episode</h2>
+        <ul class="top-advice-list">
+          ${curated.topAdvice.map((t) => `<li><strong>${esc(t.title)}:</strong> ${esc(t.advice)}</li>`).join("")}
+        </ul>
+      </div>` : ""}
+
+      ${curated?.faqs?.length ? `<div class="faq-block">
+        <h2>FAQs</h2>
+        ${curated.faqs.map((f) => `<details class="faq-item">
+          <summary>${esc(f.question)}</summary>
+          <p>${esc(f.answer)}</p>
+        </details>`).join("")}
+      </div>` : ""}
+
+      ${relatedList.length ? `<div class="related-episodes">
+        <h2>Related episodes</h2>
+        <ul>
+          ${relatedList.map((r) => `<li><a href="/episodes/${esc(r.slug)}">${esc(r.pageTitle || r.slug)}</a></li>`).join("")}
+        </ul>
+      </div>` : ""}
+
+      <p style="margin-top:2rem;"><a href="/podcast.html">&larr; Back to all episodes</a></p>
     </div>
 
-    ${feedItem.transcriptUrl ? `<p><a class="read-link" href="${esc(feedItem.transcriptUrl)}" target="_blank" rel="noopener">Read the transcript &rarr;</a></p>` : ""}
+    <aside class="episode-sidebar">
+      ${feedItem.image ? `<img class="sidebar-thumb" src="${esc(feedItem.image)}" alt="">` : ""}
 
-    <div class="episode-actions" style="margin: 1.25rem 0;">
-      ${feedItem.audioUrl ? `<audio controls preload="none" src="${esc(feedItem.audioUrl)}" style="width:100%;"></audio>` : ""}
-      <button type="button" class="episode-watch" id="episode-watch-btn" data-title="${esc(feedItem.title)}" hidden aria-expanded="false" style="margin-top:0.75rem;">Watch on YouTube</button>
-      <div class="episode-embed" id="episode-watch-embed" hidden></div>
-    </div>
+      <div class="sidebar-card">
+        ${feedItem.audioUrl ? `<audio controls preload="none" src="${esc(feedItem.audioUrl)}" style="width:100%;"></audio>` : ""}
+        <button type="button" class="episode-watch" id="episode-watch-btn" data-title="${esc(feedItem.title)}" hidden aria-expanded="false" style="margin-top:0.75rem;">Watch on YouTube</button>
+        <div class="episode-embed" id="episode-watch-embed" hidden></div>
+        ${feedItem.transcriptUrl ? `<a class="read-link" href="${esc(feedItem.transcriptUrl)}" target="_blank" rel="noopener">Read the transcript &rarr;</a>` : ""}
+      </div>
 
-    ${curated?.problemSolved ? `<div class="problem-callout"><span>The problem this episode solves</span>${esc(curated.problemSolved)}</div>` : ""}
+      ${guestName ? `<div class="sidebar-card">
+        <p class="sidebar-label">Guest</p>
+        <p class="guest-name">${esc(guestName)}</p>
+        <p class="guest-meta">${[guestCompany, curated?.guestRole].filter(Boolean).map(esc).join(" · ")}</p>
+        ${curated?.guestBio ? `<p class="bio-line">${esc(curated.guestBio)}</p>` : ""}
+        ${curated?.companyBio ? `<p class="bio-line">${esc(curated.companyBio)}</p>` : ""}
+        ${(curated?.guestLinks || []).length ? `<p class="guest-links">${(curated?.guestLinks || []).map((l) => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.label)}</a>`).join(" · ")}</p>` : ""}
+      </div>` : ""}
 
-    <div class="episode-summary">
-      ${curated?.summary ? `<p>${esc(curated.summary)}</p>` : `<div>${feedItem.content || `<p>${esc(feedItem.description)}</p>`}</div>`}
-    </div>
-
-    ${curated?.summary && feedItem.content ? `<details style="margin-top:1.5rem;">
-      <summary style="cursor:pointer; font-family: var(--font-label); font-size:0.85rem; color: var(--blue);">Full show notes</summary>
-      <div class="episode-notes-full" style="display:block; margin-top:1rem;">${feedItem.content}</div>
-    </details>` : ""}
-
-    ${curated?.topAdvice?.length ? `<div class="top-advice-block">
-      <h2>Top advice from this episode</h2>
-      <ul class="top-advice-list">
-        ${curated.topAdvice.map((t) => `<li><strong>${esc(t.title)}:</strong> ${esc(t.advice)}</li>`).join("")}
-      </ul>
-    </div>` : ""}
-
-    ${curated?.faqs?.length ? `<div class="faq-block">
-      <h2>FAQs</h2>
-      ${curated.faqs.map((f) => `<details class="faq-item">
-        <summary>${esc(f.question)}</summary>
-        <p>${esc(f.answer)}</p>
-      </details>`).join("")}
-    </div>` : ""}
-
-    ${relatedList.length ? `<div class="related-episodes">
-      <h2>Related episodes</h2>
-      <ul>
-        ${relatedList.map((r) => `<li><a href="/episodes/${esc(r.slug)}">${esc(r.pageTitle || r.slug)}</a></li>`).join("")}
-      </ul>
-    </div>` : ""}
-
-    <p style="margin-top:2rem;"><a href="/podcast.html">&larr; Back to all episodes</a></p>
+      <div class="sidebar-card share-row" aria-label="Share this episode">
+        <span class="share-label">Share</span>
+        <a href="${shareLinks.linkedin}" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><img src="/assets/social-icons/linkedin.png" alt=""></a>
+        <a href="${shareLinks.facebook}" target="_blank" rel="noopener" aria-label="Share on Facebook"><img src="/assets/social-icons/facebook.png" alt=""></a>
+        <a href="${shareLinks.threads}" target="_blank" rel="noopener" aria-label="Share on Threads"><img src="/assets/social-icons/threads.svg" alt=""></a>
+        <a href="${shareLinks.x}" target="_blank" rel="noopener" aria-label="Share on X"><img src="/assets/social-icons/x.png" alt=""></a>
+      </div>
+    </aside>
   </section>
 
   <section class="wrap" id="signup">
