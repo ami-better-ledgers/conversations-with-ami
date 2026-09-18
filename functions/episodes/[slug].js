@@ -115,8 +115,8 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
 <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<link rel="stylesheet" href="/css/tokens.css?v=21">
-<link rel="stylesheet" href="/css/style.css?v=21">
+<link rel="stylesheet" href="/css/tokens.css?v=23">
+<link rel="stylesheet" href="/css/style.css?v=23">
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
@@ -277,7 +277,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
         <a href="https://www.tiktok.com/@conversationswithami" target="_blank" rel="noopener" aria-label="TikTok"><img src="/assets/social-icons/tiktok.png" alt="TikTok"></a>
         <a href="https://www.threads.com/@conversationswithami" target="_blank" rel="noopener" aria-label="Threads"><img src="/assets/social-icons/threads.svg" alt="Threads"></a>
         <a href="https://x.com/ConverseWithAmi" target="_blank" rel="noopener" aria-label="X"><img src="/assets/social-icons/x.png" alt="X"></a>
-        <a href="https://linktr.ee/conversationswithami" target="_blank" rel="noopener" aria-label="All links"><img src="/assets/social-icons/linktree.svg" alt="All links"></a>
+        <a href="/links" aria-label="All links"><img src="/assets/social-icons/linktree.svg" alt="All links"></a>
       </div>
       <div class="footer-listen">
         <span class="footer-row-label">Listen on</span>
@@ -296,11 +296,11 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
   </div>
 </footer>
 
-<script src="/js/config.js?v=21"></script>
-<script src="/js/nav.js?v=21"></script>
-<script src="/js/apply-modal.js?v=21"></script>
-<script src="/js/newsletter-embed.js?v=21"></script>
-<script src="/js/youtube-map.js?v=21"></script>
+<script src="/js/config.js?v=23"></script>
+<script src="/js/nav.js?v=23"></script>
+<script src="/js/apply-modal.js?v=23"></script>
+<script src="/js/newsletter-embed.js?v=23"></script>
+<script src="/js/youtube-map.js?v=23"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 <script>
 (function () {
@@ -345,7 +345,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
   });
 })();
 </script>
-<script src="/js/share-more.js?v=21"></script>
+<script src="/js/share-more.js?v=23"></script>
 
 <div class="apply-modal-overlay" id="apply-modal-overlay" hidden>
   <div class="apply-modal-panel">
