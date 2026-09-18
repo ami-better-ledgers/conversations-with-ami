@@ -115,8 +115,8 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
 <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<link rel="stylesheet" href="/css/tokens.css?v=23">
-<link rel="stylesheet" href="/css/style.css?v=23">
+<link rel="stylesheet" href="/css/tokens.css?v=25">
+<link rel="stylesheet" href="/css/style.css?v=25">
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
@@ -296,11 +296,11 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
   </div>
 </footer>
 
-<script src="/js/config.js?v=23"></script>
-<script src="/js/nav.js?v=23"></script>
-<script src="/js/apply-modal.js?v=23"></script>
-<script src="/js/newsletter-embed.js?v=23"></script>
-<script src="/js/youtube-map.js?v=23"></script>
+<script src="/js/config.js?v=25"></script>
+<script src="/js/nav.js?v=25"></script>
+<script src="/js/apply-modal.js?v=25"></script>
+<script src="/js/newsletter-embed.js?v=25"></script>
+<script src="/js/youtube-map.js?v=25"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 <script>
 (function () {
@@ -345,7 +345,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
   });
 })();
 </script>
-<script src="/js/share-more.js?v=23"></script>
+<script src="/js/share-more.js?v=25"></script>
 
 <div class="apply-modal-overlay" id="apply-modal-overlay" hidden>
   <div class="apply-modal-panel">
