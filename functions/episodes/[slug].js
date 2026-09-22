@@ -266,6 +266,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
           <li><a href="/about.html">About</a></li>
           <li><a href="/podcast.html">The Podcast</a></li>
           <li><a href="/newsletter.html">Newsletter Archive</a></li>
+          <li><a href="/links">Our Links</a></li>
         </ul>
       </nav>
       <div class="footer-social">
@@ -277,7 +278,6 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
         <a href="https://www.tiktok.com/@conversationswithami" target="_blank" rel="noopener" aria-label="TikTok"><img src="/assets/social-icons/tiktok.png" alt="TikTok"></a>
         <a href="https://www.threads.com/@conversationswithami" target="_blank" rel="noopener" aria-label="Threads"><img src="/assets/social-icons/threads.svg" alt="Threads"></a>
         <a href="https://x.com/ConverseWithAmi" target="_blank" rel="noopener" aria-label="X"><img src="/assets/social-icons/x.png" alt="X"></a>
-        <a href="/links" aria-label="All links"><img src="/assets/social-icons/linktree.svg" alt="All links"></a>
       </div>
       <div class="footer-listen">
         <span class="footer-row-label">Listen on</span>
