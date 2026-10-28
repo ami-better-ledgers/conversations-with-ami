@@ -80,8 +80,10 @@
     </div>
   </section>
 
-  <!-- Static episode archive — server-rendered links so Google can crawl episode pages.
-       Keep this list updated on each release day (1st & 15th), newest first. -->
+  <!-- Episode archive — server-rendered links so Google can crawl episode pages.
+       functions/podcast.js rebuilds this list from the RSS feed on every request,
+       so new episodes appear automatically. The items below are only a fallback
+       served if the feed is unreachable — no need to edit them on release day. -->
   <section class="wrap" aria-label="All episodes archive">
     <h2>All episodes</h2>
     <ul class="episode-archive-list">
