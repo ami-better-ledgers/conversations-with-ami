@@ -16,7 +16,7 @@
 
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
-import { curatedBySlug } from "../_lib/curated.js";
+import { curatedBySlug, curatedByEpisodeNumber } from "../_lib/curated.js";
 import { fetchFaqsForEpisode, fetchTopAdviceForEpisode, hasTranscriptSheetRow } from "../_lib/episode-extras.js";
 
 const SITE_URL = "https://www.conversationswithami.com";
@@ -88,6 +88,16 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
     .map((s) => curatedBySlug.get(s))
     .filter(Boolean);
 
+  const moreEpisodes = (allFeedEpisodes || [])
+    .filter((ep) => ep.episode !== feedItem.episode)
+    .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+    .slice(0, 5)
+    .map((ep) => ({
+      slug: curatedByEpisodeNumber.get(String(ep.episode))?.slug || slugifyTitle(ep.title),
+      title: splitTitle(ep.title)[0],
+    }))
+    .filter((ep) => ep.slug);
+
   const jsonLd = buildJsonLd({ canonicalUrl, pageTitle, feedItem, guestName, dateLabel: feedItem.pubDate });
 
   const shareText = `I really enjoyed listening to "${pageTitle}" on Conversations with Ami and thought others in my network would enjoy it too.`;
@@ -115,8 +125,8 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
 <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<link rel="stylesheet" href="/css/tokens.css?v=25">
-<link rel="stylesheet" href="/css/style.css?v=25">
+<link rel="stylesheet" href="/css/tokens.css?v=26">
+<link rel="stylesheet" href="/css/style.css?v=26">
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
@@ -199,6 +209,19 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
             <span class="related-card-text">
               <span class="related-eyebrow">Listen next</span>
               <span class="related-title">${esc(r.pageTitle || r.slug)}</span>
+            </span>
+            <span class="related-arrow">&rarr;</span>
+          </a>`).join("")}
+        </div>
+      </div>` : ""}
+
+      ${moreEpisodes.length ? `<div class="related-episodes">
+        <h2>More episodes</h2>
+        <div class="related-grid">
+          ${moreEpisodes.map((r) => `<a class="related-card" href="/episodes/${esc(r.slug)}">
+            <span class="related-card-text">
+              <span class="related-eyebrow">Listen next</span>
+              <span class="related-title">${esc(r.title)}</span>
             </span>
             <span class="related-arrow">&rarr;</span>
           </a>`).join("")}
@@ -296,11 +319,11 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
   </div>
 </footer>
 
-<script src="/js/config.js?v=25"></script>
-<script src="/js/nav.js?v=25"></script>
-<script src="/js/apply-modal.js?v=25"></script>
-<script src="/js/newsletter-embed.js?v=25"></script>
-<script src="/js/youtube-map.js?v=25"></script>
+<script src="/js/config.js?v=26"></script>
+<script src="/js/nav.js?v=26"></script>
+<script src="/js/apply-modal.js?v=26"></script>
+<script src="/js/newsletter-embed.js?v=26"></script>
+<script src="/js/youtube-map.js?v=26"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 <script>
 (function () {
@@ -345,7 +368,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
   });
 })();
 </script>
-<script src="/js/share-more.js?v=25"></script>
+<script src="/js/share-more.js?v=26"></script>
 
 <div class="apply-modal-overlay" id="apply-modal-overlay" hidden>
   <div class="apply-modal-panel">
