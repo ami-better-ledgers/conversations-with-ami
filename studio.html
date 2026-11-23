@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Newsletter Studio — Conversations with Ami</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--blue:#21409a;--deep:#162c6c;--red:#ed2024;--sun:#FFC93C;--coral:#FF7A59;--cream:#FFF4E6;--tint:#eaf4fb;--ink:#101013;--soft:#3a3a40}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+header.top{background:var(--sun);padding:.9rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+header.top h1{font-family:Fraunces,Georgia,serif;font-size:1.4rem;margin:0;color:var(--deep)}
+header.top span{font-size:.85rem;color:var(--deep)}
+main{max-width:1180px;margin:0 auto;padding:1.25rem;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1.25rem}
+@media(max-width:980px){main{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:16px;padding:1.1rem 1.2rem;margin-bottom:1rem;border:1px solid rgba(16,16,19,.1)}
+h2{font-family:Fraunces,Georgia,serif;font-size:1.2rem;color:var(--deep);margin:0 0 .6rem}
+.lab{font-family:Archivo,Arial,sans-serif;font-weight:800;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--coral);margin:.2rem 0 .3rem;display:block}
+label{display:block;font-weight:600;font-size:.88rem;margin:.7rem 0 .25rem}
+input[type=text],input[type=number],input[type=date],input[type=email],input[type=url],textarea,select{width:100%;font:inherit;padding:.6rem .7rem;border:2px solid rgba(16,16,19,.2);border-radius:10px;background:#fff}
+textarea{min-height:110px;resize:vertical}textarea.tall{min-height:200px}
+input:focus,textarea:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
+.row{display:grid;grid-template-columns:90px 1fr 170px;gap:.7rem}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+.btn{display:inline-block;font-family:Archivo,Arial,sans-serif;font-weight:700;border-radius:999px;padding:.65rem 1.3rem;border:0;cursor:pointer;font-size:.95rem;margin:.35rem .5rem .35rem 0}
+.btn:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.b-blue{background:var(--blue);color:#fff}.b-line{background:#fff;color:var(--blue);border:2px solid var(--blue)}.b-sun{background:var(--sun);color:var(--deep)}.b-red{background:var(--red);color:#fff}
+.btn[disabled]{opacity:.5;cursor:wait}
+.note{font-size:.85rem;color:var(--soft)}
+.msg{margin:.6rem 0 0;padding:.6rem .8rem;border-radius:10px;font-size:.92rem;display:none}
+.msg.show{display:block}.msg.ok{background:#e2f6ea;color:#0d4a26}.msg.err{background:#fde4e4;color:#7a1015}.msg.warn{background:#fff3cc;color:#5a4300}
+.msg ul{margin:.3rem 0 0;padding-left:1.1rem}
+iframe{width:100%;height:78vh;border:1px solid rgba(16,16,19,.15);border-radius:12px;background:#fff}
+.sticky{position:sticky;top:.75rem}
+.danger{border:2px solid var(--red)}
+</style>
+</head>
+<body>
+<header class="top"><h1>Newsletter Studio · Still Building with Ami</h1><span id="who">Private. Sign-in required.</span></header>
+<main>
+<div>
+  <div class="card">
+    <h2>Issue</h2>
+    <label for="pick">Open</label>
+    <select id="pick"><option value="">New issue</option></select>
+    <div class="row">
+      <div><label for="num">Number</label><input type="number" id="num" min="1"></div>
+      <div><label for="title">Title (also the email subject, sentence case)</label><input type="text" id="title" maxlength="200"></div>
+      <div><label for="date">Date</label><input type="date" id="date"></div>
+    </div>
+    <p class="note" id="status"></p>
+  </div>
+
+  <div class="card">
+    <h2>1. Paste notes, let Claude structure them (optional)</h2>
+    <p class="note">Paste rough notes or a transcript excerpt. Claude shapes them into the three sections with takeaways, using only what you wrote, and lists anything missing. You edit everything below before saving.</p>
+    <label for="guest">Guest</label><input type="text" id="guest" placeholder="e.g. Eli Treff" maxlength="120">
+    <label for="ep">Episode link</label><input type="url" id="ep" placeholder="https://youtu.be/…">
+    <label for="clip">Short clip link (optional)</label><input type="url" id="clip" placeholder="https://youtube.com/shorts/…">
+    <label for="notes">Your notes</label><textarea id="notes" class="tall" placeholder="Paste or type your notes here…"></textarea>
+    <button class="btn b-sun" id="structureBtn" type="button">Structure with Claude</button>
+    <div class="msg" id="structMsg" role="status"></div>
+  </div>
+
+  <div class="card">
+    <h2>2. The issue</h2>
+    <span class="lab">From the conversation</span>
+    <label for="c-h">Headline</label><input type="text" id="c-h">
+    <label for="c-p">Paragraphs (leave a blank line between them)</label><textarea id="c-p" class="tall"></textarea>
+    <label for="c-t">Takeaway (one highlighted line)</label><input type="text" id="c-t" maxlength="600">
+    <label for="c-el">Episode button text</label><input type="text" id="c-el" placeholder="Full episode with …">
+    <label for="c-cl">Clip button text</label><input type="text" id="c-cl" placeholder="Short clip: …">
+
+    <span class="lab" style="margin-top:1.2rem">From the build</span>
+    <label for="b-h">Headline</label><input type="text" id="b-h">
+    <label for="b-p">Paragraphs</label><textarea id="b-p" class="tall"></textarea>
+    <label for="b-t">Takeaway</label><input type="text" id="b-t" maxlength="600">
+
+    <span class="lab" style="margin-top:1.2rem">What I'm thinking</span>
+    <label for="t-h">Headline</label><input type="text" id="t-h">
+    <label for="t-p">Paragraphs</label><textarea id="t-p" class="tall"></textarea>
+    <label for="t-t">Takeaway</label><input type="text" id="t-t" maxlength="600">
+  </div>
+</div>
+
+<div>
+  <div class="sticky">
+    <div class="card">
+      <h2>3. Save, preview, send</h2>
+      <button class="btn b-blue" id="saveBtn" type="button">Save draft</button>
+      <button class="btn b-line" id="previewBtn" type="button">Update preview</button>
+      <div class="msg" id="saveMsg" role="status"></div>
+      <iframe id="preview" title="Email preview" sandbox="allow-same-origin"></iframe>
+    </div>
+    <div class="card">
+      <h2>Send a test</h2>
+      <label for="to">Send one copy to</label><input type="email" id="to" placeholder="you@example.com">
+      <button class="btn b-line" id="testBtn" type="button">Send test email</button>
+      <div class="msg" id="testMsg" role="status"></div>
+    </div>
+    <div class="card danger">
+      <h2>Send to all subscribers</h2>
+      <p class="note">This can't be undone. Save, preview, and send yourself a test first. Type <b id="confirmWord">SEND</b> to unlock.</p>
+      <input type="text" id="confirm" autocomplete="off" placeholder="Type the confirmation">
+      <button class="btn b-red" id="sendBtn" type="button">Send to subscribers</button>
+      <div class="msg" id="sendMsg" role="status"></div>
+    </div>
+  </div>
+</div>
+</main>
+
+<script>
+(function(){
+  var $ = function(id){return document.getElementById(id)};
+  var sent = false;
+
+  function show(id, kind, text, list){
+    var el = $(id); el.className = 'msg show ' + kind; el.textContent = text || '';
+    if (list && list.length){ var ul = document.createElement('ul'); list.forEach(function(x){var li=document.createElement('li'); li.textContent=x; ul.appendChild(li)}); el.appendChild(ul); }
+  }
+  function hide(id){ $(id).className = 'msg'; }
+  function api(path, opts){
+    return fetch(path, Object.assign({headers:{'Content-Type':'application/json'}}, opts)).then(function(r){
+      return r.json().catch(function(){return {}}).then(function(d){ d._status = r.status; return d; });
+    });
+  }
+  function paras(id){ return $(id).value.split(/\n\s*\n/).map(function(s){return s.trim()}).filter(Boolean); }
+
+  function read(){
+    return {
+      number: parseInt($('num').value,10) || null, title: $('title').value.trim(), date: $('date').value,
+      conversation: { headline:$('c-h').value, paragraphs:paras('c-p'), takeaway:$('c-t').value,
+        episodeUrl:$('ep').value, episodeLabel:$('c-el').value, clipUrl:$('clip').value, clipLabel:$('c-cl').value },
+      build: { headline:$('b-h').value, paragraphs:paras('b-p'), takeaway:$('b-t').value },
+      thinking: { headline:$('t-h').value, paragraphs:paras('t-p'), takeaway:$('t-t').value }
+    };
+  }
+  function fill(i){
+    $('num').value = i.number || ''; $('title').value = i.title || ''; $('date').value = i.date || '';
+    var c = i.conversation||{}, b = i.build||{}, t = i.thinking||{};
+    $('c-h').value=c.headline||''; $('c-p').value=(c.paragraphs||[]).join('\n\n'); $('c-t').value=c.takeaway||'';
+    $('ep').value=c.episodeUrl||''; $('c-el').value=c.episodeLabel||''; $('clip').value=c.clipUrl||''; $('c-cl').value=c.clipLabel||'';
+    $('b-h').value=b.headline||''; $('b-p').value=(b.paragraphs||[]).join('\n\n'); $('b-t').value=b.takeaway||'';
+    $('t-h').value=t.headline||''; $('t-p').value=(t.paragraphs||[]).join('\n\n'); $('t-t').value=t.takeaway||'';
+    setLocked(i.status === 'sent', i);
+    updateConfirm();
+  }
+  function setLocked(isSent, i){
+    sent = isSent;
+    ['saveBtn','testBtn','sendBtn','structureBtn'].forEach(function(id){ $(id).disabled = isSent; });
+    $('status').textContent = isSent ? 'This issue was sent' + (i && i.sentAt ? ' on ' + i.sentAt.slice(0,10) : '') + ' and is locked.' : ($('num').value ? 'Draft.' : '');
+  }
+  function updateConfirm(){ var n = $('num').value; $('confirmWord').textContent = 'SEND ' + (n || '…'); }
+  $('num').addEventListener('input', updateConfirm);
+
+  function loadList(selectNumber){
+    return api('/api/studio/issues').then(function(d){
+      var sel = $('pick'); while (sel.options.length > 1) sel.remove(1);
+      (d.issues||[]).forEach(function(i){ var o=document.createElement('option'); o.value=i.number; o.textContent='Issue '+String(i.number).padStart(2,'0')+' · '+i.title+' ('+i.status+')'; sel.appendChild(o); });
+      if (selectNumber) sel.value = selectNumber;
+      if (!$('num').value){ var max=0; (d.issues||[]).forEach(function(i){max=Math.max(max,i.number)}); $('num').value = max+1; updateConfirm(); }
+      return d;
+    });
+  }
+  $('pick').addEventListener('change', function(){
+    var n = $('pick').value;
+    if (!n){ fill({date:new Date().toISOString().slice(0,10)}); $('num').value=''; loadList(); return; }
+    api('/api/studio/issues?number='+n).then(function(d){ if (d.issue) { fill(d.issue); updatePreview(); } });
+  });
+
+  function updatePreview(){
+    return api('/api/studio/preview',{method:'POST',body:JSON.stringify({issue:read()})}).then(function(d){
+      if (d.html) $('preview').srcdoc = d.html;
+      return d;
+    });
+  }
+  $('previewBtn').addEventListener('click', function(){
+    hide('saveMsg');
+    updatePreview().then(function(d){
+      if (d.error) show('saveMsg','err',d.error);
+      else if ((d.warnings||[]).length) show('saveMsg','warn','Preview updated. Things to check:',d.warnings);
+    });
+  });
+
+  $('saveBtn').addEventListener('click', function(){
+    var b=$('saveBtn'); b.disabled=true; hide('saveMsg');
+    api('/api/studio/issues',{method:'POST',body:JSON.stringify({issue:read()})}).then(function(d){
+      b.disabled=sent;
+      if (d._status>=400) return show('saveMsg','err',d.error||'Could not save.');
+      var rest=(d.problems||[]).concat(d.warnings||[]);
+      show('saveMsg', rest.length?'warn':'ok', rest.length?'Draft saved. Still to fix before sending:':'Draft saved.', rest);
+      $('status').textContent='Draft saved.';
+      loadList(d.issue.number); updatePreview();
+    });
+  });
+
+  $('structureBtn').addEventListener('click', function(){
+    var b=$('structureBtn'); b.disabled=true; show('structMsg','warn','Claude is working…');
+    api('/api/studio/structure',{method:'POST',body:JSON.stringify({notes:$('notes').value,guest:$('guest').value,episodeUrl:$('ep').value,clipUrl:$('clip').value,number:$('num').value,date:$('date').value})}).then(function(d){
+      b.disabled=sent;
+      if (d._status>=400||!d.issue) return show('structMsg','err',d.error||'Could not structure the notes.');
+      var keepNum=$('num').value, keepDate=$('date').value; fill(d.issue); $('num').value=keepNum||d.issue.number||''; $('date').value=keepDate||d.issue.date; updateConfirm();
+      show('structMsg',(d.gaps||[]).length?'warn':'ok','Structured. Read it carefully and edit before saving: it is a draft from your notes, not final copy.',d.gaps);
+      updatePreview();
+    });
+  });
+
+  $('testBtn').addEventListener('click', function(){
+    var b=$('testBtn'); b.disabled=true; hide('testMsg');
+    api('/api/studio/send',{method:'POST',body:JSON.stringify({number:$('num').value,mode:'test',to:$('to').value})}).then(function(d){
+      b.disabled=sent; show('testMsg', d.ok?'ok':'err', d.message||d.error||'Failed.');
+    });
+  });
+
+  $('sendBtn').addEventListener('click', function(){
+    var n=$('num').value;
+    if ($('confirm').value.trim() !== 'SEND '+n) return show('sendMsg','err','Type "SEND '+n+'" exactly to confirm.');
+    if (!window.confirm('Send issue '+n+' to ALL subscribers now? This cannot be undone.')) return;
+    var b=$('sendBtn'); b.disabled=true; hide('sendMsg');
+    api('/api/studio/send',{method:'POST',body:JSON.stringify({number:n,mode:'send',confirm:$('confirm').value.trim()})}).then(function(d){
+      if (d.ok){ show('sendMsg','ok',d.message); setLocked(true); loadList(n); }
+      else { b.disabled=false; show('sendMsg','err',d.error||'Failed.'); }
+    });
+  });
+
+  $('date').value = new Date().toISOString().slice(0,10);
+  loadList();
+})();
+</script>
+</body>
+</html>

@@ -404,3 +404,40 @@ Variables: `RESEND_API_KEY`, `RESEND_SEGMENT_ID`, `POSTAL_ADDRESS`, optional `RE
 (default `Still Building with Ami <newsletter@conversationswithami.com>`) and `RESEND_REPLY_TO`.
 
 **Local testing:** put `RESEND_API_KEY` and `RESEND_SEGMENT_ID` in a `.dev.vars` file (gitignored).
+
+---
+
+## Newsletter Studio (/studio): private place to write and send issues
+
+A login-protected page for writing Still Building issues: paste notes, Claude structures them
+into the three sections with takeaways (using only what you wrote), you edit, preview, save,
+send yourself a test, then send to all subscribers. Issues are stored in the D1 database (`DB`).
+
+Files: `studio.html`, `functions/api/studio/*` (issues, preview, structure, send), and
+`functions/_lib/studio-*.js`. Voice rules for Claude live in `functions/api/studio/structure.js`.
+
+**Login: Cloudflare Access (email one-time code).** Every studio API call is also checked in code
+(`functions/_lib/studio-auth.js`): it verifies Cloudflare's signed token and refuses everything
+if Access isn't set up. So the studio does nothing until you finish these steps.
+
+1. Cloudflare dashboard (the Conversationswithami@gmail.com account) > **Zero Trust**. If it asks you to
+   pick a team name and plan, choose the **Free** plan. Note the team domain
+   (`yourteam.cloudflareaccess.com`).
+2. Zero Trust > Access > Applications > **Add an application** > Self-hosted.
+   - Public hostnames (add each): `www.conversationswithami.com` path `studio*`;
+     `www.conversationswithami.com` path `api/studio*`;
+     `conversations-with-ami.pages.dev` path `studio*` and path `api/studio*`.
+   - Policy: **Allow**, include **Emails** = your email address(es). Login method: One-time PIN.
+3. Open the application's settings and copy its **Application Audience (AUD) Tag**.
+4. Pages project > Settings > Environment variables (Production), add:
+   `ACCESS_TEAM_DOMAIN` = `yourteam.cloudflareaccess.com` (no https://),
+   `ACCESS_AUD` = the AUD tag,
+   `STUDIO_ALLOWED_EMAILS` = your email (optional but recommended; comma-separate for more people).
+   Already set from earlier: `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `RESEND_SEGMENT_ID`. Redeploy.
+5. Visit `/studio`: you should get a Cloudflare email-code prompt, then the studio.
+
+**Sending safety:** the studio only sends the *saved* draft, a real send needs you to type
+`SEND <number>` and confirm a pop-up, sent issues lock, and only Resend Broadcasts are used (so
+every email carries a working unsubscribe link).
+
+**Local testing:** `STUDIO_DEV_BYPASS=1` in `.dev.vars` skips the login on localhost only (ignored on the live site).
