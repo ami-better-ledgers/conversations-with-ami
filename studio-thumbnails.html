@@ -32,12 +32,20 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
 .prev canvas{width:100%;height:auto;display:block;border-radius:10px;background:#ddd}
 .prev.sq canvas{max-width:520px}
 .sticky{position:sticky;top:.75rem}
+.wait-item{display:flex;gap:.6rem;align-items:center;justify-content:space-between;border:1px solid rgba(16,16,19,.12);border-radius:12px;padding:.5rem .7rem;margin:.4rem 0;font-size:.9rem}
+.wait-item b{display:block}.wait-item small{color:var(--soft)}
+.wait-item .btn{margin:0 0 0 .3rem;padding:.4rem .9rem;font-size:.85rem}
 </style>
 </head>
 <body>
 <header class="top"><h1>Thumbnail Studio · Conversations with Ami</h1><a href="/studio">← Newsletter Studio</a></header>
 <main>
 <div>
+  <div class="card" id="waitCard">
+    <h2>Waiting from Muse</h2>
+    <div id="waitList" class="note">Checking…</div>
+    <button class="btn b-line" id="waitRefresh" type="button">Refresh</button>
+  </div>
   <div class="card">
     <h2>Episode</h2>
     <label for="fill">Fill from a published episode</label>
@@ -283,6 +291,46 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
     img.onerror = function () { msg.className = "msg show warn"; msg.textContent = "That file couldn't be read as an image."; };
     img.src = url;
   });
+
+  // photo + details dropped off by Muse
+  function esc(t) { return String(t == null ? "" : t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function loadWaiting() {
+    var box = $("waitList");
+    fetch("/api/studio/thumbnail-requests", { headers: { Accept: "application/json" } }).then(function (r) {
+      if (!r.ok) throw new Error("x"); return r.json();
+    }).then(function (d) {
+      var w = (d && d.waiting) || [];
+      if (!w.length) { box.textContent = "Nothing waiting. When Muse drops off a guest photo, it shows up here."; return; }
+      box.innerHTML = w.map(function (x) {
+        return "<div class=\"wait-item\" data-id=\"" + x.id + "\"><span><b>Episode " + esc(x.episode) + ": " + esc(x.hook) + "</b><small>" + esc(x.guest) + (x.company ? ", " + esc(x.company) : "") + (x.photo_size ? " · photo attached" : " · no photo yet") + "</small></span><span><button class=\"btn b-blue\" data-use=\"" + x.id + "\" type=\"button\">Use</button><button class=\"btn b-line\" data-del=\"" + x.id + "\" type=\"button\">Dismiss</button></span></div>";
+      }).join("");
+    }).catch(function () { box.textContent = "Couldn't check for Muse drop-offs (you may need to sign in again)."; });
+  }
+  $("waitList").addEventListener("click", function (e) {
+    var use = e.target.getAttribute && e.target.getAttribute("data-use"), del = e.target.getAttribute && e.target.getAttribute("data-del");
+    if (use) {
+      fetch("/api/studio/thumbnail-requests?id=" + use).then(function (r) { return r.json(); }).then(function (d) {
+        var q = d && d.request; if (!q) return;
+        $("ep").value = q.episode; $("hook").value = q.hook; $("guest").value = q.guest; $("company").value = q.company;
+        if (q.kind) $("kind").value = q.kind;
+        if (q.photo) {
+          var img = new Image();
+          img.onload = function () {
+            var c = document.createElement("canvas"); c.width = 40; c.height = 40; var cx = c.getContext("2d"); cx.drawImage(img, 0, 0, 40, 40);
+            var px = [[1,1],[38,1],[1,38],[38,38],[20,1]].map(function (p) { return cx.getImageData(p[0], p[1], 1, 1).data[3]; });
+            guestHasAlpha = px.some(function (a) { return a < 200; }); guestImg = img;
+            var m = $("photoMsg"); m.className = "msg show " + (guestHasAlpha ? "ok" : "warn");
+            m.textContent = guestHasAlpha ? "Photo from Muse (transparent): standing on the circle." : "Photo from Muse has a background, so it's shown in a round frame.";
+            render();
+          };
+          img.src = q.photo;
+        } else { guestImg = null; render(); }
+      });
+    }
+    if (del) { fetch("/api/studio/thumbnail-requests?id=" + del, { method: "DELETE" }).then(loadWaiting); }
+  });
+  $("waitRefresh").addEventListener("click", loadWaiting);
+  loadWaiting();
 
   ["ep", "kind", "hook", "guest", "company", "ami"].forEach(function (id) {
     $(id).addEventListener("input", render); $(id).addEventListener("change", render);

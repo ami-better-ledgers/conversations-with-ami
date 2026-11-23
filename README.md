@@ -438,6 +438,15 @@ if Access isn't set up. So the studio does nothing until you finish these steps.
 
 **Thumbnail Studio (`/studio-thumbnails`):** a second private page, linked from the Studio header. Fill in (or pick a published episode), upload the guest photo, and download the wide (1280x720) and square (1080x1080) thumbnails. It runs entirely in the browser (`studio-thumbnails.html`, drawing on a canvas, no server code or secrets), and the same Cloudflare Access rule `studio*` protects it. A transparent PNG puts the guest on the circle beside Ami; any other photo is cropped into a round frame; with no photo a silhouette marks the spot. The colorways match the five kinds of episode (see the brand kit thumbnail template).
 
+**Muse drop-off (`POST /api/muse/thumbnails`):** lets Ami's AI assistant, Muse, hand the Thumbnail Studio a guest photo and the episode details. Muse only adds to a waiting list; Ami picks it under "Waiting from Muse" in the Studio (behind Access) and downloads the thumbnails. Needs the Pages secret `MUSE_API_KEY` (at least 24 characters; never put it in the repo or in chat). Muse sends `Authorization: Bearer <key>` and JSON:
+```
+POST https://www.conversationswithami.com/api/muse/thumbnails
+{ "episode": "21", "hook": "The part of the title before the |", "guest": "Guest Name", "company": "Company",
+  "kind": "peer|literacy|planning|nottodo|skills (optional)",
+  "photoBase64": "<base64 of a transparent PNG or WebP, head and shoulders, up to ~1.2 MB>", "photoType": "image/png" }
+```
+`GET` the same address (same header) lists what is waiting. Files: `functions/api/muse/thumbnails.js`, `functions/_lib/thumbnail-requests.js`, `functions/api/studio/thumbnail-requests.js` (D1 table `thumbnail_requests`, created automatically; items older than 30 days are removed). This path is outside the `api/studio*` Access rule on purpose, so Muse can reach it with the key alone.
+
 **Sending safety:** the studio only sends the *saved* draft, a real send needs you to type
 `SEND <number>` and confirm a pop-up, sent issues lock, and only Resend Broadcasts are used (so
 every email carries a working unsubscribe link).
