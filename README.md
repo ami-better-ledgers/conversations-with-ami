@@ -451,6 +451,9 @@ every email carries a working unsubscribe link).
 - **New issues** are written in the studio (`/studio`), saved as drafts in D1, and become public when sent.
 - **Public pages:** each issue is at `/newsletter/issue-NN` (`functions/newsletter/[slug].js`); the archive page and the
   homepage read `/api/issues`; every issue is in `/sitemap.xml`.
-- **Kit:** `functions/api/newsletter.js` (the old Kit feed) is no longer used by any page and can be deleted once the signup
-  form has moved off Kit.
+- **Signup (double opt-in):** every `.signup-form-slot` is filled by `js/newsletter-embed.js`. `/api/subscribe` emails a
+  signed confirmation link (48 hours); `/api/confirm` shows a "Confirm my subscription" button and, on press, adds the
+  contact to the Resend segment. Rate limits (per address and per visitor) are stored in the D1 table `subscribe_attempts`.
+- **Kit is no longer used** by the site: the old Kit feed function was removed and the signup box is ours. You can cancel
+  Kit when you're ready, and delete the `KIT_API_KEY` secret from the Pages settings.
 - **Section order** in every issue (and the default for new ones): From the conversation, What I'm thinking, From the build.

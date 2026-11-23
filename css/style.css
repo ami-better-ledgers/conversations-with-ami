@@ -575,6 +575,43 @@ p { margin: 0 0 1.1em; max-width: 62ch; }
   color: var(--ink-soft);
 }
 
+/* Newsletter signup form (Still Building with Ami; replaces the Kit embed) */
+.signup-form-slot.is-form {
+  background: none; border: none; padding: 0; min-height: 0;
+  display: block; text-align: left;
+  font-family: var(--font-body); font-size: 1rem; letter-spacing: 0; color: inherit;
+}
+.sb-form-label {
+  display: block; margin-bottom: .4rem;
+  font-family: var(--font-label); font-weight: 700; font-size: .78rem;
+  letter-spacing: .1em; text-transform: uppercase;
+}
+.signup-block .sb-form-label { color: var(--paper); }
+.sb-form-row { display: flex; gap: .6rem; flex-wrap: wrap; }
+.sb-form-input {
+  flex: 1 1 220px; font: inherit; padding: .8rem 1.1rem; border-radius: 999px;
+  border: 2px solid rgba(16,16,19,.25); background: #fff; color: var(--ink);
+}
+.sb-form-input:focus { outline: 3px solid var(--sky); border-color: var(--blue); }
+.sb-form-btn {
+  font-family: var(--font-label); font-weight: 700; font-size: 1rem;
+  padding: .8rem 1.5rem; border-radius: 999px; border: 0; cursor: pointer;
+  background: var(--blue); color: #fff; transition: transform .15s;
+}
+.signup-block .sb-form-btn { background: #FFC93C; color: #162c6c; }
+.sb-form-btn:hover { transform: translateY(-2px); }
+.sb-form-btn:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+.sb-form-btn[disabled] { opacity: .6; cursor: wait; }
+.sb-form-hp { position: absolute; left: -9999px; height: 0; overflow: hidden; }
+.sb-form-note { margin: .7rem 0 0; font-size: .85rem; color: var(--ink-soft); }
+.signup-block .sb-form-note { color: rgba(253,253,252,0.75); }
+.sb-form-status { min-height: 1.3rem; margin: .5rem 0 0; font-size: .92rem; font-weight: 600; }
+.sb-form-status.is-error { color: #b3151a; }
+.signup-block .sb-form-status.is-error { color: #ffb4b4; }
+.sb-form-done { font-size: 1.05rem; line-height: 1.55; }
+.signup-block .sb-form-done { color: var(--paper); }
+@media (prefers-reduced-motion: reduce) { .sb-form-btn { transition: none; } }
+
 /* ============ Footer ============ */
 .site-footer {
   border-top: var(--border);
