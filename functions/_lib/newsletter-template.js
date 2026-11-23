@@ -218,7 +218,7 @@ export function renderWeb(issue, opts = {}) {
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="article"><meta property="og:title" content="${title}"><meta property="og:description" content="${desc}">
 <meta property="og:url" content="${url}"><meta property="og:site_name" content="Conversations with Ami">
-<meta property="og:image" content="${site}/assets/og-image.jpg"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:image" content="${site}/assets/og-image-v2.jpg"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="${base}/assets/favicon.svg" type="image/svg+xml">
 <script type="application/ld+json">${ld}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">

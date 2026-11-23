@@ -81,7 +81,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
   const guestName = curated?.guestName || (guestCredit ? guestCredit.split(",")[0].trim() : "");
   const guestCompany = curated?.guestCompany || (guestCredit && guestCredit.includes(",") ? guestCredit.split(",").slice(1).join(",").trim() : "");
   const metaDescription = truncate(curated?.summary || feedItem.description || "", 160);
-  const ogImage = feedItem.image || `${SITE_URL}/assets/og-image.jpg`;
+  const ogImage = feedItem.image || `${SITE_URL}/assets/og-image-v2.jpg`;
   const dateLabel = formatDate(feedItem.pubDate);
   const episodeNum = feedItem.episode ? String(feedItem.episode).padStart(2, "0") : "";
 

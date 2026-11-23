@@ -33,7 +33,7 @@ export function esc(s) {
   return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
-export function headTags({ title, description, canonical, ogImage = "https://www.conversationswithami.com/assets/og-image.jpg", ogType = "website", noindex = false, extra = "" }) {
+export function headTags({ title, description, canonical, ogImage = "https://www.conversationswithami.com/assets/og-image-v2.jpg", ogType = "website", noindex = false, extra = "" }) {
   return `<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
