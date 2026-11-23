@@ -820,3 +820,32 @@ a.archive-card .issue-excerpt { display: block; margin: .5rem 0 .75rem; color: v
 .about-cos .co-card p { color: var(--soft); }
 @media (max-width: 860px) { .about-two, .about-cos { grid-template-columns: 1fr; } }
 #episodes { background-image: linear-gradient(rgba(22,44,108,.93), rgba(22,44,108,.93)), url("/assets/brand-public/pattern-dark-tile.svg"); background-size: auto, 220px; }
+
+/* ---------- Links page (link-in-bio), v2 ---------- */
+body:has(.links-main) { background: var(--deep); }
+.links-main { min-height: 100vh; background-color: var(--blue); background-image: linear-gradient(rgba(33,64,154,.94), rgba(22,44,108,.97)), url("/assets/brand-public/pattern-dark-tile.svg"); background-size: auto, 220px; color: #fff; padding: clamp(2rem, 6vw, 3.5rem) 1.25rem 3rem; }
+.links-page { max-width: 30rem; margin: 0 auto; padding: 0; }
+.links-hero { text-align: center; margin-bottom: 1.8rem; }
+.links-avatar { position: relative; width: 168px; height: 168px; margin: 0 auto 1.1rem; }
+.links-ring { position: absolute; inset: 0; border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 6px var(--sun); }
+.links-avatar img { position: absolute; left: 6%; bottom: 0; width: 88%; height: auto; clip-path: inset(0 0 0 0 round 0 0 84px 84px); border-radius: 0 0 84px 84px; }
+.links-logo { height: 40px; width: auto; margin: 0 auto .8rem; }
+.links-tag { font-family: var(--display); font-weight: 800; font-size: clamp(2rem, 1.4rem + 3vw, 2.8rem); line-height: 1; color: #fff; margin: 0 0 .7rem; }
+.links-tag span { color: var(--sun); }
+.links-lede { color: rgba(255,255,255,.9); font-size: 1.05rem; margin: 0 auto; max-width: 26rem; }
+.links-main .link-list { gap: .8rem; }
+.links-main .link-btn { padding: 1.05rem 1.5rem; font-family: var(--label); font-size: 1.05rem; color: var(--deep); background: #fff; box-shadow: 0 6px 0 rgba(0,0,0,.18); text-align: center; transition: transform .2s var(--ease), box-shadow .2s; }
+.links-main .link-btn:hover { transform: translateY(-3px); box-shadow: 0 9px 0 rgba(0,0,0,.2); }
+.links-main .link-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+.links-main .link-btn-primary { background: var(--red-ui); color: #fff; }
+.links-main .link-btn-sun { background: var(--sun); color: var(--deep); }
+.links-main .link-group-label { color: var(--sky); text-align: center; margin: 2rem 0 .9rem; letter-spacing: .14em; }
+.link-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: .7rem; }
+.link-soc { display: flex; align-items: center; gap: .7rem; padding: .6rem .9rem; border-radius: 999px; background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.25); color: #fff; text-decoration: none; font-family: var(--label); font-weight: 700; transition: background .2s, transform .2s var(--ease); }
+.link-soc:hover { background: rgba(255,255,255,.22); transform: translateY(-2px); }
+.link-soc-ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #fff; flex: none; }
+.link-soc-ico img { width: 22px; height: 22px; object-fit: contain; }
+.links-home { text-align: center; margin: 2rem 0 0; } .links-home a { color: var(--sky); font-weight: 600; }
+.links-footer { background: transparent; color: rgba(255,255,255,.8); text-align: center; padding: 0 0 2rem; }
+.links-footer + * { }
+.links-tag span { display: block; }
