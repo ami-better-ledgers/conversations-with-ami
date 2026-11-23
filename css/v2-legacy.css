@@ -826,3 +826,5 @@ body:has(.links-main) { background: var(--deep); }
 .links-footer { background: transparent; color: rgba(255,255,255,.8); text-align: center; padding: 0 0 2rem; }
 .links-footer + * { }
 .links-tag span { display: block; }
+.about-cos { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 960px) { .about-cos { grid-template-columns: 1fr; } }
