@@ -1,0 +1,52 @@
+{
+  "number": 6,
+  "title": "Money without a plan disappears.",
+  "date": "2026-09-08",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/money-without-a-plan-disappears",
+  "conversation": {
+    "headline": "Money without a plan disappears.",
+    "paragraphs": [
+      "I had Eli Gluek on the podcast recently, and he said something that's been sitting with me since: money without a plan doesn't get invested, it gets spent — and there's a real difference between the two.",
+      "His test is simple. He asks clients: if you woke up tomorrow with 200,000 in your account, what's the first thing you'd do with it? Most people can't answer right away. They know they want to grow. They don't know what growing actually costs, line by line.",
+      "As bookkeepers, we watch this play out constantly. A business owner comes in wanting funding, wanting to hire, wanting to \"scale\" — but ask them what the money is actually for, specifically, and it gets vague fast. That vagueness isn't a character flaw. It's just what happens when nobody's forced you to justify the spend before you make it.",
+      "That's the real distinction Eli was pointing at. A plan doesn't just tell you where the money goes — it forces you to defend the decision before you make it. No plan, no defense required, and that's exactly when money quietly leaks out the side door."
+    ],
+    "takeaway": "Before your next big expense — a hire, a tool, a \"we just need this\" purchase — write down what specifically it's supposed to produce. If you can't answer that in one sentence, you don't have a plan yet. You have a hope.",
+    "episodeUrl": "https://youtu.be/OaesOrcR1o4",
+    "episodeLabel": "Full episode with Eli Gluek",
+    "clipUrl": "https://youtube.com/shorts/T8ZA6wwCq5I",
+    "clipLabel": "Short clip: Money without a plan disappears"
+  },
+  "build": {
+    "headline": "The audit that happened before the hire.",
+    "paragraphs": [
+      "Wanting to hire our first salesperson meant planning what that spend would actually cost — and planning forced me to look at what we were already spending on sales. I wasn't happy with what I found.",
+      "It's easy to throw money at a problem. It's not always the right solution. So I ran an experiment on myself: how little can I spend and still grow? Spending on purpose demands justification. Spending on autopilot doesn't — it just sits on the statement, unquestioned, month after month.",
+      "JustCall was costing us $87.10 a month for two user seats, but we were only actively using one. I'm switching to Zoom VOIP — $24.99 per user plus $5 for an additional number, landing around $53 a month. Same call recording, same transcripts, but now with call summaries on top, for less money.",
+      "Pipedrive was next: $53.35 per seat, which would've been $106.70 once we added a second seat for the new hire. Instead, I'm building a custom CRM — free to start, scaling to maybe $5 a month as our database grows. It won't have every bell and whistle Pipedrive has. It'll have exactly what we use.",
+      "Same story with our engagement letter and billing management system, currently $270 a month. I'm replacing it with a custom version that cuts the subscription cost and saves us on processing fees on top of that.",
+      "None of this was about cutting for the sake of cutting. It was about not being able to justify what we were already paying for, once I actually had to look at it. Getting scrappy didn't just save money — a couple times, it found us a better tool than the one we were overpaying for."
+    ],
+    "takeaway": "List your top three recurring software or service costs this week. For each one, ask: do I know exactly what this produces for me? If you can't answer that fast, it's worth twenty minutes of digging before you renew it."
+  },
+  "thinking": {
+    "headline": "Business isn't the same as busy-ness.",
+    "paragraphs": [
+      "A couple weeks ago I sat down with a friend of mine, a salesman, and he asked me, \"Ami, how do you stay busy?\"",
+      "My answer was: I don't.",
+      "It's easy to fall into the trap of conflating being busy with being productive. I'd rather spend time with my wife and my dog than be \"busy\" but unproductive. Being booked solid isn't an accomplishment. It's just full.",
+      "Kevin O'Leary has a way of putting this that stuck with me: signal versus noise. Is what you're doing actually making a difference, or are you just afraid of not looking busy?",
+      "Not chasing busy has changed things for me personally — but it's changed things in business too. It keeps me present. Available. And in sales, availability isn't a nice-to-have, it's the whole game.",
+      "Selling bookkeeping means selling to people who are already anxious about their numbers, and anxious people don't want to talk about it. They put it off. But there's a window — the moment something finally clicks and they think \"something needs to change\" — and if you can be on a call with them within an hour or two of that moment, you're not selling anymore. You're just opening a door they already wanted opened.",
+      "A calendar booked three weeks out doesn't get that call. Busy doesn't get that call. Available does.",
+      "Distractions love to dress up as opportunities. Busy loves to dress up as important."
+    ],
+    "takeaway": "Look at your calendar this week. Ask yourself honestly: how much of what's on it is signal, and how much is just noise you keep to feel productive? Block time to be available — not busy — and see who shows up."
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "number": 3,
+  "title": "Tugboats, Untested Fears & Beginning with the End in Mind",
+  "date": "2026-07-23",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/tugboats-untested-fears-beginning-with-the-end-in-mind",
+  "conversation": {
+    "headline": "Stop pulling. Let them come to you.",
+    "paragraphs": [
+      "In my conversation with Michael Minnella, he laid out a distinction that I haven't stopped thinking about: the tugboat vs. the lighthouse.",
+      "A tugboat pulls you in whether you want to go or not. A lighthouse just stands there and says — I'm here, I can help, but I'm not pulling your weight.",
+      "I've been a tugboat my whole career. In sales, convincing people they need my service instead of just showing how it can help and letting them decide. In operations, jumping on fires that aren't mine to put out.",
+      "Today, an employee told me he'd dropped the ball on a client. My immediate instinct? Dive in. Fix it. The problem: I'm currently closing another deal with that same client, so the stakes felt personal. Everything in me wanted to step into my partner's domain and take control.",
+      "I didn't. I passed the message to the right people and waited.",
+      "I still have the urge. That hasn't gone away. But I'm 99% certain staying out of it was the right call — because I finally understood the real cost of being a tugboat.",
+      {
+        "quote": "If I jump at every problem, I'll never have a business. I'll have a job — as a firefighter in my own company."
+      }
+    ],
+    "takeaway": "The next time you feel the pull to fix something that isn't yours to fix — pause. Ask yourself whether you're solving a problem or just feeding a habit. Lighthouses don't chase ships. They don't need to.",
+    "episodeUrl": "https://youtu.be/3U_5Bbm1fWA",
+    "episodeLabel": "Full episode with Michael Minnella",
+    "clipUrl": "https://youtube.com/shorts/HTkWNqFvWDQ?feature=share",
+    "clipLabel": "Short clip: Lighthouse vs Tugboat"
+  },
+  "build": {
+    "headline": "Why we finally launched a social media strategy — and why the \"why\" came first.",
+    "paragraphs": [
+      "We're officially building out a content strategy for the company's social media. Ten content categories, a filming schedule, training the team to spot great stories, and building out our editing process to match our brand.",
+      "We could have done this a year ago. We didn't — and that wasn't a mistake. The podcast made me comfortable on camera. The business doubled in revenue and nearly tripled in size, which means we now have enough faces to actually diversify the content. The timing finally made sense.",
+      "But more important than the timing was getting clear on the why — before we launched a single post. Too many businesses start social media chasing followers and likes, then call it a failure six months later because the vanity numbers didn't move. We made a different decision up front.",
+      "Our three objectives: attract early-stage entrepreneurs who need our services, recruit great talent who align with what we're building, and start establishing our presence in the market. Followers are a byproduct. Those three things are the actual goal.",
+      "When you know the why, you know what success looks like. And when you know what success looks like, you can actually begin with the end in mind."
+    ],
+    "takeaway": "Before you launch anything — social media, a new service, a hiring push — write down what success actually looks like. Be specific. If you don't define it first, the wrong numbers will define it for you."
+  },
+  "thinking": {
+    "headline": "The business decisions you're making based on fears you've never tested.",
+    "paragraphs": [
+      "David Burns calls it all-or-nothing thinking. You can't hold two truths at once, so your brain picks one and builds a wall around it.",
+      "A friend of mine is building a company. I asked him what he'd do if it fails. He told me failure isn't a possibility he's entertaining — because you can't run a business believing it might fail. I get the logic. But I also think that's all-or-nothing thinking dressed up as conviction.",
+      "I do this too, just differently. People come to me for advice regularly. I give it freely, every time, because I believe in generosity — givers gain. And I stand by that. But when I think about it honestly, I've been treating two things as mutually exclusive that aren't:",
+      "*I can be generous. And I can get paid.*",
+      "Both things are true at once. But I haven't charged for my advice, not because I've tried and it damaged a relationship — but because I've never actually tested whether it would. The fear is real. The evidence isn't."
+    ],
+    "takeaway": "What business decision are you making right now based on a fear you've never actually tested? Name it. Then ask yourself what it would look like to run the experiment."
+  }
+}

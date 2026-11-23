@@ -1,0 +1,52 @@
+{
+  "number": 9,
+  "title": "I just kept asking Claude how.",
+  "date": "2026-10-22",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/i-just-kept-asking-claude-how",
+  "conversation": {
+    "headline": "I just kept asking Claude how.",
+    "paragraphs": [
+      "On my episode with Mendy Palace from Schwai, he said something simple that stuck with me: you can use AI to teach you how to use AI.",
+      "Recently I was at a wedding, talking with my uncles, and I showed them a custom CRM I built with an AI role-play coaching system inside it. They wanted to know how I did it. I told them the truth: most of the time, I just asked Claude how.",
+      "They couldn’t believe it. They kept asking questions, sure there had to be a more complex part I was leaving out. There wasn’t. Building apps really is that simple now.",
+      "But I didn’t start with a CRM. My first build was an HTML email signature tool. You enter a name, role, direct line, extension, and LinkedIn profile, and it generates a clean signature. That’s it.",
+      "Later, I plugged it into another tool that sends the signature request out for approval. Once it’s approved, it emails the employee with instructions on how to add it. The tiny project became one piece of a bigger one.",
+      "That’s how it works. The first project doesn’t need to move the needle. It’s about getting comfortable, and once you are, bigger projects start coming your way."
+    ],
+    "takeaway": "Pick one small thing you’ve been putting off, like a simple form or tool, and build it this week by asking Claude how, step by step. Don’t ask if it matters. Just get comfortable building.",
+    "episodeUrl": "https://youtu.be/9-1hNW900mU",
+    "episodeLabel": "Full episode with Mendy Palace",
+    "clipUrl": "https://youtube.com/shorts/Sfgd493mqY8",
+    "clipLabel": "Short clip: AI for beginners"
+  },
+  "build": {
+    "headline": "I didn’t know how I sold until I had to teach it.",
+    "paragraphs": [
+      "Hiring my first salesman showed me something I didn’t expect: I’d never actually figured out how I sell.",
+      "I’ve always gone off instinct. It was good enough to build the company. But I never took the time to understand how I structure a call or how I pull information out of people. I tend to put off the uncomfortable stuff, and looking at my own process was one of those things.",
+      "Training him pushed me to finally do it. I ran role-play sales calls with Claude. After each answer I gave, I broke down how I got there from what the prospect said, and why I was going to ask the next question. Eventually Claude picked up the pattern and gave me a structure for how I sell.",
+      "Here’s what it showed me: we don’t talk about bookkeeping on sales calls. People who don’t have their books in order get anxious the second you bring it up, and anxious people don’t buy. So we talk about their business instead, what they do and what they’re comfortable with.",
+      "Then we turn their answers into a bookkeeping scope. An electrician tells me they mostly do new construction, with some service calls here and there. Now I know they have two income streams and need project tracking. He’s talking about his work, and I’m hearing his bookkeeping needs.",
+      "If I’d done this months ago, I think I’d have had better, more productive conversations."
+    ],
+    "takeaway": "Pick one thing you do on instinct, like sales calls or onboarding a client. Role-play it with Claude, explain your reasoning behind every answer and every next question, and ask it to find the pattern. You’ll end up with a process you can teach."
+  },
+  "thinking": {
+    "headline": "Don’t hire an outsider to tell you what to automate.",
+    "paragraphs": [
+      "A lot of companies pay consultants thousands of dollars to bring AI into their business. Many of those consultants don’t understand the company nearly as well as the people running it. They can’t know what’s worth automating, what isn’t, or where things fall through when you automate the wrong thing.",
+      "You can. And with AI, it’s easier than ever to learn how.",
+      "I’m not saying never outsource. If you need a specific program built, hiring someone to build it still makes sense, just like it always did. When I looked at building AI bookkeeping software, Claude told me it would take a lot of time and recommended I hire outside help. That was a clear no for me. AI bookkeeping doesn’t serve my needs yet.",
+      "But the decision about what to automate should come from inside. It should come from someone trusted who knows the day-to-day: the founder, or a valued employee who’s curious about AI and knows the company cold.",
+      "If you’re the founder and you don’t have the time or the interest, empower that person. Give them room to learn and start building.",
+      "Nobody knows your business better than the people in it."
+    ],
+    "takeaway": "Who in your company knows the operation best and is curious about AI? Give them a small project this month and let them run with it before you pay anyone to tell you what to automate."
+  }
+}

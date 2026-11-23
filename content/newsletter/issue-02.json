@@ -1,0 +1,53 @@
+{
+  "number": 2,
+  "title": "The Hare Doesn't Lose to the Tortoise",
+  "date": "2026-07-23",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/the-hare-doesn-t-lose-to-the-tortoise",
+  "conversation": {
+    "headline": "The hare doesn't lose to the tortoise",
+    "paragraphs": [
+      "Rusty Fulling brought up *The Tortoise and the Hare* in our conversation, and it's been sitting with me since. Everyone remembers the moral as \"slow and steady wins.\" But that's not actually what beats the hare. From the outside, before the race even starts, everyone would've put their money on the hare — faster, stronger, the obvious winner. The hare doesn't lose because the tortoise is better. The hare loses because it gets arrogant enough to stop running.",
+      "That's the part that connects to comparison. When we measure ourselves against someone else, we're judging from the outside — we see the pace, the lead, the paycheck, the thing that looks like winning. We don't see the arrogance building up in someone who looks ahead, and we don't see the quiet, unglamorous effort in someone who looks behind. We rush to compare outcomes, and outcomes are part of the race that's still being run.",
+      "I think about my first job constantly because of this. I was a bookkeeper making $450 a week. Friends I'd personally helped land their first jobs were making over $1,000 a week on construction sites — more than double what I brought home. From the outside, anyone watching that race would've bet on them. They were ahead. I looked behind.",
+      "Ten years later, I wouldn't trade my path for theirs. Not because the money flipped, but because of what was actually happening underneath the number nobody could see. I was sitting inside construction businesses watching how money actually moves — financials, operations, resource allocation. I was investing in something the paycheck never showed. They were running fast. I was building something the outside view had no way of measuring.",
+      {
+        "quote": "Don't compare paychecks. Compare investments."
+      }
+    ],
+    "takeaway": "Next time you catch yourself measuring your week against someone else's, remember — you're betting on the part of the race you can see. Ask what's actually being built where you can't.",
+    "episodeUrl": "https://youtu.be/TiauHWQqqT0",
+    "episodeLabel": "Full episode with Rusty Fulling",
+    "clipUrl": "https://youtube.com/shorts/HmL2UVyzhcY?feature=share",
+    "clipLabel": "Short clip: Overcoming Comparison In Business"
+  },
+  "build": {
+    "headline": "I almost made his insurance problem mine",
+    "paragraphs": [
+      "A client of ours had a workers' comp policy lapse, and we didn't catch it until a week later. My first instinct was to spiral — how do we build a system so this never happens again, how did we drop the ball? Then I stopped myself. It wasn't our job. He has an insurance agent earning commission on that exact policy. We flag renewals when we can, but the responsibility isn't ours to own.",
+      "That instinct to grab the problem and fix it isn't a business reflex — it's a pattern in me. I've done it in my marriage, in friendships, and I've done it in this business too. I used to run operations alongside my partner until my lack of trust and the anxiety I brought into every decision got bad enough that he pulled me out of it. Things got better the moment I was gone.",
+      "So with this insurance situation, I had to consciously stop myself from sliding back into that pattern. It's still active — I notice the pull every time something like this happens. The way I think about it now: you don't teach a kid to cross the street safely by always crossing them yourself. At some point, you have to step back and watch, even though it feels like a risk. That's the only way trust actually gets built.",
+      {
+        "quote": "Trust isn't built by having other people watch you, rather you need to let them bring you the results."
+      }
+    ],
+    "takeaway": "If you catch yourself wanting to take over someone else's responsibility \"to help,\" ask whether you're solving a problem or feeding your own anxiety. Then practice stepping back anyway."
+  },
+  "thinking": {
+    "headline": "Busy is dopamine wearing a disguise",
+    "paragraphs": [
+      "A young salesman came into my office last week and asked how I keep myself busy. My honest answer: I don't, and I don't want to. If I could get everything done in one hour a day, that would be the dream.",
+      "What I think is actually going on with most people chasing \"busy\" isn't laziness, and it isn't even a bad strategy on the surface — it's dopamine. Busy gives you the anticipation of being productive without ever requiring the result. That salesman couldn't stop checking his LinkedIn impressions. I told him straight: who cares, if it's not bringing you closer to a goal, it's noise dressed up as progress.",
+      "I'm not immune to this either. I've chased plenty of ideas over the years that, if I'm honest, I was really chasing for the hit of starting something new — not because they moved me anywhere. The hard part is that a distraction and an opportunity look identical when walking through the door. The only way to tell them apart is to stop and actually check.",
+      {
+        "quote": "Distractions love to dress up as opportunities. The difference between an opportunity and a distraction is whether it gets you closer to your goals."
+      }
+    ],
+    "takeaway": "Before you say yes to the next thing — the meeting, the idea, the platform — ask one question: does this move me closer to my goal, or does it just feel like motion?"
+  }
+}

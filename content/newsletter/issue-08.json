@@ -1,0 +1,53 @@
+{
+  "number": 8,
+  "title": "Don't start with the part that scares them",
+  "date": "2026-10-08",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/don-t-start-with-the-part-that-scares-them",
+  "conversation": {
+    "headline": "Don't start with the part that scares them",
+    "paragraphs": [
+      "In my conversation with Rusty Fulling, he said leadership comes with a lot of responsibility, but it's also an opportunity to make an impact. Same weight, different attitude, completely different outcome.",
+      "That landed because of what happened after I hired my first salesman. I was overwhelmed. How will I train him? Is my process clear enough? And honestly, that weight made me hold back. I wasn't putting in full effort because it looked like a huge hill, and I was insecure about my systems.",
+      "Then I had to start training him anyway, and I found out something. I never had a script. I had a sequence.",
+      "Most people call us because they're uncomfortable with their finances. So I don't start there. I start with what they're comfortable with, which is their operations: what they do and how they do it.",
+      "\"How do you work with your vendors?\" If they say they pay on the spot, I know they don't need accounts payable. If they say they pick up the goods and get an invoice later, they do. I never asked a bookkeeping question, and I still got the bookkeeping answer.",
+      "That's why a script wouldn't have worked. To an outsider, those questions sound too casual to matter. They only work if you understand what you're selling, because you're listening for the answer behind the answer.",
+      "The weight I was bracing for wasn't training him. It was realizing my system only lived in the back of my head. It came from experience, but I'd never put it into an actual system, so I couldn't hand it to anyone. That's the real hill, and it's the one worth climbing."
+    ],
+    "takeaway": "Think about the challenge you've been avoiding. Go at it this week. Every challenge is also an opportunity, and if you focus on it and start working, you come out the other side with a win.",
+    "episodeUrl": "https://youtu.be/TiauHWQqqT0",
+    "episodeLabel": "Full episode with Rusty Fulling",
+    "clipUrl": "https://www.youtube.com/shorts/s67LAg7q0m8",
+    "clipLabel": "Short clip: Leadership Opportunity in Responsibility"
+  },
+  "build": {
+    "headline": "I'm training my salesman and my AI at the same time",
+    "paragraphs": [
+      "We just hired our first salesman, and I ran into a problem I didn't see coming. I've been a bookkeeper for close to 7 years, so by the time I started selling, a lot of it came naturally. It doesn't come naturally to someone new.",
+      "So I started with the basics. I had him take a short bookkeeping course so he'd understand what he's actually selling. Then I had AI go through the Dashstaff and Better Ledgers websites so it had a clear picture of what each company does.",
+      "Next, I ran role-play calls with the AI to show it how I sell. Once I had some clarity, I set up a project in Claude where he practices. We're still developing it together, so we sit side by side and talk to the AI as if it were the client.",
+      "Before he responds, I tell him what I'm hearing from a bookkeeping perspective, even though the conversation isn't about bookkeeping. Say the client tells us he's an electrical contractor. I'll say: now we need to find out if he does service calls, new construction, or both. If he does new construction in any capacity, we need to include project tracking. The client never says \"project tracking,\" but that's what his answer means, and we're building the scope in the back while we talk about his work.",
+      "The next step is a custom training module inside our CRM, built on everything we're using now, so anyone new can learn to sell by doing role-play calls.",
+      "Training him is how I'm finally getting my own process out of my head."
+    ],
+    "takeaway": "If you can't explain how you do something that comes naturally to you, like your sales process, run a few role-play calls with AI. After a few rounds, it will pick up the patterns you're too close to see, and you can ask it to define what you're doing."
+  },
+  "thinking": {
+    "headline": "Where's my $400,000?",
+    "paragraphs": [
+      "Every January, I get the same call from one of our clients. He owns multiple warehouses around the country, and he's looking through his reports. \"It says I made $400,000 this year. Where is it? I don't see it in my bank account.\"",
+      "He's not wrong to ask. Most people assume the bank balance is the scoreboard. Money in the account means the business is doing well. No money means it isn't.",
+      "But the bank account and profit are two different things.",
+      "In his case, about $380,000 of that profit went to paying down his mortgages. It didn't disappear. It turned into equity. His loans are lower and he owns more of his properties, but none of that shows up as cash.",
+      "That works in both directions. You can have a full bank account and be losing money, because loans, investor funds, and other sources can fill it. You can also be profitable with an empty account because you're paying down debt or taking draws.",
+      "The balance only tells you what's sitting there today. It doesn't tell you how you got it or where it went."
+    ],
+    "takeaway": "Before you decide what your bank balance means, pull up your profit and loss statement. Then ask where the difference went: loans, draws, or something else."
+  }
+}

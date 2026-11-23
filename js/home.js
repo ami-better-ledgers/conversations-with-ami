@@ -108,30 +108,24 @@
   /* ---------- Latest newsletter issue ---------- */
   const nlEl = document.getElementById("home-newsletter");
   if (nlEl) {
-    fetch("/api/newsletter")
+    fetch("/api/issues")
       .then(function (res) { return res.json().then(function (data) { return { ok: res.ok, data: data }; }); })
       .then(function (result) {
         if (!result.ok || result.data.error || !(result.data.issues || []).length) {
-          nlEl.innerHTML = `<p class="state-msg">The first issue is on its way — check back soon.</p>`;
+          nlEl.innerHTML = `<p class="state-msg">The first issue is on its way. Check back soon.</p>`;
           return;
         }
         const issue = result.data.issues[0];
+        const esc = function (s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+        const d = new Date(String(issue.date).slice(0, 10) + "T12:00:00Z");
+        const when = isNaN(d) ? "" : d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
         nlEl.innerHTML = `
-          <div class="archive-card home-newsletter-card">
-            <span class="issue-num">Issue ${String(issue.issueNumber).padStart(2, "0")}</span>
-            <h3>${issue.subject || "Untitled issue"}</h3>
-            <span class="issue-date">${formatDate(issue.publishedAt)}</span>
-            <button type="button" class="btn" id="home-newsletter-read">Read this issue</button>
-            <div class="reader-body" id="home-newsletter-body" hidden>${issue.content || ""}</div>
-          </div>`;
-
-        const readBtn = document.getElementById("home-newsletter-read");
-        const body = document.getElementById("home-newsletter-body");
-        readBtn.addEventListener("click", function () {
-          const isOpen = !body.hidden;
-          body.hidden = isOpen;
-          readBtn.textContent = isOpen ? "Read this issue" : "Hide";
-        });
+          <a class="archive-card home-newsletter-card" href="${esc(issue.url)}">
+            <span class="issue-num">Issue ${String(issue.number).padStart(2, "0")}</span>
+            <h3>${esc(issue.title)}</h3>
+            <span class="issue-excerpt">${esc(issue.excerpt)}</span>
+            <span class="issue-date">${when}</span>
+          </a>`;
       })
       .catch(function () {
         nlEl.innerHTML = `<p class="state-msg">Couldn't load the newsletter right now.</p>`;

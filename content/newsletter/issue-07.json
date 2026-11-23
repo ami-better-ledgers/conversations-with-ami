@@ -1,0 +1,51 @@
+{
+  "number": 7,
+  "title": "You don't need to understand it. You need to start hiring for it.",
+  "date": "2026-09-22",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/you-don-t-need-to-understand-it-you-need-to-start-hiring-for-it",
+  "conversation": {
+    "headline": "The destination doesn't change. Only the route does.",
+    "paragraphs": [
+      "Michael Minnella said something on the podcast that stuck with me more than I expected: he doesn't call it a financial plan, he calls it a roadmap. A plan implies you know what's coming. A roadmap just means you know where you're going, and you're willing to recalculate when the road changes.",
+      "I've been sitting with that because of the question every early-stage entrepreneur is quietly asking themselves right now: is AI coming for my business?",
+      "Here's how I've come to think about it. A hundred years ago, if you ran a transportation business, your mission was to get people from point A to point B. Then cars showed up. A lot of people in that industry panicked. But if your mission was never \"operate a horse and buggy,\" the car wasn't a threat — it was leverage. Now you could build a bus and move ten times as many people, or cut the trip in half.",
+      "Bookkeeping is the same. AI is going to change how the work gets done. It already is. But my mission was never \"manually enter transactions.\" My mission is taking the headache of running a business off an owner's back. That doesn't go away — it just finds a faster route.",
+      "I don't have a step-by-step plan for fighting AI. I don't think anyone does. What I have is a destination. And when the road changes, I recalculate."
+    ],
+    "takeaway": "If you're anxious about AI in your business, ask yourself: is your mission the method, or is it the outcome? If it's the outcome, AI is a faster car, not a wall.",
+    "episodeUrl": "https://youtu.be/3U_5Bbm1fWA",
+    "episodeLabel": "Full episode with Michael Minnella",
+    "clipUrl": "https://youtube.com/shorts/IVTEMA347PY?feature=share",
+    "clipLabel": "Financial Planning: A roadmap, not a destination"
+  },
+  "build": {
+    "headline": "I did the hard part. Then I got scared to say it out loud.",
+    "paragraphs": [
+      "I spent hours rewriting our mission statement and core values — not the version we started with, but the version that actually reflects where the company is now and where we're trying to go.",
+      "And then I sat on them. Because when it comes time to actually bring them into the business, to talk about them out loud with the team, I feel cringe. Like I'm about to stand up and give a speech nobody asked for.",
+      "Here's the thing — I know exactly why they matter. Mission and values aren't a poster on the wall. They're pre-decisions. Meaning: before a real decision ever comes up, you've already decided how you'll decide. Does this align with the mission? Does it align with the values? That's it. No more going back and forth every time something new lands on your desk.",
+      "That alone saves an enormous amount of time. But it does something bigger too — it lets me actually delegate decision-making, because the person making the call doesn't need me in the room. They need the framework.",
+      "And there's a third layer to it: it builds a shared identity. A common framework everyone's aligned on works the same way a shared belief brings people together in a religion. It's not about the specific words — it's that everyone's pointed the same direction without needing to be told which way to walk.",
+      "So here's where I actually am: I haven't shared any of this with my team yet. I know the mission and values are ready. I know the benefit is real. And I still haven't said it out loud to a single employee. The cringe hasn't gone anywhere — I'm just choosing to work through it instead of letting it win. I'll keep you posted on how it actually goes when I do."
+    ],
+    "takeaway": "If you have a framework, rule, or value you believe in but haven't actually said out loud to your team, ask yourself what the cringe is protecting you from — and whether it's worth the cost of staying quiet."
+  },
+  "thinking": {
+    "headline": "You don't need to understand it. You need to start hiring for it.",
+    "paragraphs": [
+      "Someone I talked to recently just stepped into a new role, and he told me his plan: figure out the function first — get comfortable with it — then hire for it. In his case it was bookkeeping, but it could just as easily be estimating, a fractional CFO, or any other administrative piece of the business.",
+      "I pushed back on that immediately.",
+      "That's the slow way. Not because he's wrong to want to understand the function — but because \"understand it fully, then delegate\" is a trap dressed up as diligence. What actually happens is you get busier while you're \"figuring it out,\" and by the time you feel ready to hire, you're too underwater to train anyone properly.",
+      "The faster way: start interviewing now. Don't settle on the first person. Don't be afraid to bring someone back for a second conversation once you've learned more from the process itself. Then hire, and keep asking questions — but ask them as the employer learning alongside the new hire, not as the gatekeeper who has to master the subject first.",
+      "This does two things. You learn faster, because you're learning in real conversations with real practitioners instead of alone trying to piece it together. And you never hit the point where you're too buried to delegate.",
+      "The trap underneath all of this is believing you're not prepared when you actually are. I hit this with Facebook, of all things. I spent months trying to \"figure out\" how to use it — like there was some hidden system. There wasn't. People post when they like a sandwich. That's it."
+    ],
+    "takeaway": "If you're stalling on a hire because you don't feel \"ready enough\" to oversee it, ask yourself honestly: are you actually unprepared, or are you just uncomfortable not knowing everything first? Start the interviews anyway."
+  }
+}

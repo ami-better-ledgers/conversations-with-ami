@@ -7,6 +7,7 @@
 
 import { fetchEpisodes, slugifyTitle } from "./_lib/rss.js";
 import { curatedByEpisodeNumber } from "./_lib/curated.js";
+import { listPublicIssues } from "./_lib/studio-issues.js";
 
 const SITE_URL = "https://www.conversationswithami.com";
 
@@ -50,7 +51,14 @@ export async function onRequestGet(context) {
     episodes = FALLBACK_EPISODES;
   }
 
-  return new Response(renderSitemap(episodes), {
+  let issues = [];
+  try {
+    issues = await listPublicIssues(context.env.DB);
+  } catch (err) {
+    issues = [];
+  }
+
+  return new Response(renderSitemap(episodes, issues), {
     headers: {
       "Content-Type": "application/xml; charset=utf-8",
       "Cache-Control": "public, max-age=3600",
@@ -79,7 +87,7 @@ async function episodesFromFeed(env) {
   return episodes.sort((a, b) => (a.lastmod < b.lastmod ? 1 : a.lastmod > b.lastmod ? -1 : 0));
 }
 
-function renderSitemap(episodes) {
+function renderSitemap(episodes, issues = []) {
   const entries = [
     ...STATIC_PAGES.map((p) => ({ ...p, loc: SITE_URL + p.path })),
     ...episodes.map((e) => ({
@@ -87,6 +95,12 @@ function renderSitemap(episodes) {
       lastmod: e.lastmod,
       changefreq: "monthly",
       priority: "0.7",
+    })),
+    ...issues.map((i) => ({
+      loc: `${SITE_URL}/newsletter/issue-${String(i.number).padStart(2, "0")}`,
+      lastmod: String(i.date).slice(0, 10),
+      changefreq: "yearly",
+      priority: "0.6",
     })),
   ];
 

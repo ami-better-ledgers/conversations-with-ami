@@ -15,9 +15,9 @@ THE PROMISE of every issue: one idea from a real conversation, tested honestly a
 
 STRUCTURE (always exactly these three sections, in this order):
 1. conversation ("From the conversation"): a guest's idea from the podcast. Name the guest. Say what they said, in Ami's words.
-2. build ("From the build"): Ami's own story of testing that idea in a real business, including what went wrong or what she got wrong.
-3. thinking ("What I'm thinking"): a closing reflection on something Ami is working through.
-Each section has: a specific headline (sentence case, not generic), paragraphs, and ONE takeaway: a single standalone line (under 30 words) that a reader could remember or repeat. Prefer a sentence Ami actually wrote or said in the notes; otherwise a faithful one-line distillation.
+2. thinking ("What I'm thinking"): a reflection on something Ami is working through, often prompted by a friend or client (without naming anyone who is not named in the notes).
+3. build ("From the build"): Ami's own story of testing an idea in a real business, including what went wrong or what she got wrong.
+Each section has: a specific headline (sentence case, not generic), paragraphs, and ONE takeaway: a single standalone line (under 30 words) that a reader could remember or repeat. Prefer a sentence Ami actually wrote or said in the notes; otherwise a faithful one-line distillation. A paragraph that is a short, quotable line the section hinges on may be given as {"quote": "..."} instead of a plain string (use sparingly, at most one per section, and only if the line appears in the notes).
 
 VOICE: first person, warm, plain-spoken, a smart friend a step ahead. Short sentences. No jargon, no hype. Honest about mistakes and unfinished thinking ("I'm at maybe 2.5, not stage three" is the spirit). Contractions are fine. 1 to 4 sentences per paragraph. Never use: unlock, leverage, seamless, guru, hack, game-changer, "simply", "just" (as a minimiser).
 TITLE: the issue title in sentence case (only the first word and proper nouns capitalised). It is also the email subject.
@@ -29,7 +29,8 @@ HARD RULES:
 - If one of Ami's companies (Better Ledgers, Dash Staff, qewlabs) appears, say so plainly the first time.
 
 OUTPUT: reply with ONLY a JSON object, no prose, no code fence:
-{"title": "...", "conversation": {"headline": "...", "paragraphs": ["..."], "takeaway": "..."}, "build": {"headline": "...", "paragraphs": ["..."], "takeaway": "..."}, "thinking": {"headline": "...", "paragraphs": ["..."], "takeaway": "..."}, "gaps": ["..."]}`;
+{"title": "...", "conversation": {"headline": "...", "paragraphs": ["..."], "takeaway": "..."}, "thinking": {"headline": "...", "paragraphs": ["..."], "takeaway": "..."}, "build": {"headline": "...", "paragraphs": ["..."], "takeaway": "..."}, "gaps": ["..."]}
+Inside text you may use **bold**, *italic* and [link text](https://...) only if the notes already contain that emphasis or link.`;
 
 export async function onRequestPost(context) {
   const key = context.env.ANTHROPIC_API_KEY;
@@ -69,8 +70,8 @@ export async function onRequestPost(context) {
     title: parsed.title,
     conversation: { ...parsed.conversation, episodeUrl: body.episodeUrl, clipUrl: body.clipUrl,
       episodeLabel: body.guest ? `Full episode with ${guest}` : "", clipLabel: body.clipUrl ? "Watch the short clip" : "" },
-    build: parsed.build,
     thinking: parsed.thinking,
+    build: parsed.build,
   });
   const gaps = (Array.isArray(parsed.gaps) ? parsed.gaps : []).map((g) => String(g).slice(0, 300)).slice(0, 8);
   return json({ issue, gaps });

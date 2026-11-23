@@ -2,6 +2,13 @@
   "number": 10,
   "title": "I’m paying him to suck (for now)",
   "date": "2026-11-09",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/i-m-paying-him-to-suck-for-now",
   "conversation": {
     "headline": "I’m paying him to suck (for now)",
     "paragraphs": [
@@ -11,9 +18,10 @@
       "I’ve asked myself why. Part of it is that I don’t want him to look bad. Part of it is money: I’m paying him a salary, and I want it to pay off. But mostly it’s my own discomfort watching someone struggle.",
       "Here’s what that costs. When I rush him, I’m trying to move the needle somewhere it can’t move yet. He doesn’t have the skills or the knowledge. And I never find out where he needs work, because I covered the gap before it showed.",
       "I know how this works because of how I started. I was terrible at sales. I was afraid to reach out to anyone. When I decided to take on my social anxiety, I gave myself one small goal for my first event: talk to three people. I didn’t even have to say what I do. Just “My name is Ami Morgenstern.”",
-      "That’s how I got moving: one small step at a time."
+      "That’s how I got moving: one small step at a time.",
+      "Letting him be less profitable right now is the more profitable move long term. The struggle isn’t a cost. It’s the diagnosis."
     ],
-    "takeaway": "Letting him be less profitable right now is the more profitable move long term. The struggle isn’t a cost. It’s the diagnosis.",
+    "takeaway": "Think of someone you’re training or managing. Where are you jumping in to protect them, or yourself? This week, let one mistake play out and write down what it shows you.",
     "episodeUrl": "https://youtu.be/FrgNnnuIir4",
     "episodeLabel": "Full episode with Eli Treff",
     "clipUrl": "https://youtube.com/shorts/_hmoOa5p8Tk",
@@ -35,9 +43,14 @@
     "paragraphs": [
       "This week I helped a friend who was asking whether he should hire a fractional CFO. I asked him what for. He told me, “Because I don’t know how to read my reports.”",
       "So I looked at his reports. His P&L wasn’t bloated. But when I asked how he decided what goes on it, he had nothing. No rule, no framework. The lines were just there.",
-      "At first, I thought the test was simple: do you care about that number? That’s not good enough. You can care about a lot of numbers. Caring, by itself, is not a good enough reason for something to make it onto the P&L.",
-      "If splitting out a service would change what you do (how you price it, whether you push it, whether you keep offering it at all), track it separately. If you’d do the exact same thing either way, it’s just extra detail cluttering up the report."
+      "That’s when I put words to something I’d been circling for a while. One question I get a lot is how to decide what to track: should each service get its own income line, should this expense get its own sub-account?",
+      "At first, I thought the test was simple: do you care about that number?",
+      "That’s not good enough. You can care about a lot of numbers. Caring, by itself, is not a good enough reason for something to make it onto the P&L.",
+      "The only good enough reason is this: are decisions being made off that number?",
+      "If splitting out a service would change what you do (how you price it, whether you push it, whether you keep offering it at all), track it separately. If you’d do the exact same thing either way, it’s just extra detail cluttering up the report.",
+      "Expenses work the same way, with one addition: keep your main categories clean, set up the way they’re supposed to be. A sub-account still has to earn its place. Either a real decision gets made off it, or it genuinely belongs in a different category.",
+      "That’s the framework I gave him. He may still hire a CFO someday. But he doesn’t need one to learn to read a report where every line has a reason to exist."
     ],
-    "takeaway": "The only good enough reason is this: are decisions being made off that number?"
+    "takeaway": "Before you add a line to your P&L, ask: what decision will I make off this number? If you don’t have an answer, it doesn’t earn a line, no matter how much you care about it."
   }
 }

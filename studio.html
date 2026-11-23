@@ -73,15 +73,16 @@ iframe{width:100%;height:78vh;border:1px solid rgba(16,16,19,.15);border-radius:
     <label for="c-el">Episode button text</label><input type="text" id="c-el" placeholder="Full episode with …">
     <label for="c-cl">Clip button text</label><input type="text" id="c-cl" placeholder="Short clip: …">
 
-    <span class="lab" style="margin-top:1.2rem">From the build</span>
-    <label for="b-h">Headline</label><input type="text" id="b-h">
-    <label for="b-p">Paragraphs</label><textarea id="b-p" class="tall"></textarea>
-    <label for="b-t">Takeaway</label><input type="text" id="b-t" maxlength="600">
-
     <span class="lab" style="margin-top:1.2rem">What I'm thinking</span>
     <label for="t-h">Headline</label><input type="text" id="t-h">
     <label for="t-p">Paragraphs</label><textarea id="t-p" class="tall"></textarea>
     <label for="t-t">Takeaway</label><input type="text" id="t-t" maxlength="600">
+
+    <span class="lab" style="margin-top:1.2rem">From the build</span>
+    <label for="b-h">Headline</label><input type="text" id="b-h">
+    <label for="b-p">Paragraphs</label><textarea id="b-p" class="tall"></textarea>
+    <label for="b-t">Takeaway</label><input type="text" id="b-t" maxlength="600">
+    <p class="note" style="margin-top:1rem">Formatting: start a paragraph with <b>&gt; </b> to make it a highlighted pull-quote. Use *italic*, **bold** and [link text](https://…) inside text.</p>
   </div>
 </div>
 
@@ -126,7 +127,14 @@ iframe{width:100%;height:78vh;border:1px solid rgba(16,16,19,.15);border-radius:
       return r.json().catch(function(){return {}}).then(function(d){ d._status = r.status; return d; });
     });
   }
-  function paras(id){ return $(id).value.split(/\n\s*\n/).map(function(s){return s.trim()}).filter(Boolean); }
+  function paras(id){
+    return $(id).value.split(/\n\s*\n/).map(function(s){return s.trim()}).filter(Boolean).map(function(s){
+      return /^>\s?/.test(s) ? { quote: s.replace(/^>\s?/, '').trim() } : s;
+    });
+  }
+  function joinParas(list){
+    return (list||[]).map(function(p){ return (p && typeof p === 'object') ? '> ' + p.quote : p; }).join('\n\n');
+  }
 
   function read(){
     return {
@@ -140,10 +148,10 @@ iframe{width:100%;height:78vh;border:1px solid rgba(16,16,19,.15);border-radius:
   function fill(i){
     $('num').value = i.number || ''; $('title').value = i.title || ''; $('date').value = i.date || '';
     var c = i.conversation||{}, b = i.build||{}, t = i.thinking||{};
-    $('c-h').value=c.headline||''; $('c-p').value=(c.paragraphs||[]).join('\n\n'); $('c-t').value=c.takeaway||'';
+    $('c-h').value=c.headline||''; $('c-p').value=joinParas(c.paragraphs); $('c-t').value=c.takeaway||'';
     $('ep').value=c.episodeUrl||''; $('c-el').value=c.episodeLabel||''; $('clip').value=c.clipUrl||''; $('c-cl').value=c.clipLabel||'';
-    $('b-h').value=b.headline||''; $('b-p').value=(b.paragraphs||[]).join('\n\n'); $('b-t').value=b.takeaway||'';
-    $('t-h').value=t.headline||''; $('t-p').value=(t.paragraphs||[]).join('\n\n'); $('t-t').value=t.takeaway||'';
+    $('b-h').value=b.headline||''; $('b-p').value=joinParas(b.paragraphs); $('b-t').value=b.takeaway||'';
+    $('t-h').value=t.headline||''; $('t-p').value=joinParas(t.paragraphs); $('t-t').value=t.takeaway||'';
     setLocked(i.status === 'sent', i);
     updateConfirm();
   }

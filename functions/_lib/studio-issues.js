@@ -1,5 +1,7 @@
 // Storage + validation for newsletter issues (Cloudflare D1, bound as "DB").
 // Status flow: draft -> sent. Only drafts can be edited or deleted.
+// Issues 1 to 10 were migrated from Kit and live in the repo (legacy-issues.js): always "sent", read-only.
+import { LEGACY_ISSUES, LEGACY_BY_NUMBER } from "./legacy-issues.js";
 
 export async function ensureTable(db) {
   await db
@@ -25,7 +27,11 @@ function cleanSection(sec, withLinks) {
   sec = sec || {};
   const out = {
     headline: clean(sec.headline, 200),
-    paragraphs: (Array.isArray(sec.paragraphs) ? sec.paragraphs : []).map((p) => clean(p, 4000)).filter(Boolean).slice(0, 40),
+    // each paragraph is a string, or { quote } for a highlighted pull-quote
+    paragraphs: (Array.isArray(sec.paragraphs) ? sec.paragraphs : [])
+      .map((p) => (p && typeof p === "object" ? (clean(p.quote, 1200) ? { quote: clean(p.quote, 1200) } : "") : clean(p, 4000)))
+      .filter(Boolean)
+      .slice(0, 40),
     takeaway: clean(sec.takeaway, 600),
   };
   if (withLinks) {
@@ -45,15 +51,17 @@ export function normalizeIssue(raw) {
     title: clean(raw.title, 200),
     date: clean(raw.date, 10),
     conversation: cleanSection(raw.conversation, true),
-    build: cleanSection(raw.build, false),
     thinking: cleanSection(raw.thinking, false),
+    build: cleanSection(raw.build, false),
   };
+  const order = (Array.isArray(raw.order) ? raw.order : []).filter((k, i, a) => ["conversation", "thinking", "build"].includes(k) && a.indexOf(k) === i);
+  if (order.length === 3) issue.order = order;
   const problems = [];
   const warnings = [];
   if (!Number.isInteger(issue.number) || issue.number < 1) problems.push("Issue number is required.");
   if (!issue.title) problems.push("Title is required.");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(issue.date)) problems.push("Date must look like 2026-11-23.");
-  for (const [key, label] of [["conversation", "From the conversation"], ["build", "From the build"], ["thinking", "What I'm thinking"]]) {
+  for (const [key, label] of [["conversation", "From the conversation"], ["thinking", "What I'm thinking"], ["build", "From the build"]]) {
     const s = issue[key];
     if (!s.headline) problems.push(`${label}: headline is required.`);
     if (!s.paragraphs.length) problems.push(`${label}: add at least one paragraph.`);
@@ -66,15 +74,38 @@ export function normalizeIssue(raw) {
   return { issue, problems, warnings };
 }
 
+const legacyRow = (i) => ({ number: i.number, title: i.title, date: i.date, status: "sent", updated_at: i.date, sent_at: i.date });
+
 export async function listIssues(db) {
   await ensureTable(db);
   const { results } = await db
     .prepare("SELECT number, title, date, status, updated_at, sent_at FROM newsletter_issues ORDER BY number DESC")
     .all();
-  return results || [];
+  const fromDb = (results || []).filter((r) => !LEGACY_BY_NUMBER[r.number]);
+  return [...fromDb, ...LEGACY_ISSUES.map(legacyRow)].sort((a, b) => b.number - a.number);
+}
+
+// Issues the public site may show: the migrated ones plus anything sent from the studio.
+export async function listPublicIssues(db) {
+  let sent = [];
+  if (db) {
+    await ensureTable(db);
+    const { results } = await db.prepare("SELECT number, data, title, date FROM newsletter_issues WHERE status = 'sent'").all();
+    sent = (results || []).filter((r) => !LEGACY_BY_NUMBER[r.number]).map((r) => ({ ...JSON.parse(r.data), number: r.number, title: r.title, date: r.date }));
+  }
+  return [...sent, ...LEGACY_ISSUES].sort((a, b) => b.number - a.number);
+}
+
+export async function getPublicIssue(db, number) {
+  if (LEGACY_BY_NUMBER[number]) return LEGACY_BY_NUMBER[number];
+  if (!db) return null;
+  await ensureTable(db);
+  const row = await db.prepare("SELECT * FROM newsletter_issues WHERE number = ? AND status = 'sent'").bind(number).first();
+  return row ? { ...JSON.parse(row.data), number: row.number, title: row.title, date: row.date } : null;
 }
 
 export async function getIssue(db, number) {
+  if (LEGACY_BY_NUMBER[number]) return { ...LEGACY_BY_NUMBER[number], status: "sent", sentAt: LEGACY_BY_NUMBER[number].date };
   await ensureTable(db);
   const row = await db.prepare("SELECT * FROM newsletter_issues WHERE number = ?").bind(number).first();
   if (!row) return null;
@@ -83,6 +114,7 @@ export async function getIssue(db, number) {
 
 // Insert or update a DRAFT. Refuses to touch an issue that was already sent.
 export async function saveDraft(db, issue) {
+  if (LEGACY_BY_NUMBER[issue.number]) return { ok: false, error: "That issue number is already used by a published issue." };
   await ensureTable(db);
   const existing = await db.prepare("SELECT status FROM newsletter_issues WHERE number = ?").bind(issue.number).first();
   if (existing && existing.status !== "draft") return { ok: false, error: "That issue was already sent and can't be edited." };
@@ -98,6 +130,7 @@ export async function saveDraft(db, issue) {
 }
 
 export async function deleteDraft(db, number) {
+  if (LEGACY_BY_NUMBER[number]) return { ok: false, error: "Sent issues can't be deleted." };
   await ensureTable(db);
   const existing = await db.prepare("SELECT status FROM newsletter_issues WHERE number = ?").bind(number).first();
   if (!existing) return { ok: false, error: "Issue not found." };

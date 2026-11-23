@@ -1,0 +1,54 @@
+{
+  "number": 4,
+  "title": "There's No \"Most Important\" Part of a Business",
+  "date": "2026-08-08",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/there-s-no-most-important-part-of-a-business",
+  "conversation": {
+    "headline": "Sales isn't the most important thing (and neither is anything else)",
+    "paragraphs": [
+      "On a recent podcast, I said something simple: sales teaches you life skills. Negotiation, reading people, handling rejection — it all transfers.",
+      "Eli Treff pushed back: \"Isn't everything in life sales, then?\"",
+      "I don't think so. I think everyone elevates their own thing. The finance guy thinks everything boils down to finance. The leadership guy thinks it's all leadership. The sales guy — of course — thinks it's all sales. We all mistake being good at one thing for that thing being the thing.",
+      "*As Abraham Maslow put it: \"If the only tool you have is a hammer, it is tempting to treat everything as if it were a nail.\"*",
+      "It's not survival of the best. It's survival of the fittest — and that distinction matters more than it sounds like it does.",
+      "The best predator on the savanna still starves if there's no prey left. The best camouflage for a desert becomes a liability the moment the landscape turns green. Being \"the best\" at something is meaningless outside the conditions that make it useful. Fitness isn't a fixed trait — it's a fit to what's actually needed right now.",
+      "Business works the same way. Great operations with no sales behind it has nothing to operate on. Great sales with no operations behind it collapses under its own weight. You should absolutely focus on your strengths — that's not the mistake. The mistake is ignoring your weaknesses because you assume your strength is the whole game. It never is.",
+      "I learned this the hard way last year. January and February were my two strongest sales months ever. Then the complaints started — clients saying our service wasn't what it used to be. My sales had outrun my operations.",
+      "So I slowed down. Not by shutting off sales, but by adding friction on purpose — slower scheduling, bigger gaps between follow-ups. I gave up momentum I'd worked hard for, because the rest of the business wasn't ready to carry it. Now we're already planning next year's capacity with finance, so we don't have to make that trade again."
+    ],
+    "takeaway": "Whatever you're best at is probably the part of your business you trust the most — which makes it the part most likely to outrun everything else. Look at what you're proudest of right now. Then ask what's quietly breaking because you haven't looked at it.",
+    "episodeUrl": "https://youtu.be/FrgNnnuIir4",
+    "episodeLabel": "Full episode with Eli Treff",
+    "clipUrl": "https://youtube.com/shorts/JH1b3tp8LoQ?is=CKz2_iVE5aElq9o8",
+    "clipLabel": "Short: Is everything about sales?"
+  },
+  "build": {
+    "headline": "Small tools, not big automation",
+    "paragraphs": [
+      "For months, I avoided doing anything with AI in the business, because in my head \"implementing AI\" meant automating everything — every system, every process, run by agents. That version costs tens of thousands of dollars and takes forever to plan. So I did nothing.",
+      "I've since flipped the approach: instead of trying to automate the whole business, I'm building one small tool at a time for one specific problem at a time.",
+      "First one live: an AI resume parser and job description builder for [Dash Staff](https://www.dashstaffers.com), going up on the site in the coming weeks. Currently building: a custom meeting booking tool, because I run two separately branded companies but want to manage both off one calendar, and nothing off the shelf does that cleanly.",
+      "Neither tool fixes the whole business. Each one fixes one real thing. That's been the shift — smaller, faster, and actually shipping instead of stuck planning something massive."
+    ],
+    "takeaway": "If you're waiting to build the perfect system before building anything, you're not being strategic — you're stalling. Find the smallest real problem in front of you and build for just that one."
+  },
+  "thinking": {
+    "headline": "Politics in the office",
+    "paragraphs": [
+      "A few weeks ago, an employee mentioned that people in the office had been talking politics. My heart sank. I was raised on the rule: don't talk politics at family events, don't talk politics at work. Keep the peace. And we've got a real spread in this office — employees who lean socialist, employees who are deeply conservative, and everything in between.",
+      "I said something like \"WHAT?\" out loud, bracing for the mess.",
+      "He laughed and said, \"Nah, it's all good. We're just having fun with it, teasing each other.\"",
+      "That's when it hit me: maybe the rule I grew up with was built for a different time. Nobody touches grass anymore. I read a columnist point out that politicians used to bring their kids to DC, and those kids would play with each other, no matter which side of the aisle their parents were on. Now even the politicians' children don't play together. If the people at the very top of government can't talk to each other outside of a TV hit or a Twitter fight, what chance does the rest of us scrolling our separate feeds have?",
+      "*The real danger isn't disagreement. It's never actually being in a room with someone who disagrees with you — until they stop being a person and become a caricature you saw in a clip.*",
+      "I've got an employee who's a DSA guy through and through. I'm an old-school liberal. We have completely different feeds. And we talk about it — genuinely, not performatively — and it's never once made either of us think less of the other. If anything, it's the opposite. You can't fully write someone off once you actually know them.",
+      "I'm not saying every office should turn into a debate stage. Respect is the whole hinge — the moment it stops being teasing and starts being contempt, it's not the same thing anymore. But respectful disagreement, out loud, with people you actually work alongside? That might be one of the few places left still doing the job your feed refuses to."
+    ],
+    "takeaway": "Find one person in your life whose politics you disagree with, and have an actual conversation instead of a scroll-by judgment. You don't have to change your mind. You just have to remember they're a person first."
+  }
+}

@@ -441,3 +441,16 @@ if Access isn't set up. So the studio does nothing until you finish these steps.
 every email carries a working unsubscribe link).
 
 **Local testing:** `STUDIO_DEV_BYPASS=1` in `.dev.vars` skips the login on localhost only (ignored on the live site).
+
+---
+
+## Newsletter issues and the archive
+
+- **Issues 1 to 10** were migrated from Kit in November 2026 and live as files in `content/newsletter/issue-NN.json`
+  (bundled by `functions/_lib/legacy-issues.js`). They are published and read-only. Their original titles are kept.
+- **New issues** are written in the studio (`/studio`), saved as drafts in D1, and become public when sent.
+- **Public pages:** each issue is at `/newsletter/issue-NN` (`functions/newsletter/[slug].js`); the archive page and the
+  homepage read `/api/issues`; every issue is in `/sitemap.xml`.
+- **Kit:** `functions/api/newsletter.js` (the old Kit feed) is no longer used by any page and can be deleted once the signup
+  form has moved off Kit.
+- **Section order** in every issue (and the default for new ones): From the conversation, What I'm thinking, From the build.

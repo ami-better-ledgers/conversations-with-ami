@@ -1,0 +1,53 @@
+{
+  "number": 1,
+  "title": "We Don't Overcomplicate Things Because They're Hard",
+  "date": "2026-07-23",
+  "order": [
+    "conversation",
+    "thinking",
+    "build"
+  ],
+  "legacy": true,
+  "sourceUrl": "https://conversations-with-ami.kit.com/posts/we-don-t-overcomplicate-things-because-they-re-hard",
+  "conversation": {
+    "headline": "The flinch before the fear",
+    "paragraphs": [
+      "Episode 4 with Moishy Klein hit on something I haven't been able to shake: we don't avoid things because they're complex. We call them complex so we have an excuse not to start.",
+      "I know this pattern well. I spent months trying to \"figure out\" Facebook before I ever posted anything. Not the algorithm — just Facebook. People posting updates about their lives. There was nothing to figure out. But complexity gave me cover.",
+      "What I've come to realize is that this isn't really a confidence problem. It's a reflex. The brain flags something as hard, you flinch — and the flinch happens before your self-belief even gets a chance to kick in. Every time I've actually leaned into something I was avoiding — insurance, sales, the theory of evolution — it turned out to be simpler than I'd built it up to be.",
+      {
+        "quote": "The complexity isn't the barrier. The complexity is the excuse. It protects you from having to find out whether you're capable."
+      },
+      "The antidote isn't confidence. It's catching yourself mid-flinch and choosing curiosity over avoidance."
+    ],
+    "takeaway": "Next time something feels too complex to start, ask yourself: is this actually complicated — or am I using complexity as an excuse? Lean in before the flinch wins.",
+    "episodeUrl": "https://youtu.be/sZM-B_u8jJU",
+    "episodeLabel": "Full episode with Moishy Klein",
+    "clipUrl": "https://youtube.com/shorts/ThDcrzmSpa0",
+    "clipLabel": "Short clip: why we avoid systems"
+  },
+  "build": {
+    "headline": "I convinced a client to sign. It cost me the client.",
+    "paragraphs": [
+      "There's someone I've known for a long time — someone I looked up to. When the opportunity came to bring them on as a bookkeeping client, I jumped. I was excited. Maybe a little too excited.",
+      "I went straight into sales mode. The excitement rushed me through the process — I never took the time to properly understand his situation. Had I slowed down, I would have discovered it quickly: he didn't have a reliable system to track inventory, which meant there was a ceiling on what we could actually do for him.",
+      "A month later, he was gone. And in his words — it hurt every time a payment came out of his bank account, because he wasn't getting what he needed.",
+      "That one landed. I let my excitement override my judgment. I sold him something before I understood what winning looked like for him. If I'd slowed down, I would've told him from the start: we can't take you where you need to go until your inventory system is sorted. Let's start there.",
+      "He might have walked. Or he might have appreciated the honesty and come back ready. Either way, it would've been the right call."
+    ],
+    "takeaway": "Before moving to solutions, understand the client's current situation fully. If your service can't deliver what they need right now — say so. A lost deal upfront beats a lost client a month in."
+  },
+  "thinking": {
+    "headline": "You can't skip human nature",
+    "paragraphs": [
+      "We have a good side and a dark side. A selfish side and a selfless side. Yin and yang. This isn't a belief — it's a law. You didn't write the software, so you don't get to decide how humans operate.",
+      "Most businesses try to ignore this. They treat people like robots and wonder why they have high turnover, unhappy customers, or partnerships that fall apart five years in.",
+      "Business done right requires you to lean into both sides at once. The deal that only works for you isn't a deal — it's a time bomb. The partnership where one person wants to make a million dollars and the other wants to work 15 hours a week will hold together until there's real money on the table. Then it fractures.",
+      {
+        "quote": "Know the other person's win before deciding if it's a win for you."
+      },
+      "That's not idealism. That's just how sustainable business works. When both sides are winning, the relationship holds. When only one side is — it's only a matter of time."
+    ],
+    "takeaway": "Before your next deal, hire, or partnership — slow down and get clear on what the other person actually needs to win. Not what you assume. Ask."
+  }
+}
