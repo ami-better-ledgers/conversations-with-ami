@@ -84,7 +84,10 @@ export async function checkStudioAuth(context) {
   }
 
   const email = String(payload.email || "").toLowerCase();
-  const allowed = String(env.STUDIO_ALLOWED_EMAILS || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  const list = (v) => String(v || "").split(",").map((e) => e.trim().toLowerCase()).filter(Boolean);
+  let allowed = list(env.STUDIO_ALLOWED_EMAILS);
+  // STUDIO_THUMBNAIL_EMAILS: people who may use ONLY the Thumbnail Studio (not the newsletter).
+  if (allowed.length && new URL(request.url).pathname.startsWith("/api/studio/thumbnail-requests")) allowed = allowed.concat(list(env.STUDIO_THUMBNAIL_EMAILS));
   if (allowed.length && !allowed.includes(email)) return json({ error: "This account isn't allowed here." }, 403);
 
   context.data.studioUser = email || "unknown";

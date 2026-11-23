@@ -447,6 +447,10 @@ POST https://www.conversationswithami.com/api/muse/thumbnails
 ```
 `GET` the same address (same header) lists what is waiting. Files: `functions/api/muse/thumbnails.js`, `functions/_lib/thumbnail-requests.js`, `functions/api/studio/thumbnail-requests.js` (D1 table `thumbnail_requests`, created automatically; items older than 30 days are removed). This path is outside the `api/studio*` Access rule on purpose, so Muse can reach it with the key alone.
 
+**Email on drop-off:** every successful drop-off also emails the thumbnail makers through Resend (`functions/_lib/thumbnail-email.js`): the details, the guest photo attached, and an "Open in Thumbnail Studio" button (`/studio-thumbnails?request=ID`). Who receives it comes ONLY from the Pages variable `THUMBNAIL_EMAIL_TO` (comma-separated email addresses, set in Cloudflare; no addresses live in the repo). If it is empty, nothing is emailed. The sender defaults to `Conversations with Ami <newsletter@conversationswithami.com>` (`THUMBNAIL_EMAIL_FROM` to change). If the email fails, the drop-off is still saved and Muse's response says `emailed: false` with the reason.
+
+**Giving someone Thumbnail-Studio-only access:** add their email to the Cloudflare Access policy and to the Pages variable `STUDIO_THUMBNAIL_EMAILS`. They can then use the Thumbnail Studio, but the newsletter Studio's data stays closed to them, because only `STUDIO_ALLOWED_EMAILS` unlocks that. For full Studio access add them to `STUDIO_ALLOWED_EMAILS` instead.
+
 **Sending safety:** the studio only sends the *saved* draft, a real send needs you to type
 `SEND <number>` and confirm a pop-up, sent issues lock, and only Resend Broadcasts are used (so
 every email carries a working unsubscribe link).

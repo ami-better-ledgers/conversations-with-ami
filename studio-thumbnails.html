@@ -331,6 +331,14 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
   });
   $("waitRefresh").addEventListener("click", loadWaiting);
   loadWaiting();
+  // the button in the Muse email opens one specific drop-off
+  var wantId = new URLSearchParams(location.search).get("request");
+  if (wantId && /^[0-9]+$/.test(wantId)) {
+    var tries = 0, poll = setInterval(function () {
+      var b = document.querySelector('[data-use="' + wantId + '"]');
+      if (b) { clearInterval(poll); b.click(); } else if (++tries > 20) { clearInterval(poll); }
+    }, 300);
+  }
 
   ["ep", "kind", "hook", "guest", "company", "ami"].forEach(function (id) {
     $(id).addEventListener("input", render); $(id).addEventListener("change", render);

@@ -5,6 +5,7 @@
 // (never in the repo). If the secret isn't set, this refuses everything.
 // Muse only ADDS to the waiting list; Ami picks from it inside the Studio (behind Cloudflare Access).
 import { normalize, createRequest, listRequests } from "../../_lib/thumbnail-requests.js";
+import { sendThumbnailEmail } from "../../_lib/thumbnail-email.js";
 
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "Cache-Control": "no-store" } });
@@ -38,7 +39,9 @@ export async function onRequest(context) {
       const { problems, value } = normalize(body);
       if (problems.length) return json({ error: problems.join(" "), problems }, 400);
       const id = await createRequest(db, value);
-      return json({ ok: true, id, next: "Open /studio-thumbnails and pick it under 'Waiting from Muse'." }, 201);
+      // Email the people who make the thumbnails. If this fails the drop-off is still saved.
+      const mail = await sendThumbnailEmail(env, value, id);
+      return json({ ok: true, id, emailed: mail.ok, ...(mail.ok ? {} : { emailError: mail.error }), next: "Open /studio-thumbnails and pick it under 'Waiting from Muse'." }, 201);
     }
   } catch (err) {
     return json({ error: "Something went wrong. Please try again." }, 500);
