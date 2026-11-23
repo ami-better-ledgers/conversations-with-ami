@@ -767,29 +767,6 @@ a.archive-card .issue-excerpt { display: block; margin: .5rem 0 .75rem; color: v
 .prose a.btn-line-dark { color: var(--blue); text-decoration: none; }
 .prose a.btn-line-dark:hover { color: #fff; }
 
-/* "Our Companies" dropdown in the header */
-.nav-drop { position: relative; }
-.nav-drop-btn { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--label); font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; color: var(--soft); background: none; border: 0; padding: .55rem .9rem; border-radius: var(--r-pill); cursor: pointer; transition: background .2s, color .2s; }
-.nav-drop-btn:hover, .nav-drop.is-open .nav-drop-btn { background: var(--tint); color: var(--blue); }
-.nav-drop-btn .caret { width: .5rem; height: .5rem; border-right: 2.5px solid currentColor; border-bottom: 2.5px solid currentColor; transform: rotate(45deg) translateY(-2px); transition: transform .2s; }
-.nav-drop.is-open .caret { transform: rotate(225deg); }
-.nav-sub { display: none; list-style: none; margin: 0; padding: .5rem; position: absolute; top: calc(100% + .4rem); left: 0; min-width: 14rem; background: #fff; border-radius: 18px; box-shadow: var(--shadow-lift); border: 1px solid rgba(22,44,108,.1); z-index: 70; }
-.nav-drop.is-open .nav-sub { display: block; }
-@media (hover: hover) and (min-width: 1021px) { .nav-drop:hover .nav-sub, .nav-drop:focus-within .nav-sub { display: block; } }
-.nav-sub a { display: block; padding: .6rem .9rem; border-radius: 12px; font-family: var(--label); font-weight: 700; font-size: .95rem; color: var(--deep); text-decoration: none; }
-.nav-sub a:hover { background: var(--tint); color: var(--blue); }
-.nav-sub li:first-child a { color: var(--soft); font-weight: 600; border-bottom: 1px solid rgba(22,44,108,.1); border-radius: 12px 12px 0 0; margin-bottom: .2rem; }
-@media (max-width: 1020px) {
-  .nav-drop-btn { width: 100%; justify-content: space-between; padding: .55rem .9rem; }
-  .nav-sub { position: static; box-shadow: none; border: 0; background: var(--tint); margin: .2rem 0 .4rem; }
-}
-@media (min-width: 1021px) and (max-width: 1180px) { .nav-drop-btn { padding: .5rem .55rem; letter-spacing: .04em; } }
-.nav-links .nav-sub a:not(.btn) { display: block; padding: .6rem .9rem; border-radius: 12px; font-family: var(--label); font-weight: 700; font-size: .95rem; letter-spacing: 0; text-transform: none; color: var(--deep); background: none; }
-.nav-links .nav-sub a:not(.btn):hover { background: var(--tint); color: var(--blue); }
-.nav-links .nav-sub li:first-child a:not(.btn) { color: var(--soft); font-weight: 600; }
-.nav-drop-btn { white-space: nowrap; }
-/* X and Threads icons are dark: give them a light tile so they read on the deep-blue footer */
-.footer-social a[aria-label="X"] img, .footer-social a[aria-label="Threads"] img { background: #fff; padding: 4px; border-radius: 8px; }
 
 /* ---------- About page ---------- */
 .story { background: #fff; border-radius: 32px; box-shadow: var(--shadow); padding: clamp(1.2rem, 3vw, 2.2rem); }
