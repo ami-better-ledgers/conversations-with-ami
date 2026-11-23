@@ -436,6 +436,8 @@ if Access isn't set up. So the studio does nothing until you finish these steps.
    Already set from earlier: `ANTHROPIC_API_KEY`, `RESEND_API_KEY`, `RESEND_SEGMENT_ID`. Redeploy.
 5. Visit `/studio`: you should get a Cloudflare email-code prompt, then the studio.
 
+**Thumbnail Studio (`/studio-thumbnails`):** a second private page, linked from the Studio header. Fill in (or pick a published episode), upload the guest photo, and download the wide (1280x720) and square (1080x1080) thumbnails. It runs entirely in the browser (`studio-thumbnails.html`, drawing on a canvas, no server code or secrets), and the same Cloudflare Access rule `studio*` protects it. A transparent PNG puts the guest on the circle beside Ami; any other photo is cropped into a round frame; with no photo a silhouette marks the spot. The colorways match the five kinds of episode (see the brand kit thumbnail template).
+
 **Sending safety:** the studio only sends the *saved* draft, a real send needs you to type
 `SEND <number>` and confirm a pop-up, sent issues lock, and only Resend Broadcasts are used (so
 every email carries a working unsubscribe link).

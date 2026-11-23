@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Thumbnail Studio — Conversations with Ami</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,800&family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{--blue:#21409a;--deep:#162c6c;--red:#ed2024;--sun:#FFC93C;--coral:#FF7A59;--cream:#FFF4E6;--tint:#eaf4fb;--ink:#101013;--soft:#3a3a40}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+header.top{background:var(--sun);padding:.9rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+header.top h1{font-family:Fraunces,Georgia,serif;font-size:1.4rem;margin:0;color:var(--deep)}
+header.top a{font-family:Archivo,Arial,sans-serif;font-weight:700;color:var(--deep)}
+main{max-width:1240px;margin:0 auto;padding:1.25rem;display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:1.25rem;align-items:start}
+@media(max-width:980px){main{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:16px;padding:1.1rem 1.2rem;margin-bottom:1rem;border:1px solid rgba(16,16,19,.1)}
+h2{font-family:Fraunces,Georgia,serif;font-size:1.2rem;color:var(--deep);margin:0 0 .6rem}
+label{display:block;font-weight:600;font-size:.88rem;margin:.7rem 0 .25rem}
+input[type=text],input[type=number],select{width:100%;font:inherit;padding:.6rem .7rem;border:2px solid rgba(16,16,19,.2);border-radius:10px;background:#fff}
+input[type=file]{width:100%;font:inherit;font-size:.9rem}
+input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
+.two{display:grid;grid-template-columns:110px 1fr;gap:.7rem}
+.btn{display:inline-block;font-family:Archivo,Arial,sans-serif;font-weight:700;border-radius:999px;padding:.65rem 1.3rem;border:0;cursor:pointer;font-size:.95rem;margin:.35rem .5rem .35rem 0}
+.btn:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.b-blue{background:var(--blue);color:#fff}.b-sun{background:var(--sun);color:var(--deep)}.b-line{background:#fff;color:var(--blue);border:2px solid var(--blue)}
+.note{font-size:.85rem;color:var(--soft);margin:.4rem 0 0}
+.msg{margin:.6rem 0 0;padding:.6rem .8rem;border-radius:10px;font-size:.92rem;display:none}
+.msg.show{display:block}.msg.ok{background:#e2f6ea;color:#0d4a26}.msg.warn{background:#fff3cc;color:#5a4300}
+.prev{background:#fff;border-radius:16px;border:1px solid rgba(16,16,19,.1);padding:1rem 1.2rem;margin-bottom:1rem}
+.prev canvas{width:100%;height:auto;display:block;border-radius:10px;background:#ddd}
+.prev.sq canvas{max-width:520px}
+.sticky{position:sticky;top:.75rem}
+</style>
+</head>
+<body>
+<header class="top"><h1>Thumbnail Studio · Conversations with Ami</h1><a href="/studio">← Newsletter Studio</a></header>
+<main>
+<div>
+  <div class="card">
+    <h2>Episode</h2>
+    <label for="fill">Fill from a published episode</label>
+    <select id="fill"><option value="">Type it in below (new episode)</option></select>
+    <div class="two">
+      <div><label for="ep">Number</label><input type="number" id="ep" min="1" value="21"></div>
+      <div><label for="kind">Kind of episode (sets the color)</label>
+        <select id="kind">
+          <option value="peer">Peer story · blue</option>
+          <option value="literacy">Nuanced literacy · deep blue</option>
+          <option value="planning">Future planning · sunshine</option>
+          <option value="nottodo">What not to do · coral</option>
+          <option value="skills">Core skills · cream</option>
+        </select></div>
+    </div>
+    <label for="hook">Hook (the part of the title before the "|")</label>
+    <input type="text" id="hook" maxlength="120" placeholder="e.g. The Truth About Cybersecurity &amp; AI">
+    <label for="guest">Guest name</label>
+    <input type="text" id="guest" maxlength="60" placeholder="e.g. Chris Pohts">
+    <label for="company">Guest's company</label>
+    <input type="text" id="company" maxlength="60" placeholder="e.g. ONE2ONE">
+  </div>
+  <div class="card">
+    <h2>Photos</h2>
+    <label for="photo">Guest photo</label>
+    <input type="file" id="photo" accept="image/png,image/jpeg,image/webp">
+    <p class="note">Best: a PNG with a transparent background, head and shoulders (they stand on the colored circle next to Ami). Any other photo still works: it's cropped into a round frame instead. No photo yet? A silhouette marks the spot.</p>
+    <div class="msg" id="photoMsg" role="status"></div>
+    <label for="ami">Ami's photo</label>
+    <select id="ami"><option value="/assets/photos/ami-hero.webp">Smiling</option><option value="/assets/photos/ami-host.webp">Laughing</option></select>
+  </div>
+  <div class="card">
+    <h2>Download</h2>
+    <button class="btn b-blue" id="dlWide" type="button">Wide (1280×720)</button>
+    <button class="btn b-blue" id="dlSquare" type="button">Square (1080×1080)</button>
+    <button class="btn b-sun" id="dlBoth" type="button">Download both</button>
+    <p class="note">Wide is for YouTube. Square is for Instagram and podcast apps. Files are named like <b>ep-21-wide.png</b>.</p>
+  </div>
+</div>
+<div>
+  <div class="prev"><h2>Wide · 1280×720</h2><canvas id="cWide" width="1280" height="720"></canvas></div>
+  <div class="prev sq"><h2>Square · 1080×1080</h2><canvas id="cSquare" width="1080" height="1080"></canvas></div>
+</div>
+</main>
+<script>
+(function () {
+  var THEMES = {
+    peer:     {bg:"#21409a", pat:"dark",  circle:"#ff7a59", text:"#ffffff", accent:"#ffc93c", pill:"#ffc93c", pillText:"#162c6c", logo:"white", mark:"white", label:"Peer story"},
+    literacy: {bg:"#162c6c", pat:"dark",  circle:"#ffc93c", text:"#ffffff", accent:"#8bc6e7", pill:"#ff7a59", pillText:"#162c6c", logo:"white", mark:"blue",  label:"Nuanced literacy"},
+    planning: {bg:"#ffc93c", pat:"light", circle:"#21409a", text:"#162c6c", accent:"#21409a", pill:"#162c6c", pillText:"#ffffff", logo:"blue",  mark:"white", label:"Future planning"},
+    nottodo:  {bg:"#ff7a59", pat:"light", circle:"#162c6c", text:"#162c6c", accent:"#ffffff", pill:"#162c6c", pillText:"#ffffff", logo:"blue",  mark:"white", label:"What not to do"},
+    skills:   {bg:"#fff4e6", pat:"light", circle:"#21409a", text:"#162c6c", accent:"#d41b1f", pill:"#21409a", pillText:"#ffffff", logo:"blue",  mark:"white", label:"Core skills"}
+  };
+  var PILLAR_KEY = {"peer story":"peer","nuanced literacy":"literacy","future planning":"planning","what not to do":"nottodo","core skills":"skills"};
+  var $ = function (id) { return document.getElementById(id); };
+  var imgCache = {};
+  var guestImg = null, guestHasAlpha = false;
+  var episodes = [];
+
+  function loadImg(src) {
+    if (imgCache[src]) return imgCache[src];
+    imgCache[src] = new Promise(function (res, rej) {
+      var i = new Image(); i.onload = function () { res(i); }; i.onerror = function () { rej(new Error("Could not load " + src)); }; i.src = src;
+    });
+    return imgCache[src];
+  }
+
+  // ---------- text helpers (letter-spacing with a fallback for browsers without ctx.letterSpacing) ----------
+  function mk(ctx) {
+    var native = "letterSpacing" in ctx;
+    return {
+      width: function (t, sp) {
+        if (native) { ctx.letterSpacing = sp + "px"; return ctx.measureText(t).width; }
+        return ctx.measureText(t).width + sp * t.length;
+      },
+      draw: function (t, x, y, sp) {
+        if (native) { ctx.letterSpacing = sp + "px"; ctx.fillText(t, x, y); return; }
+        var cx = x; for (var k = 0; k < t.length; k++) { ctx.fillText(t[k], cx, y); cx += ctx.measureText(t[k]).width + sp; }
+      },
+      reset: function () { if (native) ctx.letterSpacing = "0px"; }
+    };
+  }
+  function wrap(tx, text, maxW, sp) {
+    var words = String(text).split(/\s+/).filter(Boolean), lines = [], cur = "";
+    words.forEach(function (w) {
+      var t = cur ? cur + " " + w : w;
+      if (tx.width(t, sp) <= maxW || !cur) cur = t; else { lines.push(cur); cur = w; }
+    });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
+  var LAYOUT = {
+    wide: {
+      W: 1280, H: 720,
+      circle: {cx: 960, cy: 390, r: 320},
+      guest: {x: 620, w: 400}, sil: {x: 650, w: 380}, ami: {x: 900, w: 380},
+      framed: {cx: 820, cy: 470, r: 185},
+      p1: {x: 64, y: 60, padX: 24, padY: 12, size: 26},
+      p2: {x: 64, y: 128, padX: 20, padY: 9, size: 20},
+      hook: {x: 64, y: 206, w: 570, size: function (n) { return n<=22?100:n<=30?86:n<=40?72:n<=60?62:52; }},
+      name: {x: 64, bottom: 150, size: 34, w: 560}, co: {x: 64, bottom: 106, size: 28, w: 560},
+      logo: {x: 64, bottom: 40, h: 58}
+    },
+    square: {
+      W: 1080, H: 1080,
+      circle: {cx: 600, cy: 990, r: 380},
+      guest: {x: 60, w: 540}, sil: {x: 110, w: 460}, ami: {x: 540, w: 520},
+      framed: {cx: 330, cy: 800, r: 250},
+      p1: {x: 70, y: 64, padX: 28, padY: 14, size: 30},
+      p2: {x: 70, y: 140, padX: 22, padY: 10, size: 22},
+      hook: {x: 70, y: 226, w: 940, size: function (n) { return n<=22?130:n<=34?96:n<=52?82:70; }},
+      name: {x: 70, top: 512, size: 32, w: 400}, co: {x: 70, top: 604, size: 28, w: 400},
+      logo: {right: 70, y: 56, h: 52}
+    }
+  };
+
+  async function draw(canvas, fmt, d) {
+    var L = LAYOUT[fmt], T = THEMES[d.kind] || THEMES.peer, ctx = canvas.getContext("2d");
+    canvas.width = L.W; canvas.height = L.H;
+    var tx = mk(ctx);
+    var imgs = await Promise.all([
+      loadImg("/assets/brand-public/pattern-" + (T.pat === "dark" ? "dark" : "light") + "-tile.svg"),
+      loadImg("/assets/logos/Logo_" + T.logo + ".svg"),
+      loadImg(d.ami),
+      loadImg("/assets/brand-public/mark-" + T.mark + ".svg")
+    ]);
+    var pat = imgs[0], logo = imgs[1], ami = imgs[2], mark = imgs[3];
+
+    // background + quiet pattern
+    ctx.fillStyle = T.bg; ctx.fillRect(0, 0, L.W, L.H);
+    var tile = document.createElement("canvas"); tile.width = tile.height = 230;
+    tile.getContext("2d").drawImage(pat, 0, 0, 230, 230);
+    ctx.fillStyle = ctx.createPattern(tile, "repeat"); ctx.fillRect(0, 0, L.W, L.H);
+    ctx.globalAlpha = 0.933; ctx.fillStyle = T.bg; ctx.fillRect(0, 0, L.W, L.H); ctx.globalAlpha = 1;
+
+    // circle
+    ctx.fillStyle = T.circle; ctx.beginPath(); ctx.arc(L.circle.cx, L.circle.cy, L.circle.r, 0, Math.PI * 2); ctx.fill();
+
+    // guest
+    if (guestImg && guestHasAlpha) {
+      var gw = L.guest.w, gh = gw * guestImg.naturalHeight / guestImg.naturalWidth;
+      ctx.drawImage(guestImg, L.guest.x, L.H - gh, gw, gh);
+    } else if (guestImg) {
+      var f = L.framed, s = Math.max((f.r * 2) / guestImg.naturalWidth, (f.r * 2) / guestImg.naturalHeight);
+      ctx.save(); ctx.beginPath(); ctx.arc(f.cx, f.cy, f.r, 0, Math.PI * 2); ctx.clip();
+      ctx.drawImage(guestImg, f.cx - guestImg.naturalWidth * s / 2, f.cy - guestImg.naturalHeight * s / 2, guestImg.naturalWidth * s, guestImg.naturalHeight * s);
+      ctx.restore();
+      ctx.lineWidth = 8; ctx.strokeStyle = "#ffffff"; ctx.beginPath(); ctx.arc(f.cx, f.cy, f.r, 0, Math.PI * 2); ctx.stroke();
+    } else {
+      ctx.drawImage(mark, L.sil.x, L.H - L.sil.w, L.sil.w, L.sil.w);
+    }
+    // Ami
+    var aw = L.ami.w, ah = aw * ami.naturalHeight / ami.naturalWidth;
+    ctx.drawImage(ami, L.ami.x, L.H - ah, aw, ah);
+
+    ctx.textBaseline = "alphabetic";
+    // pills
+    function pill(p, text, filled, color, textColor, border) {
+      ctx.font = "800 " + p.size + "px Archivo, Arial, sans-serif";
+      var tw = tx.width(text, p.size * 0.14), h = p.size * 1.088 + p.padY * 2 + (border ? 6 : 0), w = tw + p.padX * 2 + (border ? 6 : 0);
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(p.x, p.y, w, h, h / 2); else ctx.rect(p.x, p.y, w, h);
+      if (filled) { ctx.fillStyle = color; ctx.fill(); }
+      if (border) { ctx.lineWidth = 3; ctx.strokeStyle = textColor; ctx.beginPath();
+        if (ctx.roundRect) ctx.roundRect(p.x + 1.5, p.y + 1.5, w - 3, h - 3, (h - 3) / 2); else ctx.rect(p.x + 1.5, p.y + 1.5, w - 3, h - 3); ctx.stroke(); }
+      ctx.fillStyle = textColor;
+      tx.draw(text, p.x + p.padX + (border ? 3 : 0), p.y + p.padY + (border ? 3 : 0) + p.size * 0.878, p.size * 0.14);
+    }
+    pill(L.p1, ("Episode " + d.ep).toUpperCase(), true, T.pill, T.pillText, false);
+    pill(L.p2, (d.kindLabel || T.label).toUpperCase(), false, null, T.text, true);
+
+    // hook
+    var hs = L.hook.size(d.hook.length), hsp = -0.02 * hs;
+    ctx.font = "800 " + hs + "px Fraunces, Georgia, serif"; ctx.fillStyle = T.text;
+    wrap(tx, d.hook, L.hook.w, hsp).forEach(function (line, k) { tx.draw(line, L.hook.x, L.hook.y + k * hs + hs * 0.86, hsp); });
+
+    // guest name + company
+    function block(cfg, text, weight, color, upper, spacingEm) {
+      var size = cfg.size; ctx.font = weight + " " + size + "px Archivo, Arial, sans-serif"; ctx.fillStyle = color;
+      var t = upper ? text.toUpperCase() : text, sp = size * spacingEm, lines = wrap(tx, t, cfg.w, sp), lh = size * 1.088;
+      var top = cfg.top != null ? cfg.top : (L.H - cfg.bottom - lh * lines.length);
+      lines.forEach(function (line, k) { tx.draw(line, cfg.x, top + k * lh + size * 0.878, sp); });
+    }
+    if (d.guest) block(L.name, d.guest, 800, T.accent, true, 0.1);
+    if (d.company) block(L.co, d.company, 700, T.text, false, 0);
+    tx.reset();
+
+    // logo
+    var lh2 = L.logo.h, lw2 = lh2 * logo.naturalWidth / logo.naturalHeight;
+    var lx = L.logo.right != null ? L.W - L.logo.right - lw2 : L.logo.x;
+    var ly = L.logo.y != null ? L.logo.y : L.H - L.logo.bottom - lh2;
+    ctx.drawImage(logo, lx, ly, lw2, lh2);
+  }
+
+  function data() {
+    var T = THEMES[$("kind").value] || THEMES.peer;
+    return { ep: String($("ep").value || "").trim() || "1", kind: $("kind").value, kindLabel: T.label,
+      hook: $("hook").value.trim() || "Your episode hook goes here", guest: $("guest").value.trim(), company: $("company").value.trim(), ami: $("ami").value };
+  }
+  var busy = false, again = false;
+  async function render() {
+    if (busy) { again = true; return; }
+    busy = true;
+    try {
+      await Promise.all([document.fonts.load("800 100px Fraunces"), document.fonts.load("800 26px Archivo"), document.fonts.load("700 28px Archivo")]);
+      var d = data();
+      await draw($("cWide"), "wide", d);
+      await draw($("cSquare"), "square", d);
+    } catch (e) { console.error(e); }
+    busy = false;
+    if (again) { again = false; render(); }
+  }
+
+  function download(canvas, name) {
+    canvas.toBlob(function (blob) {
+      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    }, "image/png");
+  }
+  async function exportOne(fmt) {
+    await render();
+    var n = "ep-" + (data().ep.replace(/[^0-9a-z-]/gi, "") || "x");
+    download(fmt === "wide" ? $("cWide") : $("cSquare"), n + "-" + fmt + ".png");
+  }
+
+  // guest photo upload
+  $("photo").addEventListener("change", function (e) {
+    var f = e.target.files && e.target.files[0], msg = $("photoMsg");
+    msg.className = "msg"; msg.textContent = "";
+    if (!f) { guestImg = null; render(); return; }
+    var url = URL.createObjectURL(f), img = new Image();
+    img.onload = function () {
+      var c = document.createElement("canvas"); c.width = 40; c.height = 40;
+      var cx = c.getContext("2d"); cx.drawImage(img, 0, 0, 40, 40);
+      var px = [[1, 1], [38, 1], [1, 38], [38, 38], [20, 1]].map(function (p) { return cx.getImageData(p[0], p[1], 1, 1).data[3]; });
+      guestHasAlpha = px.some(function (a) { return a < 200; });
+      guestImg = img;
+      msg.className = "msg show " + (guestHasAlpha ? "ok" : "warn");
+      msg.textContent = guestHasAlpha ? "Transparent photo: they'll stand on the circle next to Ami." : "This photo has a background, so it's shown in a round frame. For the standing look, upload a PNG with a transparent background.";
+      render();
+    };
+    img.onerror = function () { msg.className = "msg show warn"; msg.textContent = "That file couldn't be read as an image."; };
+    img.src = url;
+  });
+
+  ["ep", "kind", "hook", "guest", "company", "ami"].forEach(function (id) {
+    $(id).addEventListener("input", render); $(id).addEventListener("change", render);
+  });
+  $("dlWide").addEventListener("click", function () { exportOne("wide"); });
+  $("dlSquare").addEventListener("click", function () { exportOne("square"); });
+  $("dlBoth").addEventListener("click", async function () { await exportOne("wide"); setTimeout(function () { exportOne("square"); }, 400); });
+
+  // fill from a published episode
+  $("fill").addEventListener("change", function () {
+    var e = episodes[Number($("fill").value)];
+    if (!e) return;
+    var parts = String(e.title || "").split("|"), who = parts.slice(1).join("|").trim(), comma = who.indexOf(",");
+    $("ep").value = e.episode || "";
+    $("hook").value = (parts[0] || "").trim();
+    $("guest").value = comma >= 0 ? who.slice(0, comma).trim() : who;
+    $("company").value = comma >= 0 ? who.slice(comma + 1).trim() : "";
+    var key = PILLAR_KEY[String((e.pillars || [])[0] || "").toLowerCase()]; if (key) $("kind").value = key;
+    render();
+  });
+  fetch("/api/episodes").then(function (r) { return r.json(); }).then(function (d) {
+    episodes = (d && d.episodes) || [];
+    episodes.forEach(function (e, i) {
+      var o = document.createElement("option"); o.value = i; o.textContent = "Episode " + e.episode + ": " + String(e.title || "").split("|")[0].trim(); $("fill").appendChild(o);
+    });
+  }).catch(function () {});
+
+  render();
+})();
+</script>
+</body>
+</html>
