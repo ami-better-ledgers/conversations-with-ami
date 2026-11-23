@@ -32,6 +32,12 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
 .prev canvas{width:100%;height:auto;display:block;border-radius:10px;background:#ddd}
 .prev.sq canvas{max-width:520px}
 .sticky{position:sticky;top:.75rem}
+.prev.sh canvas{max-width:380px}
+.guidewrap{position:relative;max-width:380px}
+.guides span{position:absolute;pointer-events:none;background:rgba(237,32,36,.28);color:#7a1015;font-size:11px;font-weight:700;display:flex;align-items:flex-end;justify-content:center;padding:4px;text-align:center}
+.guides .g-top{left:0;right:0;top:0;height:12.5%}
+.guides .g-bot{left:0;right:0;bottom:0;height:21.9%;align-items:flex-start}
+.guides .g-right{top:12.5%;bottom:21.9%;right:0;width:11%}
 .wait-item{display:flex;gap:.6rem;align-items:center;justify-content:space-between;border:1px solid rgba(16,16,19,.12);border-radius:12px;padding:.5rem .7rem;margin:.4rem 0;font-size:.9rem}
 .wait-item b{display:block}.wait-item small{color:var(--soft)}
 .wait-item .btn{margin:0 0 0 .3rem;padding:.4rem .9rem;font-size:.85rem}
@@ -78,16 +84,29 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
     <select id="ami"><option value="/assets/photos/ami-hero.webp">Smiling</option><option value="/assets/photos/ami-host.webp">Laughing</option></select>
   </div>
   <div class="card">
+    <h2>Shorts (vertical)</h2>
+    <label for="shortHook">Headline for this short (leave blank to use the episode hook)</label>
+    <input type="text" id="shortHook" maxlength="120" placeholder="e.g. Don't hire a CFO on day one">
+    <label for="shortNum">Short number (only used in the file name)</label>
+    <input type="text" id="shortNum" maxlength="3" placeholder="e.g. 1">
+    <label style="display:flex;gap:.5rem;align-items:center;font-weight:500;margin-top:.9rem"><input type="checkbox" id="guideToggle"> Show the phone-app safe zones on the preview</label>
+    <p class="note">Shorts are made by hand for now: write the headline for each clip and download. The top and bottom of a short are covered by the app's own buttons and captions, so keep faces and text out of the red zones.</p>
+  </div>
+  <div class="card">
     <h2>Download</h2>
     <button class="btn b-blue" id="dlWide" type="button">Wide (1280×720)</button>
     <button class="btn b-blue" id="dlSquare" type="button">Square (1080×1080)</button>
-    <button class="btn b-sun" id="dlBoth" type="button">Download both</button>
-    <p class="note">Wide is for YouTube. Square is for Instagram and podcast apps. Files are named like <b>ep-21-wide.png</b>.</p>
+    <button class="btn b-blue" id="dlShort" type="button">Short (1080×1920)</button>
+    <button class="btn b-sun" id="dlBoth" type="button">Download all three</button>
+    <p class="note">Wide is for YouTube. Square is for Instagram and podcast apps. Short is for YouTube Shorts, Reels and TikTok. Files are named like <b>ep-21-wide.png</b>, <b>ep-21-square.png</b> and <b>ep-21-short-1.png</b>.</p>
   </div>
 </div>
 <div>
   <div class="prev"><h2>Wide · 1280×720</h2><canvas id="cWide" width="1280" height="720"></canvas></div>
   <div class="prev sq"><h2>Square · 1080×1080</h2><canvas id="cSquare" width="1080" height="1080"></canvas></div>
+  <div class="prev sh"><h2>Short · 1080×1920</h2>
+    <div class="guidewrap"><canvas id="cShort" width="1080" height="1920"></canvas>
+      <div class="guides" id="guides" hidden><span class="g-top">Top: app search and title</span><span class="g-bot">Bottom: caption, channel name</span><span class="g-right"></span></div></div></div>
 </div>
 </main>
 <script>
@@ -160,6 +179,17 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
       hook: {x: 70, y: 226, w: 940, size: function (n) { return n<=22?130:n<=34?96:n<=52?82:70; }},
       name: {x: 70, top: 512, size: 32, w: 400}, co: {x: 70, top: 604, size: 28, w: 400},
       logo: {right: 70, y: 56, h: 52}
+    },
+    short: {
+      W: 1080, H: 1920,
+      circle: {cx: 540, cy: 1530, r: 430},
+      guest: {x: -20, w: 600}, sil: {x: 20, w: 520}, ami: {x: 500, w: 600},
+      framed: {cx: 280, cy: 1540, r: 220},
+      p1: {x: 70, y: 240, padX: 30, padY: 15, size: 32},
+      p2: {x: 70, y: 322, padX: 24, padY: 11, size: 24},
+      hook: {x: 70, y: 420, w: 940, size: function (n) { return n<=22?150:n<=34?120:n<=52?100:84; }},
+      name: {x: 70, top: 930, size: 38, w: 940}, co: {x: 70, top: 990, size: 32, w: 940},
+      logo: {x: 70, y: 130, h: 60}
     }
   };
 
@@ -219,9 +249,10 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
     pill(L.p2, (d.kindLabel || T.label).toUpperCase(), false, null, T.text, true);
 
     // hook
-    var hs = L.hook.size(d.hook.length), hsp = -0.02 * hs;
+    var htxt = fmt === "short" ? (d.shortHook || d.hook) : d.hook;
+    var hs = L.hook.size(htxt.length), hsp = -0.02 * hs;
     ctx.font = "800 " + hs + "px Fraunces, Georgia, serif"; ctx.fillStyle = T.text;
-    wrap(tx, d.hook, L.hook.w, hsp).forEach(function (line, k) { tx.draw(line, L.hook.x, L.hook.y + k * hs + hs * 0.86, hsp); });
+    wrap(tx, htxt, L.hook.w, hsp).forEach(function (line, k) { tx.draw(line, L.hook.x, L.hook.y + k * hs + hs * 0.86, hsp); });
 
     // guest name + company
     function block(cfg, text, weight, color, upper, spacingEm) {
@@ -244,7 +275,7 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
   function data() {
     var T = THEMES[$("kind").value] || THEMES.peer;
     return { ep: String($("ep").value || "").trim() || "1", kind: $("kind").value, kindLabel: T.label,
-      hook: $("hook").value.trim() || "Your episode hook goes here", guest: $("guest").value.trim(), company: $("company").value.trim(), ami: $("ami").value };
+      hook: $("hook").value.trim() || "Your episode hook goes here", guest: $("guest").value.trim(), company: $("company").value.trim(), ami: $("ami").value, shortHook: $("shortHook").value.trim() };
   }
   var busy = false, again = false;
   async function render() {
@@ -255,6 +286,7 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
       var d = data();
       await draw($("cWide"), "wide", d);
       await draw($("cSquare"), "square", d);
+      await draw($("cShort"), "short", d);
     } catch (e) { console.error(e); }
     busy = false;
     if (again) { again = false; render(); }
@@ -269,7 +301,9 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
   async function exportOne(fmt) {
     await render();
     var n = "ep-" + (data().ep.replace(/[^0-9a-z-]/gi, "") || "x");
-    download(fmt === "wide" ? $("cWide") : $("cSquare"), n + "-" + fmt + ".png");
+    var cv = fmt === "wide" ? $("cWide") : fmt === "short" ? $("cShort") : $("cSquare");
+    var tail = fmt === "short" ? "-short-" + (($("shortNum").value || "1").replace(/[^0-9a-z]/gi, "") || "1") : "-" + fmt;
+    download(cv, n + tail + ".png");
   }
 
   // guest photo upload
@@ -340,12 +374,14 @@ input:focus,select:focus{outline:3px solid #8bc6e7;border-color:var(--blue)}
     }, 300);
   }
 
-  ["ep", "kind", "hook", "guest", "company", "ami"].forEach(function (id) {
+  ["ep", "kind", "hook", "guest", "company", "ami", "shortHook"].forEach(function (id) {
     $(id).addEventListener("input", render); $(id).addEventListener("change", render);
   });
   $("dlWide").addEventListener("click", function () { exportOne("wide"); });
   $("dlSquare").addEventListener("click", function () { exportOne("square"); });
-  $("dlBoth").addEventListener("click", async function () { await exportOne("wide"); setTimeout(function () { exportOne("square"); }, 400); });
+  $("dlShort").addEventListener("click", function () { exportOne("short"); });
+  $("dlBoth").addEventListener("click", async function () { await exportOne("wide"); setTimeout(function () { exportOne("square"); }, 400); setTimeout(function () { exportOne("short"); }, 800); });
+  $("guideToggle").addEventListener("change", function () { $("guides").hidden = !this.checked; });
 
   // fill from a published episode
   $("fill").addEventListener("change", function () {
