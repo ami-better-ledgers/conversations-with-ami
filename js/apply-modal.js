@@ -7,7 +7,7 @@
     if (!triggers.length || !overlay || !iframe) return;
 
     function open() {
-      if (!iframe.src) iframe.src = "apply/";
+      if (!iframe.src) iframe.src = "/apply/";
       overlay.hidden = false;
       document.body.style.overflow = "hidden";
     }

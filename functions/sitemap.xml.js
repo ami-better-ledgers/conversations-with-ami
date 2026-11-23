@@ -12,12 +12,13 @@ import { listPublicIssues } from "./_lib/studio-issues.js";
 const SITE_URL = "https://www.conversationswithami.com";
 
 const STATIC_PAGES = [
-  { path: "/", lastmod: "2026-09-09", changefreq: "weekly", priority: "1.0" },
-  { path: "/about", lastmod: "2026-09-09", changefreq: "monthly", priority: "0.8" },
-  { path: "/podcast", lastmod: "2026-09-09", changefreq: "weekly", priority: "0.9" },
-  { path: "/newsletter", lastmod: "2026-09-09", changefreq: "weekly", priority: "0.7" },
-  { path: "/apply/", lastmod: "2026-09-09", changefreq: "monthly", priority: "0.5" },
-  { path: "/links", lastmod: "2026-09-18", changefreq: "monthly", priority: "0.6" },
+  { path: "/", lastmod: "2026-11-23", changefreq: "weekly", priority: "1.0" },
+  { path: "/about", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.8" },
+  { path: "/podcast", lastmod: "2026-11-23", changefreq: "weekly", priority: "0.9" },
+  { path: "/newsletter", lastmod: "2026-11-23", changefreq: "weekly", priority: "0.7" },
+  { path: "/apply/", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.5" },
+  { path: "/links", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.6" },
+  { path: "/brand-kit", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.4" },
 ];
 
 // Only used if the RSS fetch/parse fails — a snapshot of episodes 1-18.
