@@ -60,12 +60,11 @@
 </script>
 </head>
 <body>
-<a class="skip-link" href="#main" style="position:absolute;left:-9999px" onfocus="this.style.left='1rem';this.style.top='1rem';this.style.zIndex=300;this.style.background='#fff';this.style.padding='.5rem 1rem'">Skip to content</a>
-
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="site-nav">
   <div class="wrap bar">
     <a class="brand" href="/" aria-label="Conversations with Ami — home">
-      <img src="assets/logos/Logo_blue.svg" alt="Conversations with Ami">
+      <img src="/assets/logos/Logo_blue.svg" alt="Conversations with Ami">
     </a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle menu"><span></span></button>
     <ul class="nav-links" id="primary-nav">
@@ -73,8 +72,17 @@
       <li><a href="/about">About</a></li>
       <li><a href="/podcast">The Podcast</a></li>
       <li><a href="/newsletter">Newsletter</a></li>
+      <li class="nav-drop">
+        <button type="button" class="nav-drop-btn" aria-expanded="false" aria-controls="nav-companies">Our Companies <span class="caret" aria-hidden="true"></span></button>
+        <ul class="nav-sub" id="nav-companies">
+          <li><a href="/companies">All our companies</a></li>
+          <li><a href="/companies/better-ledgers">Better Ledgers</a></li>
+          <li><a href="/companies/dash-staff">Dash Staff</a></li>
+          <li><a href="/companies/qewlabs">qewlabs</a></li>
+        </ul>
+      </li>
       <li class="nav-gap"><button type="button" class="btn btn-line-dark btn-sm" id="apply-modal-trigger">Apply to be on the show</button></li>
-      <li><a class="btn btn-red btn-sm" href="#signup">Join Still Building</a></li>
+      <li><a class="btn btn-red btn-sm" href="/#signup">Join Still Building</a></li>
     </ul>
   </div>
 </header>
