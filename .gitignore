@@ -1,3 +1,8 @@
 .wrangler/
 node_modules/
 .dev.vars
+
+# Private brand work: kept out of the public site (a full copy lives in the Brand Package folder)
+/brand.html
+/assets/brand/
+/assets/Marketing - Graphics/

@@ -349,3 +349,27 @@ assets/platform-badges/       Listen-everywhere badges (Apple, Spotify, YouTube,
 - **Guest application** — the "Apply to be on the show" button (top right, every page) opens your form in a popup. The form itself lives at `apply/index.html` and already has its own submission endpoint wired in from the file you sent — nothing else to configure.
 - **Footer** — now shows both "Follow" (social platforms) and "Listen on" (podcast platforms), on every page.
 - **Browser tab icon (favicon)** — the profile silhouette, switching automatically between black and white based on the visitor's light/dark browser theme.
+
+---
+
+## Brand kit page (/brand-kit)
+
+A public page where press, guests and partners accept the brand-kit terms and then
+download the kit (`brand-kit.html`, `functions/api/brand-kit.js`).
+
+**One-time setup (Cloudflare dashboard)**
+1. Create a D1 database (e.g. `brand-kit-acceptances`).
+2. Pages project > Settings > Bindings > Add > **D1 database**, variable name **`DB`**,
+   pick that database. Do this for Production (and Preview if you use it), then redeploy.
+   (The function creates its table on first use. Schema is also in `brand-kit-schema.sql`.)
+3. If `DB` isn't bound the form fails closed: nobody gets the file and a polite error is shown.
+
+**Seeing who accepted:** D1 > your database > Console > `SELECT * FROM brand_kit_acceptances ORDER BY id DESC;`
+
+**Updating the kit:** build a new zip, put it at a new unguessable path under `assets/kit/`,
+and set the Pages environment variable `BRAND_KIT_ZIP_PATH` to that path (or edit
+`DEFAULT_ZIP_PATH` in the function). Delete the old folder to revoke the old link.
+Note: the zip is a normal public file at an unguessable address. The terms step is a
+good-faith gate, not security.
+
+**Local testing:** the dev server runs with `--d1=DB` (a local throwaway database).
