@@ -373,3 +373,34 @@ Note: the zip is a normal public file at an unguessable address. The terms step 
 good-faith gate, not security.
 
 **Local testing:** the dev server runs with `--d1=DB` (a local throwaway database).
+
+---
+
+## Newsletter on Resend (Still Building with Ami)
+
+Subscribers live in a **Resend Segment**. The site's signup form posts to `/api/subscribe`,
+and each issue is sent with `scripts/send-newsletter.mjs` as a Resend **Broadcast**
+(Resend handles unsubscribes). Issues are stored as `content/newsletter/issue-NN.json`
+and rendered by `functions/_lib/newsletter-template.js`.
+
+**One-time setup**
+1. **Domain:** Resend > Domains > add `conversationswithami.com`, add the DNS records it shows
+   in Cloudflare DNS, wait for "Verified". (Resend can also configure Cloudflare for you.)
+2. **Segment:** Resend > Audience > Segments > create "Still Building with Ami". Copy its ID.
+3. **API key:** Resend > API Keys > create one with **Full access** (a "Sending access" key can only send single emails; it cannot manage contacts or create broadcasts, and only a sending-access key can be limited to one domain). Keep it secret.
+4. **Site secrets:** Cloudflare Pages > Settings > Environment variables (encrypted):
+   `RESEND_API_KEY` and `RESEND_SEGMENT_ID`. Redeploy.
+5. **Import existing subscribers:** export your list from Kit (CSV) and import it into the
+   Resend Segment (Audience > Contacts > Import CSV, adding them to the segment). Only import people who agreed to get this.
+6. **Mailing address:** every email needs a physical address. The send script defaults to "Conversations with Ami, c/o Better Ledgers Inc., 3611 14th Ave Suite 371, Brooklyn, NY 11218"; override with `POSTAL_ADDRESS` if it changes.
+
+**Sending an issue** (from this folder; set the variables in your own shell, never commit them)
+```
+node scripts/send-newsletter.mjs content/newsletter/issue-11.json            # dry run, saves a preview
+node scripts/send-newsletter.mjs content/newsletter/issue-11.json --test you@example.com
+node scripts/send-newsletter.mjs content/newsletter/issue-11.json --send     # sends to the whole segment
+```
+Variables: `RESEND_API_KEY`, `RESEND_SEGMENT_ID`, `POSTAL_ADDRESS`, optional `RESEND_FROM`
+(default `Still Building with Ami <newsletter@conversationswithami.com>`) and `RESEND_REPLY_TO`.
+
+**Local testing:** put `RESEND_API_KEY` and `RESEND_SEGMENT_ID` in a `.dev.vars` file (gitignored).
