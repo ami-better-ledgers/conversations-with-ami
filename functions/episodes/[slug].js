@@ -15,6 +15,7 @@
 // day one no matter what.
 
 import { fetchEpisodes, slugifyTitle } from "../_lib/rss.js";
+import { V2_HEAD_LINKS, header, footer } from "../_lib/layout-v2.js";
 import { getOrGenerateSummary } from "../_lib/ai-summary.js";
 import { curatedBySlug, curatedByEpisodeNumber } from "../_lib/curated.js";
 import { fetchFaqsForEpisode, fetchTopAdviceForEpisode, hasTranscriptSheetRow } from "../_lib/episode-extras.js";
@@ -125,33 +126,15 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
 <link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="shortcut icon" href="/favicon.ico">
-<link rel="stylesheet" href="/css/tokens.css?v=27">
-<link rel="stylesheet" href="/css/style.css?v=27">
+${V2_HEAD_LINKS}
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
-
-<header class="site-nav">
-  <a class="brand" href="/" aria-label="Conversations with Ami — home">
-    <img src="/assets/logos/Logo_blue.svg" alt="Conversations with Ami">
-  </a>
-  <button class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle menu">☰</button>
-  <ul class="nav-links" id="primary-nav">
-    <li class="nav-item"><a href="/">Home</a></li>
-    <li class="nav-item"><a href="/about">About</a></li>
-    <li class="nav-item"><a href="/podcast" aria-current="page">The Podcast</a></li>
-    <li class="nav-item"><a href="/newsletter">Newsletter</a></li>
-    <li class="nav-cta-stack">
-      <button type="button" class="nav-cta" id="apply-modal-trigger">Apply to be on the show</button>
-      <a class="nav-cta" href="/podcast#signup">Join the newsletter</a>
-    </li>
-  </ul>
-</header>
+${header("/podcast")}
 
 <main id="main">
 
-  <section class="wrap section-tight">
+  <section class="page-hero bg-blue pat-dark"><div class="wrap">
     <p class="breadcrumbs"><a href="/">Home</a> / <a href="/podcast">The Podcast</a> / ${esc(pageTitle)}</p>
     <p class="eyebrow">${episodeNum ? `Episode ${episodeNum}` : "The Podcast"}</p>
     <h1>${esc(pageTitle)}</h1>
@@ -161,7 +144,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
       ${(curated?.pillars || []).map((p) => `<span class="tag-pillar">${esc(p)}</span>`).join("")}
       ${(curated?.subjects || []).map((s) => `<span class="tag-subject">${esc(s)}</span>`).join("")}
     </div>` : ""}
-  </section>
+  </div></section>
 
   <section class="wrap episode-layout">
     <div class="episode-main">
@@ -277,47 +260,7 @@ function renderEpisodePage({ slug, curated, feedItem, hasTranscript, allFeedEpis
 
 </main>
 
-<footer class="site-footer wrap">
-  <div class="footer-top">
-    <div class="footer-logos">
-      <img src="/assets/logos/Logo_black.svg" alt="Conversations with Ami">
-    </div>
-    <div class="footer-right">
-      <nav class="footer-links">
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/podcast">The Podcast</a></li>
-          <li><a href="/newsletter">Newsletter Archive</a></li>
-          <li><a href="/links">Our Links</a></li>
-        </ul>
-      </nav>
-      <div class="footer-social">
-        <span class="footer-row-label">Follow</span>
-        <a href="https://www.youtube.com/@ConversationswithAmi" target="_blank" rel="noopener" aria-label="YouTube"><img src="/assets/social-icons/youtube.png" alt="YouTube"></a>
-        <a href="https://www.instagram.com/conversationswithami" target="_blank" rel="noopener" aria-label="Instagram"><img src="/assets/social-icons/instagram.png" alt="Instagram"></a>
-        <a href="https://www.facebook.com/conversationswithami/" target="_blank" rel="noopener" aria-label="Facebook"><img src="/assets/social-icons/facebook.png" alt="Facebook"></a>
-        <a href="https://www.linkedin.com/company/conversations-with-ami/" target="_blank" rel="noopener" aria-label="LinkedIn"><img src="/assets/social-icons/linkedin.png" alt="LinkedIn"></a>
-        <a href="https://www.tiktok.com/@conversationswithami" target="_blank" rel="noopener" aria-label="TikTok"><img src="/assets/social-icons/tiktok.png" alt="TikTok"></a>
-        <a href="https://www.threads.com/@conversationswithami" target="_blank" rel="noopener" aria-label="Threads"><img src="/assets/social-icons/threads.svg" alt="Threads"></a>
-        <a href="https://x.com/ConverseWithAmi" target="_blank" rel="noopener" aria-label="X"><img src="/assets/social-icons/x.png" alt="X"></a>
-      </div>
-      <div class="footer-listen">
-        <span class="footer-row-label">Listen on</span>
-        <a href="https://podcasts.apple.com/us/podcast/conversations-with-ami/id1873041580" target="_blank" rel="noopener"><img src="/assets/platform-badges/apple-podcasts.png" alt="Apple Podcasts"></a>
-        <a href="https://open.spotify.com/show/5RKOn6Eu7p6wPZnXXveiHb?si=791fb114c02b4916" target="_blank" rel="noopener"><img src="/assets/platform-badges/spotify.png" alt="Spotify"></a>
-        <a href="https://youtube.com/playlist?list=PL3x3OopO8PGq6QsnYC_Pp4eX11WwbAsYx&si=LL7pmngiHCHOn8FD" target="_blank" rel="noopener"><img src="/assets/platform-badges/youtube.png" alt="YouTube"></a>
-        <a href="https://music.youtube.com/playlist?list=PL3x3OopO8PGq6QsnYC_Pp4eX11WwbAsYx&si=zAF1mqK5Om0lyoaU" target="_blank" rel="noopener"><img src="/assets/platform-badges/youtube-music.svg" alt="YouTube Music"></a>
-        <a href="https://music.amazon.com/podcasts/186d37e6-9e61-407e-8842-5d5aa540bffa/conversations-with-ami" target="_blank" rel="noopener"><img src="/assets/platform-badges/amazon-music.png" alt="Amazon Music"></a>
-        <a href="https://www.iheart.com/podcast/269-conversations-with-ami-320034306" target="_blank" rel="noopener"><img src="/assets/platform-badges/iheart.png" alt="iHeartPodcasts"></a>
-        <a href="https://link.deezer.com/s/340oHTszf2kH0iVvzhfrm" target="_blank" rel="noopener"><img src="/assets/platform-badges/deezer.png" alt="Deezer"></a>
-      </div>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>&copy; <span id="year"></span> Conversations with Ami</span>
-  </div>
-</footer>
+${footer()}
 
 <script src="/js/config.js?v=27"></script>
 <script src="/js/nav.js?v=27"></script>

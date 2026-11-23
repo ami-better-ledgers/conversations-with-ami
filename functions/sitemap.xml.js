@@ -17,6 +17,10 @@ const STATIC_PAGES = [
   { path: "/podcast", lastmod: "2026-11-23", changefreq: "weekly", priority: "0.9" },
   { path: "/newsletter", lastmod: "2026-11-23", changefreq: "weekly", priority: "0.7" },
   { path: "/apply/", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.5" },
+  { path: "/companies", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.6" },
+  { path: "/companies/better-ledgers", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.5" },
+  { path: "/companies/dash-staff", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.5" },
+  { path: "/companies/qewlabs", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.5" },
   { path: "/links", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.6" },
   { path: "/brand-kit", lastmod: "2026-11-23", changefreq: "monthly", priority: "0.4" },
 ];
