@@ -141,10 +141,8 @@ export function renderEmail(issue, opts = {}) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${BRAND.cream};"><tr><td align="center" style="padding:20px 10px;">
 <table role="presentation" class="wrap" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:18px;overflow:hidden;">
 
-<tr><td bgcolor="${BRAND.sun}" background="${a}/sb-pattern-sun-band.png" style="background:${BRAND.sun} url('${a}/sb-pattern-sun-band.png') repeat;background-size:600px 120px;padding:30px 36px;">
-  <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="${BRAND.sun}" style="background:${BRAND.sun};padding:14px 20px;border-radius:16px;">
-    <img src="${a}/sb-logo-blue.png" width="230" alt="Still Building with Ami" style="display:block;width:230px;max-width:100%;height:auto;border:0;">
-  </td></tr></table>
+<tr><td bgcolor="${BRAND.sun}" style="background:${BRAND.sun};padding:0;">
+  <img src="${a}/sb-header.png" width="600" alt="Still Building with Ami" style="display:block;width:100%;max-width:600px;height:auto;border:0;">
 </td></tr>
 
 <tr><td class="pad" style="padding:30px 36px 0;background:${BRAND.cream};">

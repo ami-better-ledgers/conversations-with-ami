@@ -788,3 +788,35 @@ a.archive-card .issue-excerpt { display: block; margin: .5rem 0 .75rem; color: v
 .nav-links .nav-sub a:not(.btn):hover { background: var(--tint); color: var(--blue); }
 .nav-links .nav-sub li:first-child a:not(.btn) { color: var(--soft); font-weight: 600; }
 .nav-drop-btn { white-space: nowrap; }
+/* X and Threads icons are dark: give them a light tile so they read on the deep-blue footer */
+.footer-social a[aria-label="X"] img, .footer-social a[aria-label="Threads"] img { background: #fff; padding: 4px; border-radius: 8px; }
+
+/* ---------- About page ---------- */
+.story { background: #fff; border-radius: 32px; box-shadow: var(--shadow); padding: clamp(1.2rem, 3vw, 2.2rem); }
+.story-tabs { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.6rem; }
+.story:not(.is-tabs) .story-tabs, .story:not(.is-tabs) .story-nav { display: none; }
+.story:not(.is-tabs) .story-panel + .story-panel { margin-top: 1.4rem; }
+.story-tab { display: inline-flex; align-items: center; gap: .6rem; font-family: var(--label); font-weight: 700; font-size: .95rem; padding: .6rem 1.1rem .6rem .6rem; border-radius: 999px; border: 2px solid transparent; background: var(--tint); color: var(--deep); cursor: pointer; transition: transform .2s var(--ease), background .2s, color .2s; }
+.story-tab span { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: #fff; font-family: var(--display); font-size: 1rem; }
+.story-tab:hover { transform: translateY(-2px); }
+.story-tab[aria-selected="true"] { background: var(--blue); color: #fff; }
+.story-tab[aria-selected="true"] span { background: var(--sun); color: var(--deep); }
+.story-tab:nth-child(2)[aria-selected="true"] { background: var(--coral); color: var(--deep); }
+.story-tab:nth-child(3)[aria-selected="true"] { background: var(--deep); }
+.story-tab:nth-child(4)[aria-selected="true"] { background: var(--red-ui); }
+.story-panel { max-width: 46rem; font-size: 1.12rem; }
+.story-panel[hidden] { display: none; }
+.story-panel.swap { animation: storyIn .45s var(--ease); }
+@keyframes storyIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.story .pull-note { border-left: 6px solid var(--coral); background: var(--cream); border-radius: 0 20px 20px 0; padding: 1.2rem 1.4rem; font-family: var(--display); font-size: 1.5rem; line-height: 1.25; color: var(--deep); max-width: none; }
+.story-nav { display: flex; gap: .7rem; margin-top: 1.4rem; }
+.story-nav button[disabled] { opacity: .4; cursor: default; transform: none; box-shadow: none; }
+.about-kinds .kind { cursor: default; min-height: 14rem; }
+.about-kinds .kind:hover { transform: translateY(-6px) rotate(-.6deg); }
+.about-two { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start; }
+.note-card { background: #fff; border-radius: 28px; padding: clamp(1.3rem, 3vw, 2rem); box-shadow: var(--shadow); border-left: 10px solid var(--sun); }
+.note-card p:last-child { margin-bottom: 0; }
+.about-cos { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+.about-cos .co-card p { color: var(--soft); }
+@media (max-width: 860px) { .about-two, .about-cos { grid-template-columns: 1fr; } }
+#episodes { background-image: linear-gradient(rgba(22,44,108,.93), rgba(22,44,108,.93)), url("/assets/brand-public/pattern-dark-tile.svg"); background-size: auto, 220px; }
